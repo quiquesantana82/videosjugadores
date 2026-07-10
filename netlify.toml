@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/jugador/*"
+  to = "/.netlify/functions/jugador?id=:splat"
+  status = 200

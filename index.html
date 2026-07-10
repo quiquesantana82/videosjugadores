@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>VIDEOSJUGADORES — Perfiles de Jugadores</title>
+<meta name="description" content="Perfiles profesionales de futbolistas: datos, trayectoria y videos.">
+<meta property="og:title" content="VIDEOSJUGADORES">
+<meta property="og:description" content="Perfiles profesionales de futbolistas: datos, trayectoria y videos.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --negro:#07090C;
+  --carbon:#0E1218;
+  --panel:#141A22;
+  --linea:#232C38;
+  --blanco:#F4F6F8;
+  --gris:#8B97A5;
+  --celeste:#57B8E8;
+  --celeste-osc:#2E7FB0;
+  --rojo:#E85757;
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--negro);
+  color:var(--blanco);
+  font-family:'Barlow',sans-serif;
+  min-height:100dvh;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:16px}
+a{color:inherit;text-decoration:none}
+
+/* ============ WORDMARK (logo recreado en CSS) ============ */
+.wordmark{display:inline-flex;align-items:stretch;user-select:none;line-height:1}
+.wordmark .wm-videos{
+  background:var(--blanco);color:var(--negro);
+  font-family:'Archivo',sans-serif;font-weight:900;
+  padding:.14em .28em .1em;letter-spacing:.01em;
+}
+.wordmark .wm-jugadores{
+  color:var(--blanco);
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  padding:.14em 0 .1em .28em;letter-spacing:.06em;
+  display:flex;align-items:center;
+}
+.wordmark.wm-invert .wm-videos{background:var(--negro);color:var(--blanco)}
+.wordmark.wm-invert .wm-jugadores{color:var(--negro)}
+
+/* ============ SPLASH ============ */
+#splash{
+  position:fixed;inset:0;z-index:100;
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(87,184,232,.13), transparent 55%),
+    radial-gradient(90% 60% at 50% 115%, rgba(87,184,232,.07), transparent 60%),
+    var(--negro);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:36px;padding:24px;text-align:center;
+  transition:opacity .45s ease, visibility .45s;
+}
+#splash.oculto{opacity:0;visibility:hidden;pointer-events:none}
+#splash .wordmark{font-size:clamp(34px,9.5vw,64px);animation:entra .7s cubic-bezier(.2,.9,.3,1) both}
+#splash .lema{
+  color:var(--gris);font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(15px,4vw,19px);letter-spacing:.34em;text-transform:uppercase;
+  animation:entra .7s .2s cubic-bezier(.2,.9,.3,1) both;
+}
+#splash .linea-cancha{
+  width:min(320px,70vw);height:1px;background:linear-gradient(90deg,transparent,var(--celeste),transparent);
+  animation:entra .7s .35s both;
+}
+.btn-entrar{
+  background:var(--celeste);color:var(--negro);
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:16px 44px;border-radius:999px;
+  animation:entra .7s .5s cubic-bezier(.2,.9,.3,1) both;
+  transition:transform .15s ease, box-shadow .15s ease;
+  box-shadow:0 8px 30px rgba(87,184,232,.25);
+}
+.btn-entrar:active{transform:scale(.96)}
+@media(hover:hover){.btn-entrar:hover{transform:translateY(-2px);box-shadow:0 12px 38px rgba(87,184,232,.4)}}
+@keyframes entra{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
+/* ============ HEADER ============ */
+header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(7,9,12,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--linea);
+  padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top));
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+header .wordmark{font-size:20px}
+.btn-admin{color:var(--gris);font-size:20px;padding:6px 8px;border-radius:8px;transition:color .15s}
+.btn-admin:hover{color:var(--celeste)}
+
+/* ============ LAYOUT GENERAL ============ */
+main{max-width:1100px;margin:0 auto;padding:26px 18px 90px}
+.titulo-seccion{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:22px;
+  font-family:'Barlow Condensed',sans-serif;
+}
+.titulo-seccion h2{font-size:clamp(28px,6vw,40px);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.titulo-seccion .cant{color:var(--celeste);font-size:clamp(18px,4vw,24px);font-weight:600}
+.buscador{
+  width:100%;background:var(--carbon);border:1px solid var(--linea);border-radius:999px;
+  color:var(--blanco);padding:13px 20px;margin-bottom:24px;outline:none;
+  transition:border-color .15s;
+}
+.buscador::placeholder{color:var(--gris)}
+.buscador:focus{border-color:var(--celeste)}
+
+/* ============ GRID JUGADORES ============ */
+.grid-jugadores{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+@media(min-width:640px){.grid-jugadores{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}}
+.card-jugador{
+  background:var(--carbon);border:1px solid var(--linea);border-radius:var(--radius);
+  overflow:hidden;text-align:left;display:flex;flex-direction:column;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.card-jugador:active{transform:scale(.97)}
+@media(hover:hover){
+  .card-jugador:hover{transform:translateY(-4px);border-color:var(--celeste);box-shadow:0 14px 34px rgba(0,0,0,.45)}
+}
+.card-foto{aspect-ratio:4/5;background:var(--panel);position:relative;overflow:hidden}
+.card-foto img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.card-foto .sin-foto{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  color:var(--linea);font-size:56px;
+}
+.card-foto::after{
+  content:'';position:absolute;inset:auto 0 0 0;height:45%;
+  background:linear-gradient(180deg,transparent,rgba(7,9,12,.9));
+}
+.card-info{padding:12px 14px 14px;margin-top:-30px;position:relative;z-index:1}
+.card-info h3{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;
+  letter-spacing:.03em;text-transform:uppercase;line-height:1.05;
+}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(87,184,232,.12);color:var(--celeste);
+  border:1px solid rgba(87,184,232,.3);
+  padding:3px 9px;border-radius:999px;
+}
+.vacio{
+  text-align:center;color:var(--gris);padding:70px 20px;
+  border:1px dashed var(--linea);border-radius:var(--radius);
+  font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:.05em;
+}
+
+/* ============ FICHA ============ */
+.btn-volver{
+  display:inline-flex;align-items:center;gap:8px;color:var(--gris);
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px;
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px;
+  transition:color .15s;
+}
+.btn-volver:hover{color:var(--celeste)}
+.ficha-hero{
+  display:grid;gap:22px;background:var(--carbon);
+  border:1px solid var(--linea);border-radius:var(--radius);overflow:hidden;
+}
+@media(min-width:720px){.ficha-hero{grid-template-columns:340px 1fr}}
+.ficha-foto{aspect-ratio:4/5;background:var(--panel);position:relative}
+.ficha-foto img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.ficha-foto .sin-foto{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--linea);font-size:90px}
+.ficha-datos{padding:22px 22px 26px;display:flex;flex-direction:column;gap:16px}
+@media(min-width:720px){.ficha-datos{padding:30px 30px 30px 8px}}
+.ficha-datos h1{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:clamp(34px,8vw,52px);letter-spacing:.03em;text-transform:uppercase;line-height:.95;
+}
+.dato-fila{display:flex;flex-wrap:wrap;gap:22px}
+.dato label{
+  display:block;color:var(--gris);font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:3px;
+}
+.dato span{font-size:17px;font-weight:500}
+.ficha-desc{color:#C6CFD8;line-height:1.65;font-size:16px}
+.btn-wsp{
+  align-self:flex-start;display:inline-flex;align-items:center;gap:9px;
+  background:#25D366;color:#062b12;font-weight:600;font-size:15px;
+  padding:11px 20px;border-radius:999px;margin-top:4px;
+  transition:transform .15s;
+}
+.btn-wsp:active{transform:scale(.96)}
+
+.bloque{margin-top:30px}
+.bloque-titulo{
+  display:inline-flex;margin-bottom:16px;font-size:17px;
+}
+.bloque-titulo .wm-videos{background:var(--celeste);color:var(--negro);font-family:'Archivo',sans-serif;font-weight:900;padding:.16em .35em .12em}
+.bloque-titulo .wm-resto{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;padding:.16em 0 .12em .4em;display:flex;align-items:center;
+}
+.trayectoria{display:flex;flex-direction:column;gap:0}
+.tray-item{
+  display:flex;gap:16px;padding:13px 4px;border-bottom:1px solid var(--linea);
+  align-items:baseline;
+}
+.tray-item:last-child{border-bottom:none}
+.tray-anio{
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;color:var(--celeste);
+  font-size:16px;letter-spacing:.05em;min-width:110px;flex-shrink:0;
+}
+.tray-club{font-size:16px;font-weight:500}
+.grid-videos{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:720px){.grid-videos{grid-template-columns:1fr 1fr}}
+.video-wrap{position:relative;padding-top:56.25%;background:var(--panel);border-radius:var(--radius);overflow:hidden;border:1px solid var(--linea)}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* ============ ADMIN ============ */
+.modal{
+  position:fixed;inset:0;z-index:90;background:rgba(4,6,9,.8);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:none;align-items:flex-start;justify-content:center;
+  padding:20px;overflow-y:auto;
+}
+.modal.abierto{display:flex}
+.modal-caja{
+  background:var(--carbon);border:1px solid var(--linea);border-radius:var(--radius);
+  width:100%;max-width:640px;padding:26px 22px 30px;margin:auto 0;
+  animation:entra .3s both;
+}
+.modal-caja h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;margin-bottom:20px;
+}
+.campo{margin-bottom:16px}
+.campo label{
+  display:block;color:var(--gris);font-family:'Barlow Condensed',sans-serif;
+  font-size:14px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;
+}
+.campo input[type=text],.campo input[type=password],.campo input[type=date],.campo input[type=url],.campo textarea{
+  width:100%;background:var(--panel);border:1px solid var(--linea);border-radius:10px;
+  color:var(--blanco);padding:12px 14px;outline:none;transition:border-color .15s;
+}
+.campo input:focus,.campo textarea:focus{border-color:var(--celeste)}
+.campo textarea{resize:vertical;min-height:90px;line-height:1.5}
+.campo .ayuda{color:var(--gris);font-size:13px;margin-top:5px;line-height:1.4}
+.posiciones-grid{display:flex;flex-wrap:wrap;gap:8px}
+.pos-toggle{
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;
+  letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--linea);color:var(--gris);
+  padding:8px 14px;border-radius:999px;transition:all .15s;
+}
+.pos-toggle.activo{background:rgba(87,184,232,.15);border-color:var(--celeste);color:var(--celeste)}
+.foto-preview{
+  width:110px;height:137px;border-radius:10px;background:var(--panel);
+  border:1px dashed var(--linea);object-fit:cover;object-position:top center;
+  display:flex;align-items:center;justify-content:center;color:var(--gris);font-size:12px;
+}
+.fila-botones{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:13px 26px;border-radius:999px;transition:transform .15s,opacity .15s;
+}
+.btn:active{transform:scale(.96)}
+.btn-primario{background:var(--celeste);color:var(--negro)}
+.btn-secundario{border:1px solid var(--linea);color:var(--gris)}
+.btn-peligro{background:rgba(232,87,87,.12);border:1px solid rgba(232,87,87,.4);color:var(--rojo)}
+.btn:disabled{opacity:.5;cursor:wait}
+
+.admin-lista{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.admin-item{
+  display:flex;align-items:center;gap:14px;background:var(--carbon);
+  border:1px solid var(--linea);border-radius:12px;padding:10px 14px;
+}
+.admin-item img,.admin-item .mini-sin{
+  width:46px;height:56px;border-radius:8px;object-fit:cover;object-position:top center;
+  background:var(--panel);flex-shrink:0;
+}
+.admin-item .mini-sin{display:flex;align-items:center;justify-content:center;color:var(--linea)}
+.admin-item .nombre{flex:1;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.03em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-item button{padding:8px 10px;border-radius:8px;font-size:17px}
+.admin-item .editar{color:var(--celeste)}
+.admin-item .borrar{color:var(--rojo)}
+.barra-admin{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  flex-wrap:wrap;margin-bottom:20px;
+}
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--panel);border:1px solid var(--celeste);color:var(--blanco);
+  padding:13px 24px;border-radius:999px;font-size:15px;z-index:120;
+  transition:transform .3s cubic-bezier(.2,.9,.3,1);white-space:nowrap;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+.toast.visible{transform:translateX(-50%) translateY(0)}
+.cargando{text-align:center;color:var(--gris);padding:60px 0;font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:.1em}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="wordmark"><span class="wm-videos">VIDEOS</span><span class="wm-jugadores">JUGADORES</span></div>
+  <div class="lema">Perfiles · Trayectoria · Videos</div>
+  <div class="linea-cancha"></div>
+  <button class="btn-entrar" onclick="entrar()">Jugadores</button>
+</div>
+
+<!-- HEADER -->
+<header>
+  <a href="#" onclick="irInicio(event)">
+    <div class="wordmark"><span class="wm-videos">VIDEOS</span><span class="wm-jugadores">JUGADORES</span></div>
+  </a>
+  <button class="btn-admin" onclick="abrirAdmin()" aria-label="Panel de administración">⚙</button>
+</header>
+
+<main>
+  <!-- VISTA: LISTA -->
+  <section id="vista-lista">
+    <div class="titulo-seccion">
+      <h2>Jugadores</h2>
+      <span class="cant" id="cant-jugadores"></span>
+    </div>
+    <input type="text" class="buscador" id="buscador" placeholder="Buscar jugador…" oninput="renderLista()">
+    <div id="contenedor-lista" class="cargando">Cargando jugadores…</div>
+  </section>
+
+  <!-- VISTA: FICHA -->
+  <section id="vista-ficha" style="display:none"></section>
+
+  <!-- VISTA: ADMIN -->
+  <section id="vista-admin" style="display:none">
+    <div class="barra-admin">
+      <div class="titulo-seccion" style="margin:0">
+        <h2>Panel Admin</h2>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primario" onclick="abrirFormulario()">+ Nuevo jugador</button>
+        <button class="btn btn-secundario" onclick="cerrarAdmin()">Salir</button>
+      </div>
+    </div>
+    <div id="admin-lista" class="admin-lista"></div>
+  </section>
+</main>
+
+<!-- MODAL LOGIN -->
+<div class="modal" id="modal-login">
+  <div class="modal-caja" style="max-width:400px">
+    <h3>Acceso administrador</h3>
+    <div class="campo">
+      <label>Contraseña</label>
+      <input type="password" id="input-pass" onkeydown="if(event.key==='Enter')verificarPass()">
+    </div>
+    <div class="fila-botones">
+      <button class="btn btn-primario" onclick="verificarPass()">Entrar</button>
+      <button class="btn btn-secundario" onclick="cerrarModal('modal-login')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FORMULARIO -->
+<div class="modal" id="modal-form">
+  <div class="modal-caja">
+    <h3 id="form-titulo">Nuevo jugador</h3>
+
+    <div class="campo">
+      <label>Nombre completo *</label>
+      <input type="text" id="f-nombre" placeholder="Ej: Joaquín Montecinos">
+    </div>
+
+    <div class="campo">
+      <label>Fecha de nacimiento</label>
+      <input type="date" id="f-nacimiento">
+    </div>
+
+    <div class="campo">
+      <label>Posición (podés marcar más de una)</label>
+      <div class="posiciones-grid" id="f-posiciones"></div>
+      <input type="text" id="f-pos-otra" placeholder="Otra posición (opcional)" style="margin-top:10px">
+    </div>
+
+    <div class="campo">
+      <label>Foto</label>
+      <input type="url" id="f-foto-url" placeholder="Link de la foto (como en los otros sitios)" oninput="previewDesdeUrl(this)" style="margin-bottom:10px">
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <img id="f-foto-preview" class="foto-preview" alt="">
+        <div>
+          <input type="file" id="f-foto" accept="image/*" onchange="cargarFoto(this)">
+          <div class="ayuda">O subí un archivo si no tenés link — se comprime solo. Si hay archivo subido, gana sobre el link.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Breve descripción</label>
+      <textarea id="f-desc" placeholder="Perfil del jugador, características, estilo de juego…"></textarea>
+    </div>
+
+    <div class="campo">
+      <label>Trayectoria</label>
+      <textarea id="f-tray" placeholder="Una línea por club, ejemplo:&#10;2024–2025 | Deportes Limache&#10;2022–2024 | Audax Italiano"></textarea>
+      <div class="ayuda">Formato: <b>años | club</b> — una línea por etapa. También podés poner solo el club.</div>
+    </div>
+
+    <div class="campo">
+      <label>Videos (Vimeo o YouTube, hasta 4)</label>
+      <input type="url" id="f-video1" placeholder="https://vimeo.com/… o https://youtube.com/…" style="margin-bottom:8px">
+      <input type="url" id="f-video2" placeholder="Video 2 (opcional)" style="margin-bottom:8px">
+      <input type="url" id="f-video3" placeholder="Video 3 (opcional)" style="margin-bottom:8px">
+      <input type="url" id="f-video4" placeholder="Video 4 (opcional)">
+      <div class="ayuda">Pegá el link como venga (Vimeo o YouTube, incluso Shorts): se convierte solo al formato de reproducción.</div>
+    </div>
+
+    <div class="fila-botones">
+      <button class="btn btn-primario" id="btn-guardar" onclick="guardarJugador()">Guardar</button>
+      <button class="btn btn-secundario" onclick="cerrarModal('modal-form')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= CONFIG ================= */
+const SUPABASE_URL = 'https://epvgqigrcyooavgskmzc.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_-m_OmQzyG290M3pOaPCd8Q_e58eq4cT';
+const EMPRESA = 'videosjugadores';
+const ADMIN_PASS = 'videos2026';
+const POSICIONES = ['Arquero','Defensa central','Lateral derecho','Lateral izquierdo','Volante defensivo','Volante mixto','Volante ofensivo','Extremo derecho','Extremo izquierdo','Delantero centro'];
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let jugadores = [];
+let editandoId = null;
+let fotoBase64 = null;
+let fotoExistente = null;
+let adminActivo = false;
+
+/* ================= NAVEGACIÓN ================= */
+function entrar(){
+  document.getElementById('splash').classList.add('oculto');
+  sessionStorage.setItem('vj_entro','1');
+}
+function irInicio(e){
+  if(e) e.preventDefault();
+  history.replaceState(null,'',location.pathname);
+  mostrarVista('vista-lista');
+}
+function mostrarVista(id){
+  ['vista-lista','vista-ficha','vista-admin'].forEach(v=>{
+    document.getElementById(v).style.display = (v===id ? 'block' : 'none');
+  });
+  window.scrollTo({top:0});
+}
+
+/* ================= DATOS ================= */
+async function cargarJugadores(){
+  try{
+    const {data, error} = await sb.from('players')
+      .select('*').eq('empresa', EMPRESA)
+      .order('nombre', {ascending:true});
+    if(error) throw error;
+    jugadores = data || [];
+  }catch(err){
+    console.error(err);
+    document.getElementById('contenedor-lista').innerHTML =
+      '<div class="vacio">No se pudieron cargar los jugadores. Revisá la conexión y recargá la página.</div>';
+    return;
+  }
+  renderLista();
+  if(adminActivo) renderAdmin();
+  procesarHash();
+}
+
+function edad(fechaISO){
+  if(!fechaISO) return null;
+  const n = new Date(fechaISO + 'T00:00:00');
+  if(isNaN(n)) return null;
+  const hoy = new Date();
+  let e = hoy.getFullYear() - n.getFullYear();
+  const m = hoy.getMonth() - n.getMonth();
+  if(m < 0 || (m === 0 && hoy.getDate() < n.getDate())) e--;
+  return e;
+}
+function fechaLinda(fechaISO){
+  if(!fechaISO) return '';
+  const n = new Date(fechaISO + 'T00:00:00');
+  if(isNaN(n)) return fechaISO;
+  return n.toLocaleDateString('es-UY', {day:'numeric', month:'long', year:'numeric'});
+}
+function posiciones(j){
+  return (j.posicion || '').split(',').map(p=>p.trim()).filter(Boolean);
+}
+function vimeoEmbed(url){
+  if(!url) return null;
+  url = url.trim();
+  if(!url) return null;
+  // Ya viene en formato de reproducción
+  if(url.includes('player.vimeo.com') || url.includes('youtube.com/embed/')) return url;
+  // Vimeo: vimeo.com/ID  ó  vimeo.com/ID/HASH  ó  manage/videos/ID/HASH  ó  con ?h=HASH
+  let m = url.match(/vimeo\.com\/(?:manage\/videos\/|video\/)?(\d+)(?:\/([a-zA-Z0-9]+))?/);
+  if(m){
+    let h = m[2];
+    if(!h){ const q = url.match(/[?&]h=([a-zA-Z0-9]+)/); if(q) h = q[1]; }
+    return 'https://player.vimeo.com/video/' + m[1] + (h ? '?h=' + h : '');
+  }
+  // YouTube: watch?v=ID, youtu.be/ID, shorts/ID, live/ID
+  m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,})/);
+  if(m) return 'https://www.youtube.com/embed/' + m[1];
+  return null;
+}
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ================= LISTA ================= */
+function renderLista(){
+  const cont = document.getElementById('contenedor-lista');
+  const q = (document.getElementById('buscador').value || '').toLowerCase();
+  const lista = jugadores.filter(j => (j.nombre||'').toLowerCase().includes(q));
+  document.getElementById('cant-jugadores').textContent = jugadores.length ? '(' + jugadores.length + ')' : '';
+
+  if(!jugadores.length){
+    cont.className = '';
+    cont.innerHTML = '<div class="vacio">Todavía no hay jugadores cargados.<br>Entrá al panel ⚙ para agregar el primero.</div>';
+    return;
+  }
+  if(!lista.length){
+    cont.className = '';
+    cont.innerHTML = '<div class="vacio">No hay resultados para esa búsqueda.</div>';
+    return;
+  }
+  cont.className = 'grid-jugadores';
+  cont.innerHTML = lista.map(j => `
+    <button class="card-jugador" onclick="verFicha('${j.id}')">
+      <div class="card-foto">${j.foto ? `<img src="${j.foto}" alt="${esc(j.nombre)}" loading="lazy">` : '<div class="sin-foto">👤</div>'}</div>
+      <div class="card-info">
+        <h3>${esc(j.nombre)}</h3>
+        <div class="chips">${posiciones(j).slice(0,2).map(p=>`<span class="chip">${esc(p)}</span>`).join('')}</div>
+      </div>
+    </button>`).join('');
+}
+
+/* ================= FICHA ================= */
+function verFicha(id){
+  history.replaceState(null,'','#jugador-' + id);
+  procesarHash();
+}
+function procesarHash(){
+  const m = location.hash.match(/^#jugador-([\w-]+)$/);
+  if(!m){ if(document.getElementById('vista-admin').style.display==='none') mostrarVista('vista-lista'); return; }
+  const j = jugadores.find(x => String(x.id) === m[1]);
+  if(!j){ irInicio(); return; }
+  renderFicha(j);
+  mostrarVista('vista-ficha');
+}
+function renderFicha(j){
+  const pos = posiciones(j);
+  const ed = edad(j.nacimiento);
+  const videos = [j.video, j.video2, j.video3, j.video4].map(vimeoEmbed).filter(Boolean);
+  const tray = (j.trayectoria || '').split('\n').map(l=>l.trim()).filter(Boolean);
+  const urlCompartir = location.origin + '/jugador/' + j.id;
+  const textoWsp = encodeURIComponent('Mirá el perfil de ' + j.nombre + ' en VIDEOSJUGADORES: ' + urlCompartir);
+
+  document.getElementById('vista-ficha').innerHTML = `
+    <button class="btn-volver" onclick="irInicio(event)">← Volver a jugadores</button>
+    <div class="ficha-hero">
+      <div class="ficha-foto">${j.foto ? `<img src="${j.foto}" alt="${esc(j.nombre)}">` : '<div class="sin-foto">👤</div>'}</div>
+      <div class="ficha-datos">
+        <h1>${esc(j.nombre)}</h1>
+        ${pos.length ? `<div class="chips">${pos.map(p=>`<span class="chip">${esc(p)}</span>`).join('')}</div>` : ''}
+        <div class="dato-fila">
+          ${j.nacimiento ? `<div class="dato"><label>Nacimiento</label><span>${fechaLinda(j.nacimiento)}</span></div>` : ''}
+          ${ed !== null ? `<div class="dato"><label>Edad</label><span>${ed} años</span></div>` : ''}
+        </div>
+        ${j.bio ? `<p class="ficha-desc">${esc(j.bio)}</p>` : ''}
+        <a class="btn-wsp" href="https://wa.me/?text=${textoWsp}" target="_blank" rel="noopener">📲 Compartir perfil</a>
+      </div>
+    </div>
+
+    ${tray.length ? `
+    <div class="bloque">
+      <div class="bloque-titulo wordmark"><span class="wm-videos">TRAYECTORIA</span><span class="wm-resto">Clubes</span></div>
+      <div class="trayectoria">
+        ${tray.map(l=>{
+          const partes = l.split('|');
+          const anio = partes.length > 1 ? partes[0].trim() : '';
+          const club = partes.length > 1 ? partes.slice(1).join('|').trim() : l;
+          return `<div class="tray-item"><span class="tray-anio">${esc(anio)}</span><span class="tray-club">${esc(club)}</span></div>`;
+        }).join('')}
+      </div>
+    </div>` : ''}
+
+    ${videos.length ? `
+    <div class="bloque">
+      <div class="bloque-titulo wordmark"><span class="wm-videos">VIDEOS</span><span class="wm-resto">Highlights</span></div>
+      <div class="grid-videos">
+        ${videos.map(v=>`<div class="video-wrap"><iframe src="${v}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`).join('')}
+      </div>
+    </div>` : ''}
+  `;
+}
+
+/* ================= ADMIN ================= */
+function abrirAdmin(){
+  if(adminActivo){ mostrarVista('vista-admin'); renderAdmin(); return; }
+  document.getElementById('input-pass').value = '';
+  abrirModal('modal-login');
+  setTimeout(()=>document.getElementById('input-pass').focus(), 100);
+}
+function verificarPass(){
+  if(document.getElementById('input-pass').value === ADMIN_PASS){
+    adminActivo = true;
+    cerrarModal('modal-login');
+    mostrarVista('vista-admin');
+    renderAdmin();
+  } else {
+    toast('Contraseña incorrecta');
+  }
+}
+function cerrarAdmin(){
+  adminActivo = false;
+  irInicio();
+}
+function renderAdmin(){
+  const cont = document.getElementById('admin-lista');
+  if(!jugadores.length){
+    cont.innerHTML = '<div class="vacio">Sin jugadores todavía. Tocá "+ Nuevo jugador" para arrancar.</div>';
+    return;
+  }
+  cont.innerHTML = jugadores.map(j => `
+    <div class="admin-item">
+      ${j.foto ? `<img src="${j.foto}" alt="">` : '<div class="mini-sin">👤</div>'}
+      <span class="nombre">${esc(j.nombre)}</span>
+      <button class="editar" onclick="abrirFormulario('${j.id}')" aria-label="Editar">✎</button>
+      <button class="borrar" onclick="borrarJugador('${j.id}')" aria-label="Borrar">🗑</button>
+    </div>`).join('');
+}
+
+/* ---- Formulario ---- */
+function armarPosiciones(seleccionadas){
+  const cont = document.getElementById('f-posiciones');
+  cont.innerHTML = POSICIONES.map(p =>
+    `<button type="button" class="pos-toggle ${seleccionadas.includes(p)?'activo':''}" onclick="this.classList.toggle('activo')">${p}</button>`
+  ).join('');
+}
+function abrirFormulario(id){
+  editandoId = id ?? null;
+  fotoBase64 = null;
+  const j = id ? jugadores.find(x=>x.id===id) : null;
+  document.getElementById('form-titulo').textContent = j ? 'Editar jugador' : 'Nuevo jugador';
+  document.getElementById('f-nombre').value = j?.nombre || '';
+  document.getElementById('f-nacimiento').value = j?.nacimiento || '';
+  document.getElementById('f-desc').value = j?.bio || '';
+  document.getElementById('f-tray').value = j?.trayectoria || '';
+  document.getElementById('f-video1').value = j?.video || '';
+  document.getElementById('f-video2').value = j?.video2 || '';
+  document.getElementById('f-video3').value = j?.video3 || '';
+  document.getElementById('f-video4').value = j?.video4 || '';
+  document.getElementById('f-foto').value = '';
+
+  const posActuales = j ? posiciones(j) : [];
+  const estandar = posActuales.filter(p => POSICIONES.includes(p));
+  const otras = posActuales.filter(p => !POSICIONES.includes(p));
+  armarPosiciones(estandar);
+  document.getElementById('f-pos-otra').value = otras.join(', ');
+
+  const prev = document.getElementById('f-foto-preview');
+  const urlInput = document.getElementById('f-foto-url');
+  fotoExistente = j?.foto || null;
+  if(j?.foto){
+    prev.src = j.foto;
+    urlInput.value = j.foto.startsWith('data:') ? '' : j.foto;
+  } else {
+    prev.removeAttribute('src');
+    urlInput.value = '';
+  }
+  abrirModal('modal-form');
+}
+function previewDesdeUrl(input){
+  const url = input.value.trim();
+  const prev = document.getElementById('f-foto-preview');
+  if(url) prev.src = url; else if(!fotoBase64) prev.removeAttribute('src');
+}
+function cargarFoto(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const img = new Image();
+  const reader = new FileReader();
+  reader.onload = e => { img.src = e.target.result; };
+  img.onload = () => {
+    const MAX = 900;
+    let w = img.width, h = img.height;
+    if(w > MAX || h > MAX){
+      const r = Math.min(MAX/w, MAX/h);
+      w = Math.round(w*r); h = Math.round(h*r);
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    fotoBase64 = canvas.toDataURL('image/jpeg', 0.82);
+    document.getElementById('f-foto-preview').src = fotoBase64;
+  };
+  reader.readAsDataURL(file);
+}
+async function guardarJugador(){
+  const nombre = document.getElementById('f-nombre').value.trim();
+  if(!nombre){ toast('Falta el nombre del jugador'); return; }
+
+  const posSel = [...document.querySelectorAll('#f-posiciones .pos-toggle.activo')].map(b=>b.textContent);
+  const otras = document.getElementById('f-pos-otra').value.split(',').map(p=>p.trim()).filter(Boolean);
+  const todasPos = [...posSel, ...otras].join(', ');
+
+  const fila = {
+    empresa: EMPRESA,
+    nombre: nombre,
+    nacimiento: document.getElementById('f-nacimiento').value || null,
+    posicion: todasPos || null,
+    foto: fotoBase64 || document.getElementById('f-foto-url').value.trim() || fotoExistente || null,
+    bio: document.getElementById('f-desc').value.trim() || null,
+    trayectoria: document.getElementById('f-tray').value.trim() || null,
+    video: vimeoNormalizar(document.getElementById('f-video1').value),
+    video2: vimeoNormalizar(document.getElementById('f-video2').value),
+    video3: vimeoNormalizar(document.getElementById('f-video3').value),
+    video4: vimeoNormalizar(document.getElementById('f-video4').value)
+  };
+
+  const btn = document.getElementById('btn-guardar');
+  btn.disabled = true;
+  try{
+    let error;
+    if(editandoId){
+      ({error} = await sb.from('players').update(fila).eq('id', editandoId).eq('empresa', EMPRESA));
+    } else {
+      ({error} = await sb.from('players').insert(fila));
+    }
+    if(error) throw error;
+    cerrarModal('modal-form');
+    toast(editandoId ? 'Jugador actualizado ✓' : 'Jugador creado ✓');
+    await cargarJugadores();
+  }catch(err){
+    console.error(err);
+    toast('Error al guardar: ' + (err.message || 'revisá la conexión'));
+  }finally{
+    btn.disabled = false;
+  }
+}
+function vimeoNormalizar(url){
+  url = (url || '').trim();
+  if(!url) return null;
+  return vimeoEmbed(url) || url;
+}
+async function borrarJugador(id){
+  const j = jugadores.find(x=>x.id===id);
+  if(!confirm('¿Borrar a ' + (j?.nombre || 'este jugador') + '? Esta acción no se puede deshacer.')) return;
+  try{
+    const {error} = await sb.from('players').delete().eq('id', id).eq('empresa', EMPRESA);
+    if(error) throw error;
+    toast('Jugador borrado');
+    await cargarJugadores();
+  }catch(err){
+    console.error(err);
+    toast('Error al borrar: ' + (err.message || ''));
+  }
+}
+
+/* ================= UI ================= */
+function abrirModal(id){ document.getElementById(id).classList.add('abierto'); }
+function cerrarModal(id){ document.getElementById(id).classList.remove('abierto'); }
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('visible'), 2800);
+}
+
+/* ================= INICIO ================= */
+window.addEventListener('hashchange', procesarHash);
+document.addEventListener('DOMContentLoaded', () => {
+  // Si entra con link directo a un jugador (WhatsApp), saltamos el splash
+  if(location.hash.startsWith('#jugador-') || sessionStorage.getItem('vj_entro')){
+    document.getElementById('splash').classList.add('oculto');
+  }
+  cargarJugadores();
+});
+</script>
+</body>
+</html>
