@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{
   --negro:#07090C;
@@ -198,6 +199,16 @@ main{max-width:1100px;margin:0 auto;padding:26px 18px 90px}
   transition:transform .15s;
 }
 .btn-wsp:active{transform:scale(.96)}
+.btn-pdf{
+  align-self:flex-start;display:inline-flex;align-items:center;gap:9px;
+  background:var(--celeste);color:#04202f;font-weight:600;font-size:15px;
+  padding:11px 20px;border-radius:999px;margin-top:4px;
+  transition:transform .15s,opacity .15s;
+}
+.btn-pdf:active{transform:scale(.96)}
+.btn-pdf:disabled{opacity:.5;cursor:wait}
+.fila-botones{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.fila-botones .btn-wsp,.fila-botones .btn-pdf{margin-top:0}
 
 .bloque{margin-top:30px}
 .bloque-titulo{
@@ -585,7 +596,10 @@ function renderFicha(j){
           ${ed !== null ? `<div class="dato"><label>Edad</label><span>${ed} años</span></div>` : ''}
         </div>
         ${j.bio ? `<p class="ficha-desc">${esc(j.bio)}</p>` : ''}
-        <a class="btn-wsp" href="https://wa.me/?text=${textoWsp}" target="_blank" rel="noopener">📲 Compartir perfil</a>
+        <div class="fila-botones">
+          <a class="btn-wsp" href="https://wa.me/?text=${textoWsp}" target="_blank" rel="noopener">📲 Compartir perfil</a>
+          <button class="btn-pdf" id="btn-pdf" onclick="descargarPDF('${j.id}')">📄 Descargar PDF</button>
+        </div>
       </div>
     </div>
 
@@ -610,6 +624,167 @@ function renderFicha(j){
       </div>
     </div>` : ''}
   `;
+}
+
+/* ================= PDF ================= */
+function linkPublico(embed){
+  // Convierte el link de embed al link público clickeable
+  let m = embed.match(/player\.vimeo\.com\/video\/(\d+)(?:\?h=([a-zA-Z0-9]+))?/);
+  if(m) return 'https://vimeo.com/' + m[1] + (m[2] ? '/' + m[2] : '');
+  m = embed.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+  if(m) return 'https://www.youtube.com/watch?v=' + m[1];
+  return embed;
+}
+function fotoADataURL(src){
+  return new Promise(res=>{
+    if(!src) return res(null);
+    if(src.startsWith('data:')) return res(src);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const timer = setTimeout(()=>res(null), 8000);
+    img.onload = ()=>{
+      clearTimeout(timer);
+      try{
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        res(c.toDataURL('image/jpeg', 0.88));
+      }catch(e){ res(null); }
+    };
+    img.onerror = ()=>{ clearTimeout(timer); res(null); };
+    img.src = src;
+  });
+}
+async function descargarPDF(id){
+  const j = jugadores.find(x => String(x.id) === String(id));
+  if(!j) return;
+  const btn = document.getElementById('btn-pdf');
+  if(btn){ btn.disabled = true; btn.textContent = '⏳ Generando…'; }
+  try{
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({unit:'mm', format:'a4'});
+    const W = 210, H = 297, MX = 16;
+    const NEGRO = [7,9,12], PANEL = [20,26,34], LINEA = [35,44,56];
+    const BLANCO = [244,246,248], GRIS = [139,151,165], CELESTE = [87,184,232];
+
+    // Fondo
+    doc.setFillColor(...NEGRO); doc.rect(0,0,W,H,'F');
+
+    // Header con wordmark
+    doc.setFillColor(...BLANCO); doc.rect(MX, 14, 34, 9, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(13);
+    doc.setTextColor(...NEGRO); doc.text('VIDEOS', MX+2.5, 20.5);
+    doc.setTextColor(...BLANCO); doc.text('JUGADORES', MX+36.5, 20.5);
+    doc.setDrawColor(...CELESTE); doc.setLineWidth(0.8);
+    doc.line(MX, 27, W-MX, 27);
+
+    let y = 38;
+
+    // Foto
+    const foto = await fotoADataURL(j.foto);
+    const fotoW = 48, fotoH = 58;
+    if(foto){
+      doc.setFillColor(...PANEL); doc.roundedRect(MX-1, y-1, fotoW+2, fotoH+2, 2, 2, 'F');
+      try{ doc.addImage(foto, 'JPEG', MX, y, fotoW, fotoH); }catch(e){}
+    }
+    const xInfo = foto ? MX + fotoW + 8 : MX;
+
+    // Nombre
+    doc.setFont('helvetica','bold'); doc.setFontSize(24);
+    doc.setTextColor(...BLANCO);
+    const nombreLineas = doc.splitTextToSize((j.nombre||'').toUpperCase(), W - MX - xInfo);
+    doc.text(nombreLineas, xInfo, y + 8);
+    let yi = y + 8 + nombreLineas.length * 9;
+
+    // Posiciones
+    const pos = posiciones(j);
+    if(pos.length){
+      doc.setFontSize(10); doc.setTextColor(...CELESTE);
+      doc.text(pos.join('  ·  ').toUpperCase(), xInfo, yi);
+      yi += 8;
+    }
+    // Nacimiento / edad
+    const ed = edad(j.nacimiento);
+    doc.setFont('helvetica','normal'); doc.setFontSize(10.5);
+    if(j.nacimiento){
+      doc.setTextColor(...GRIS); doc.text('NACIMIENTO', xInfo, yi);
+      doc.setTextColor(...BLANCO); doc.text(fechaLinda(j.nacimiento) + (ed !== null ? '  ·  ' + ed + ' años' : ''), xInfo, yi + 5.5);
+      yi += 14;
+    }
+    y = Math.max(y + (foto ? fotoH + 10 : 0), yi + 4);
+
+    // Bio
+    if(j.bio){
+      doc.setFont('helvetica','normal'); doc.setFontSize(10.5);
+      doc.setTextColor(200,207,216);
+      const bioLineas = doc.splitTextToSize(j.bio, W - MX*2);
+      doc.text(bioLineas, MX, y);
+      y += bioLineas.length * 5.2 + 8;
+    }
+
+    const seccion = (titulo)=>{
+      if(y > H - 40){ doc.addPage(); doc.setFillColor(...NEGRO); doc.rect(0,0,W,H,'F'); y = 24; }
+      doc.setFillColor(...BLANCO); doc.rect(MX, y-5.5, doc.getTextWidth(titulo)+5, 8, 'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(11);
+      doc.setTextColor(...NEGRO); doc.text(titulo, MX+2.5, y);
+      y += 9;
+    };
+
+    // Trayectoria
+    const tray = (j.trayectoria || '').split('\n').map(l=>l.trim()).filter(Boolean);
+    if(tray.length){
+      seccion('TRAYECTORIA');
+      doc.setFontSize(10.5);
+      tray.forEach(l=>{
+        if(y > H - 20){ doc.addPage(); doc.setFillColor(...NEGRO); doc.rect(0,0,W,H,'F'); y = 24; }
+        const partes = l.split('|');
+        const anio = partes.length > 1 ? partes[0].trim() : '';
+        const club = partes.length > 1 ? partes.slice(1).join('|').trim() : l;
+        doc.setFont('helvetica','bold'); doc.setTextColor(...CELESTE);
+        doc.text(anio, MX, y);
+        doc.setFont('helvetica','normal'); doc.setTextColor(...BLANCO);
+        doc.text(club, anio ? MX + 34 : MX, y);
+        doc.setDrawColor(...LINEA); doc.setLineWidth(0.2);
+        doc.line(MX, y + 2.5, W - MX, y + 2.5);
+        y += 8;
+      });
+      y += 6;
+    }
+
+    // Videos (links clickeables)
+    const videos = [j.video, j.video2, j.video3, j.video4].map(vimeoEmbed).filter(Boolean);
+    if(videos.length){
+      seccion('VIDEOS / HIGHLIGHTS');
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      videos.forEach((v,i)=>{
+        if(y > H - 20){ doc.addPage(); doc.setFillColor(...NEGRO); doc.rect(0,0,W,H,'F'); y = 24; }
+        const link = linkPublico(v);
+        doc.setTextColor(...CELESTE);
+        doc.textWithLink('▶ Video ' + (i+1) + ':  ' + link, MX, y, {url: link});
+        y += 7;
+      });
+      y += 4;
+    }
+
+    // Link al perfil online
+    const urlPerfil = location.origin + '/jugador/' + j.id;
+    if(y > H - 26){ doc.addPage(); doc.setFillColor(...NEGRO); doc.rect(0,0,W,H,'F'); y = 24; }
+    doc.setDrawColor(...LINEA); doc.setLineWidth(0.3);
+    doc.line(MX, y, W - MX, y); y += 7;
+    doc.setFontSize(9.5); doc.setTextColor(...GRIS);
+    doc.text('Perfil completo online:', MX, y);
+    doc.setTextColor(...CELESTE);
+    doc.textWithLink(urlPerfil, MX + 36, y, {url: urlPerfil});
+
+    const nombreArchivo = (j.nombre || 'jugador').trim().replace(/\s+/g,'-').replace(/[^\w\-áéíóúñÁÉÍÓÚÑ]/g,'');
+    doc.save(nombreArchivo + '-VIDEOSJUGADORES.pdf');
+    toast('PDF descargado ✔');
+  }catch(e){
+    console.error(e);
+    toast('No se pudo generar el PDF');
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = '📄 Descargar PDF'; }
+  }
 }
 
 /* ================= ADMIN ================= */
