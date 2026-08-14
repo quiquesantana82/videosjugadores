@@ -622,7 +622,7 @@ function entrar(){
 }
 function irInicio(e){
   if(e) e.preventDefault();
-  history.replaceState(null,'',location.pathname);
+  history.replaceState(null,'','/');
   mostrarVista('vista-lista');
 }
 function mostrarVista(id){
@@ -726,10 +726,18 @@ function verFicha(id){
   procesarHash();
 }
 function procesarHash(){
-  const m = location.hash.match(/^#jugador-([\w-]+)$/);
-  if(!m){ if(document.getElementById('vista-admin').style.display==='none') mostrarVista('vista-lista'); return; }
-  const j = jugadores.find(x => String(x.id) === m[1]);
-  if(!j){ irInicio(); return; }
+  // Acepta el hash (#jugador-ID) y también la ruta del link compartido (/jugador/ID)
+  let id = null;
+  const mh = location.hash.match(/^#jugador-([\w-]+)$/);
+  if(mh){
+    id = mh[1];
+  } else {
+    const mp = location.pathname.match(/\/jugador\/([\w-]+)/);
+    if(mp) id = mp[1];
+  }
+  if(!id){ if(document.getElementById('vista-admin').style.display==='none') mostrarVista('vista-lista'); return; }
+  const j = jugadores.find(x => String(x.id) === id);
+  if(!j){ if(document.getElementById('vista-admin').style.display==='none') mostrarVista('vista-lista'); return; }
   renderFicha(j);
   mostrarVista('vista-ficha');
 }
@@ -1399,7 +1407,7 @@ function toast(msg){
 window.addEventListener('hashchange', procesarHash);
 document.addEventListener('DOMContentLoaded', () => {
   // Si entra con link directo a un jugador (WhatsApp), saltamos el splash
-  if(location.hash.startsWith('#jugador-') || sessionStorage.getItem('vj_entro')){
+  if(location.hash.startsWith('#jugador-') || location.pathname.startsWith('/jugador/') || sessionStorage.getItem('vj_entro')){
     document.getElementById('splash').classList.add('oculto');
   }
   document.documentElement.lang = idioma;
