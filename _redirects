@@ -1,0 +1,5 @@
+# Manda el link /jugador/ID a la función, pasándole el ID como ?id=
+/jugador/*   /.netlify/functions/jugador   id=:splat   200
+
+# (Opcional) Todo lo demás cae en la app
+/*           /index.html   200
