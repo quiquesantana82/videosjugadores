@@ -2,13 +2,23 @@ const SUPABASE_URL = 'https://epvgqigrcyooavgskmzc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_-m_OmQzyG290M3pOaPCd8Q_e58eq4cT';
 const EMPRESA = 'videosjugadores';
 
+// Ata la función directamente a la ruta que se comparte por WhatsApp.
+export const config = { path: '/jugador/:id' };
+
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-export default async (req) => {
+export default async (req, context) => {
   const url = new URL(req.url);
-  const id = (url.searchParams.get('id') || '').replace(/[^\w-]/g, '');
-  let j = null;
 
+  // Leemos el ID de donde venga: parámetro de ruta (:id), query (?id=) o el propio path.
+  let id = (context && context.params && context.params.id) || url.searchParams.get('id') || '';
+  if (!id) {
+    const m = url.pathname.match(/\/jugador\/([^/?#]+)/);
+    if (m) id = m[1];
+  }
+  id = String(id).replace(/[^\w-]/g, '');
+
+  let j = null;
   if (id) {
     try {
       const r = await fetch(
@@ -25,12 +35,13 @@ export default async (req) => {
   let desc = j?.bio || (j?.posicion ? j.posicion : 'Perfiles profesionales de futbolistas: datos, trayectoria y videos.');
   if (desc.length > 155) desc = desc.slice(0, 152).trimEnd() + '…';
 
-  // WhatsApp solo puede mostrar fotos que sean un link real (no archivos subidos en base64)
+  // WhatsApp solo muestra fotos que sean un link real (http/https), no archivos subidos en base64.
   const foto = j?.foto && /^https?:\/\//i.test(j.foto) ? j.foto : null;
 
   const origen = url.origin;
   const urlCanonica = `${origen}/jugador/${id}`;
-  const destino = `/#jugador-${id}`;
+  // Redirige a la app (raíz + hash). NUNCA a /jugador/ID de nuevo, para no reinvocar la función.
+  const destino = id ? `/#jugador-${id}` : '/';
 
   const html = `<!DOCTYPE html>
 <html lang="es">
@@ -43,6 +54,9 @@ export default async (req) => {
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${esc(urlCanonica)}">
 ${foto ? `<meta property="og:image" content="${esc(foto)}">
+<meta property="og:image:width" content="1080">
+<meta property="og:image:height" content="1350">
+<meta property="og:image:alt" content="${esc(nombre)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${esc(foto)}">` : ''}
 <meta name="twitter:title" content="${esc(titulo)}">
