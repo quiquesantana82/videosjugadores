@@ -7,6 +7,24 @@ export const config = { path: '/jugador/:id' };
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+// Devuelve una foto apta para la preview de WhatsApp (JPG/PNG, nunca webp/base64).
+function fotoParaPreview(foto){
+  if (!foto || !/^https?:\/\//i.test(foto)) return null;
+  try {
+    const u = new URL(foto);
+    // Proxy de Higgsfield: WhatsApp no muestra el webp que devuelve.
+    if (/(^|\.)higgs\.ai$/i.test(u.hostname)) {
+      // 1) Si adentro tiene la imagen original en png/jpg, usamos esa directo.
+      const orig = u.searchParams.get('url');
+      if (orig && /^https?:\/\//i.test(orig) && /\.(png|jpe?g)(\?|$)/i.test(orig)) return orig;
+      // 2) Si no, forzamos que el proxy devuelva jpg en vez de webp.
+      u.searchParams.set('output', 'jpg');
+      return u.toString();
+    }
+  } catch (e) { /* si la URL es rara, la usamos tal cual abajo */ }
+  return foto;
+}
+
 export default async (req, context) => {
   const url = new URL(req.url);
 
@@ -35,8 +53,8 @@ export default async (req, context) => {
   let desc = j?.bio || (j?.posicion ? j.posicion : 'Perfiles profesionales de futbolistas: datos, trayectoria y videos.');
   if (desc.length > 155) desc = desc.slice(0, 152).trimEnd() + '…';
 
-  // WhatsApp solo muestra fotos que sean un link real (http/https), no archivos subidos en base64.
-  const foto = j?.foto && /^https?:\/\//i.test(j.foto) ? j.foto : null;
+  // WhatsApp solo muestra fotos que sean link real (http/https), en JPG o PNG (NO webp), y no base64.
+  const foto = fotoParaPreview(j?.foto);
 
   const origen = url.origin;
   const urlCanonica = `${origen}/jugador/${id}`;
