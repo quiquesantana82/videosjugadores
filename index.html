@@ -340,6 +340,20 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 .imp-estado{font-size:12px;margin-top:2px}
 .imp-estado.ok{color:#35c46a}.imp-estado.duda{color:#e8b857}.imp-estado.sin{color:var(--rojo)}
 .stats-actualizado{font-size:13px;color:var(--gris);margin:-6px 0 14px}
+/* ─── TRANSFERMARKT + FUENTE DE DATOS ─── */
+.btn-tm{
+  align-self:flex-start;display:inline-flex;align-items:center;gap:8px;
+  background:var(--blanco);color:#0b1b2b;font-weight:600;font-size:15px;
+  padding:11px 20px;border-radius:999px;transition:transform .15s;
+}
+.btn-tm:active{transform:scale(.96)}
+.btn-tm img{height:18px;width:auto;display:block}
+.fuente-datos{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;padding-top:14px;
+  border-top:1px solid var(--linea);color:var(--gris);font-size:13px;
+}
+.fuente-datos img{height:20px;width:auto;display:block}
+.fuente-datos b{color:var(--blanco);font-family:'Barlow Condensed',sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase}
 .wy-good{color:#35c46a;font-weight:700}
 .wy-mid{color:var(--blanco);font-weight:600}
 
@@ -635,6 +649,12 @@ header .fila-header{display:flex;align-items:center;gap:10px}
     </div>
 
     <div class="campo">
+      <label>🔗 Perfil en Transfermarkt (opcional)</label>
+      <input type="url" id="f-transfermarkt" placeholder="https://www.transfermarkt.com/…/profil/spieler/123456">
+      <div class="ayuda">Pegá el link del perfil del jugador en Transfermarkt. En la ficha aparece el botón "Ver en Transfermarkt" y también va en el PDF. Necesita la columna <b>transfermarkt</b> en Supabase.</div>
+    </div>
+
+    <div class="campo">
       <label>📊 Estadísticas del jugador</label>
       <div class="ayuda" style="margin-bottom:8px">Podés cargarlas de dos formas: subiendo el Excel de Wyscout (lee todo automático) o editándolas / agregándolas a mano abajo. <b>Importante:</b> primero guardá el jugador; después reabrilo para editar y ahí cargá las stats.</div>
       <div id="wyscout-drop"
@@ -711,7 +731,7 @@ const T = {
     remates:'Remates', xg:'xG', precision_pases:'Precisión de pases',
     duelos_pct:'Duelos ganados', aereos_pct:'Aéreos ganados', intercepciones:'Intercepciones',
     goles_recibidos:'Goles recibidos', atajadas:'Atajadas', paradas_pct:'% de atajadas', xcg:'xCG',
-    actualizado:'Actualizado',
+    actualizado:'Actualizado', fuente_datos:'Estadísticas oficiales provistas por', ver_en:'Ver en',
     vacio_sin:'Todavía no hay jugadores cargados.', vacio_sin2:'Entrá al panel ⚙ para agregar el primero.',
     vacio_busca:'No hay resultados para esa búsqueda.', cargando:'Cargando jugadores…'
   },
@@ -727,7 +747,7 @@ const T = {
     remates:'Shots', xg:'xG', precision_pases:'Pass accuracy',
     duelos_pct:'Duels won', aereos_pct:'Aerials won', intercepciones:'Interceptions',
     goles_recibidos:'Goals conceded', atajadas:'Saves', paradas_pct:'Save %', xcg:'xCG',
-    actualizado:'Updated',
+    actualizado:'Updated', fuente_datos:'Official statistics provided by', ver_en:'View on',
     vacio_sin:'No players loaded yet.', vacio_sin2:'Open the ⚙ panel to add the first one.',
     vacio_busca:'No results for that search.', cargando:'Loading players…'
   }
@@ -933,6 +953,7 @@ function renderFicha(j){
         <div class="fila-botones">
           <a class="btn-wsp" href="https://wa.me/?text=${textoWsp}" target="_blank" rel="noopener">${t('compartir')}</a>
           <button class="btn-pdf" id="btn-pdf" onclick="descargarPDF('${j.id}')">${t('pdf')}</button>
+          ${j.transfermarkt ? `<a class="btn-tm" href="${esc(j.transfermarkt)}" target="_blank" rel="noopener">${t('ver_en')}<img src="/logos/transfermarkt.png" alt="Transfermarkt" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><span>Transfermarkt</span></a>` : ''}
         </div>
       </div>
     </div>
@@ -1027,6 +1048,10 @@ function fichaStatsHTML(j){
     <div class="stats-topfila">
       ${pitch ? `<div class="pitch-col">${pitch}${posLbl}</div>` : ''}
       <div class="tabla-col" id="ficha-stats-tabla">${statsTablaHTML(temps[0])}</div>
+    </div>
+    <div class="fuente-datos">
+      <span>${t('fuente_datos')}</span>
+      <img src="/logos/wyscout.png" alt="Wyscout" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><b>Wyscout</b>
     </div>
   </div>`;
 }
@@ -1206,6 +1231,16 @@ async function descargarPDF(id){
       y += 4;
     }
 
+    // Transfermarkt
+    if(j.transfermarkt){
+      if(y > H - 26){ doc.addPage(); doc.setFillColor(...NEGRO); doc.rect(0,0,W,H,'F'); y = 24; }
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      doc.setTextColor(...GRIS); doc.text('Transfermarkt:', MX, y);
+      doc.setTextColor(...CELESTE);
+      doc.textWithLink(j.transfermarkt, MX + 26, y, {url: j.transfermarkt});
+      y += 10;
+    }
+
     // Link al perfil online
     const urlPerfil = location.origin + '/jugador/' + j.id;
     if(y > H - 26){ doc.addPage(); doc.setFillColor(...NEGRO); doc.rect(0,0,W,H,'F'); y = 24; }
@@ -1288,6 +1323,7 @@ function abrirFormulario(id){
   document.getElementById('f-agencia-logo').value = j?.agencia_logo || '';
   document.getElementById('f-agencia-mail').value = j?.agencia_mail || '';
   document.getElementById('f-agencia-whatsapp').value = j?.agencia_whatsapp || '';
+  document.getElementById('f-transfermarkt').value = j?.transfermarkt || '';
   galeriaEdit = Array.isArray(j?.fotos) ? j.fotos.filter(Boolean).slice(0,5) : [];
   galeriaRender();
   const gUrl = document.getElementById('f-galeria-url'); if(gUrl) gUrl.value = '';
@@ -1846,6 +1882,7 @@ async function guardarJugador(){
     agencia_logo: document.getElementById('f-agencia-logo').value.trim() || null,
     agencia_mail: document.getElementById('f-agencia-mail').value.trim() || null,
     agencia_whatsapp: document.getElementById('f-agencia-whatsapp').value.trim() || null,
+    transfermarkt: tmNormalizar(document.getElementById('f-transfermarkt').value),
     fotos: galeriaEdit.slice()
   };
 
@@ -1893,6 +1930,17 @@ async function guardarJugador(){
   }finally{
     btn.disabled = false;
   }
+}
+// Link de Transfermarkt: acepta sin "https://" y descarta lo que no sea de transfermarkt
+function tmNormalizar(url){
+  url = (url || '').trim();
+  if(!url) return null;
+  if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  try{
+    const u = new URL(url);
+    if(!/(^|\.)transfermarkt\.[a-z.]+$/i.test(u.hostname)){ toast('⚠️ El link de Transfermarkt no parece válido, no se guardó'); return null; }
+    return u.href;
+  }catch(e){ return null; }
 }
 function vimeoNormalizar(url){
   url = (url || '').trim();
