@@ -317,17 +317,29 @@ main{max-width:1240px;margin:0 auto;padding:26px 22px 90px}
 header .fila-header{display:flex;align-items:center;gap:10px}
 
 /* ─── WYSCOUT LOADER (admin) ─── */
-#wyscout-drop{
+#wyscout-drop,#import-drop{
   display:flex;flex-direction:column;align-items:center;gap:6px;
   padding:22px 14px;border:2px dashed var(--linea);border-radius:10px;
   background:var(--negro);color:var(--blanco);text-align:center;cursor:pointer;
   font-size:14px;transition:border-color .15s,background .15s;
 }
-#wyscout-drop:hover,#wyscout-drop.drag{border-color:var(--celeste);background:var(--panel)}
+#wyscout-drop:hover,#wyscout-drop.drag,#import-drop:hover,#import-drop.drag{border-color:var(--celeste);background:var(--panel)}
 .wy-season-card{border:1px solid var(--linea);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--panel)}
 .wy-season-head{font-weight:700;font-size:14px;margin-bottom:6px;color:var(--celeste)}
 .wy-stat-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px solid var(--linea)}
 .wy-stat-row:last-child{border-bottom:0}
+.imp-fila{display:grid;grid-template-columns:1fr;gap:8px;border:1px solid var(--linea);border-radius:10px;padding:10px 12px;background:var(--panel);margin-bottom:8px}
+@media(min-width:560px){.imp-fila{grid-template-columns:1.1fr 1.3fr .9fr;align-items:center}}
+.imp-archivo{font-size:13px;color:var(--gris);word-break:break-all}
+.imp-archivo b{display:block;color:var(--blanco);font-size:15px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.03em}
+.imp-fila select{width:100%;background:var(--negro);color:var(--blanco);border:1px solid var(--linea);border-radius:8px;padding:8px 10px;font-size:15px}
+.imp-fila select.sin{border-color:var(--rojo)}
+.imp-fila select.duda{border-color:#e8b857}
+.imp-resumen{font-size:13px;color:var(--gris);line-height:1.4}
+.imp-resumen b{color:var(--celeste)}
+.imp-estado{font-size:12px;margin-top:2px}
+.imp-estado.ok{color:#35c46a}.imp-estado.duda{color:#e8b857}.imp-estado.sin{color:var(--rojo)}
+.stats-actualizado{font-size:13px;color:var(--gris);margin:-6px 0 14px}
 .wy-good{color:#35c46a;font-weight:700}
 .wy-mid{color:var(--blanco);font-weight:600}
 
@@ -516,8 +528,9 @@ header .fila-header{display:flex;align-items:center;gap:10px}
       <div class="titulo-seccion" style="margin:0">
         <h2>Panel Admin</h2>
       </div>
-      <div style="display:flex;gap:10px">
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn btn-primario" onclick="abrirFormulario()">+ Nuevo jugador</button>
+        <button class="btn btn-secundario" onclick="abrirImportador()">📊 Importar estadísticas</button>
         <button class="btn btn-secundario" onclick="cerrarAdmin()">Salir</button>
       </div>
     </div>
@@ -644,6 +657,33 @@ header .fila-header{display:flex;align-items:center;gap:10px}
   </div>
 </div>
 
+<!-- MODAL IMPORTADOR MASIVO DE ESTADÍSTICAS -->
+<div class="modal" id="modal-import">
+  <div class="modal-caja" style="max-width:820px">
+    <h3>📊 Importar estadísticas</h3>
+    <div class="ayuda" style="color:var(--gris);font-size:14px;line-height:1.5;margin-bottom:14px">
+      Arrastrá todos los Excel que bajaste de Wyscout (uno por jugador). Cada archivo se asigna solo según su nombre
+      (ej. <b>Player_stats_R._Orihuela.xlsx</b> → Renzo Orihuela). Revisá la lista y tocá <b>Guardar todo</b>.
+      Se reemplazan las temporadas que vienen en el Excel; las demás temporadas del jugador quedan como estaban.
+    </div>
+    <div id="import-drop" class="import-drop"
+      ondragover="event.preventDefault();this.classList.add('drag')"
+      ondragleave="this.classList.remove('drag')"
+      ondrop="importDrop(event)"
+      onclick="document.getElementById('import-files').click()">
+      <span style="font-size:26px">📥</span>
+      <span>Arrastrá los Excel acá o tocá para elegirlos</span>
+      <span style="font-size:11px;color:var(--gris)">Podés elegir varios a la vez (.xlsx)</span>
+    </div>
+    <input type="file" id="import-files" accept=".xlsx,.xls" multiple style="display:none" onchange="importPick(this)">
+    <div id="import-lista" style="margin-top:14px"></div>
+    <div class="fila-botones">
+      <button class="btn btn-primario" id="btn-import-guardar" onclick="importGuardar()" disabled>Guardar todo</button>
+      <button class="btn btn-secundario" onclick="cerrarModal('modal-import')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -671,6 +711,7 @@ const T = {
     remates:'Remates', xg:'xG', precision_pases:'Precisión de pases',
     duelos_pct:'Duelos ganados', aereos_pct:'Aéreos ganados', intercepciones:'Intercepciones',
     goles_recibidos:'Goles recibidos', atajadas:'Atajadas', paradas_pct:'% de atajadas', xcg:'xCG',
+    actualizado:'Actualizado',
     vacio_sin:'Todavía no hay jugadores cargados.', vacio_sin2:'Entrá al panel ⚙ para agregar el primero.',
     vacio_busca:'No hay resultados para esa búsqueda.', cargando:'Cargando jugadores…'
   },
@@ -686,6 +727,7 @@ const T = {
     remates:'Shots', xg:'xG', precision_pases:'Pass accuracy',
     duelos_pct:'Duels won', aereos_pct:'Aerials won', intercepciones:'Interceptions',
     goles_recibidos:'Goals conceded', atajadas:'Saves', paradas_pct:'Save %', xcg:'xCG',
+    actualizado:'Updated',
     vacio_sin:'No players loaded yet.', vacio_sin2:'Open the ⚙ panel to add the first one.',
     vacio_busca:'No results for that search.', cargando:'Loading players…'
   }
@@ -981,6 +1023,7 @@ function fichaStatsHTML(j){
     <div class="stats-selector">
       <select class="stats-select" id="ficha-temp-select" onchange="switchFichaTemporada(this.value)">${opciones}</select>
     </div>
+    ${j.stats_updated_at && !isNaN(new Date(j.stats_updated_at)) ? `<div class="stats-actualizado">${t('actualizado')}: ${new Date(j.stats_updated_at).toLocaleDateString(idioma==='en'?'en-GB':'es-UY',{day:'numeric',month:'long',year:'numeric'})}</div>` : ''}
     <div class="stats-topfila">
       ${pitch ? `<div class="pitch-col">${pitch}${posLbl}</div>` : ''}
       <div class="tabla-col" id="ficha-stats-tabla">${statsTablaHTML(temps[0])}</div>
@@ -1576,6 +1619,206 @@ function leerWyscout(file){
     }catch(err){ console.error(err); toast('⚠️ Error leyendo el Excel'); }
   };
   reader.readAsArrayBuffer(file);
+}
+
+/* ================= IMPORTADOR MASIVO (varios Excel de Wyscout) ================= */
+// Cada archivo de Wyscout se llama "Player_stats_R._Orihuela.xlsx": de ahí sacamos
+// la inicial y el apellido para encontrar al jugador en la base.
+let _importFilas = [];
+const IMPORT_MAPA_KEY = 'vj_wyscout_mapa';
+
+function importMapaLeer(){ try{ return JSON.parse(localStorage.getItem(IMPORT_MAPA_KEY) || '{}') || {}; }catch(e){ return {}; } }
+function importMapaGuardar(m){ try{ localStorage.setItem(IMPORT_MAPA_KEY, JSON.stringify(m)); }catch(e){} }
+
+function normTxt(s){ return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
+function tokensNombre(s){ return normTxt(s).replace(/[^a-z0-9]+/g,' ').split(' ').filter(Boolean); }
+
+// "Player_stats_R._Orihuela (1).xlsx" -> "R. Orihuela"
+function nombreDesdeArchivo(fname){
+  let s = String(fname || '').replace(/\.[^.]+$/,'').replace(/\s*\(\d+\)\s*$/,'');
+  const m = s.match(/player[_\s-]*stats[_\s-]*(.+)$/i);
+  if(m) s = m[1];
+  return s.replace(/_/g,' ').replace(/\s+/g,' ').trim();
+}
+// "R. Orihuela" -> [{t:'r',ini:true},{t:'orihuela',ini:false}]
+function tokensArchivo(nombre){
+  const out = [];
+  normTxt(nombre).split(/\s+/).forEach(raw => {
+    if(!raw) return;
+    if(raw.includes('.')){
+      raw.split('.').forEach(p => { p = p.replace(/[^a-z0-9]/g,''); if(p) out.push({t:p, ini:p.length === 1}); });
+    } else {
+      raw.replace(/[^a-z0-9]+/g,' ').split(' ').forEach(p => { if(p) out.push({t:p, ini:p.length === 1}); });
+    }
+  });
+  return out;
+}
+// Devuelve 0 (no coincide), 1 (solo apellido) o 2 (apellido + inicial/nombre)
+function puntajeJugador(ftoks, j){
+  const ptoks = tokensNombre(j.nombre);
+  const apellidos = ftoks.filter(x => !x.ini);
+  if(!apellidos.length || !ptoks.length) return 0;
+  const usados = new Set();
+  for(const a of apellidos){
+    const k = ptoks.findIndex((p,i) => p === a.t && !usados.has(i));
+    if(k < 0) return 0;
+    usados.add(k);
+  }
+  const iniciales = ftoks.filter(x => x.ini);
+  for(const ini of iniciales){
+    const k = ptoks.findIndex((p,i) => !usados.has(i) && p[0] === ini.t);
+    if(k < 0) return 1;
+    usados.add(k);
+  }
+  return 2;
+}
+function buscarJugadorPorArchivo(fname){
+  const nombre = nombreDesdeArchivo(fname);
+  const mapa = importMapaLeer();
+  const clave = normTxt(nombre);
+  if(mapa[clave] && jugadores.some(j => String(j.id) === String(mapa[clave]))){
+    return { nombre, id: String(mapa[clave]), estado: 'ok', nota: 'Asignado como la última vez' };
+  }
+  const ftoks = tokensArchivo(nombre);
+  const cands = jugadores.map(j => ({ j, p: puntajeJugador(ftoks, j) })).filter(x => x.p > 0);
+  const fuertes = cands.filter(x => x.p === 2);
+  if(fuertes.length === 1) return { nombre, id: String(fuertes[0].j.id), estado: 'ok', nota: 'Encontrado automáticamente' };
+  if(fuertes.length > 1) return { nombre, id: '', estado: 'duda', nota: 'Hay ' + fuertes.length + ' jugadores posibles: elegí cuál' };
+  if(cands.length === 1) return { nombre, id: String(cands[0].j.id), estado: 'duda', nota: 'Coincide el apellido, revisá que sea él' };
+  if(cands.length > 1) return { nombre, id: '', estado: 'duda', nota: 'Varios con ese apellido: elegí cuál' };
+  return { nombre, id: '', estado: 'sin', nota: 'No lo encontré: elegí el jugador o dejalo sin asignar' };
+}
+
+function abrirImportador(){
+  _importFilas = [];
+  const inp = document.getElementById('import-files'); if(inp) inp.value = '';
+  renderImport();
+  abrirModal('modal-import');
+}
+function importPick(input){ if(input.files && input.files.length) importArchivos([...input.files]); input.value = ''; }
+function importDrop(e){
+  e.preventDefault(); e.currentTarget.classList.remove('drag');
+  const fs = [...(e.dataTransfer.files || [])];
+  if(fs.length) importArchivos(fs);
+}
+function leerExcelFilas(file){
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        const wb = XLSX.read(new Uint8Array(ev.target.result), { type:'array', cellDates:true });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        res(XLSX.utils.sheet_to_json(ws, { header:1, raw:true, defval:'' }));
+      }catch(err){ rej(err); }
+    };
+    reader.onerror = () => rej(reader.error);
+    reader.readAsArrayBuffer(file);
+  });
+}
+async function importArchivos(files){
+  const xls = files.filter(f => /\.xlsx?$/i.test(f.name));
+  if(!xls.length){ toast('⚠️ Elegí archivos .xlsx de Wyscout'); return; }
+  for(const f of xls){
+    const fila = { archivo: f.name, res: null, error: null, guardado: false };
+    try{
+      const rows = await leerExcelFilas(f);
+      fila.res = parseWyscout(rows);
+      if(!fila.res || !fila.res.temporadas.length) fila.error = 'No pude leer partidos en este Excel';
+    }catch(err){ console.error(err); fila.error = 'Error leyendo el Excel'; }
+    Object.assign(fila, buscarJugadorPorArchivo(f.name));
+    // si ya estaba el mismo archivo en la lista, lo reemplaza
+    const k = _importFilas.findIndex(x => x.archivo === f.name);
+    if(k >= 0) _importFilas[k] = fila; else _importFilas.push(fila);
+  }
+  renderImport();
+}
+function importResumen(res){
+  if(!res || !res.temporadas.length) return '';
+  const s = res.temporadas[0];
+  const partes = [`<b>${esc(s.temporada_label)}</b>: ${s.partidos} PJ`, `${s.minutos}'`];
+  if(s.goles != null) partes.push(s.goles + (s.goles === 1 ? ' gol' : ' goles'));
+  if(s.atajadas != null) partes.push(s.atajadas + ' atajadas');
+  const pos = res.princ ? (WY_POS_ES[res.princ] || res.princ) : '';
+  return partes.join(' · ') + `<br>${res.temporadas.length} temporada${res.temporadas.length === 1 ? '' : 's'}${pos ? ' · ' + esc(pos) : ''}`;
+}
+function renderImport(){
+  const box = document.getElementById('import-lista');
+  const btn = document.getElementById('btn-import-guardar');
+  if(!box) return;
+  if(!_importFilas.length){
+    box.innerHTML = '';
+    if(btn) btn.disabled = true;
+    return;
+  }
+  const opts = jugadores.map(j => `<option value="${esc(j.id)}">${esc(j.nombre)}</option>`).join('');
+  const ids = _importFilas.filter(f => f.id && !f.error).map(f => f.id);
+  const repetidos = new Set(ids.filter((id,i) => ids.indexOf(id) !== i));
+  box.innerHTML = _importFilas.map((f,i) => {
+    let estado = f.estado, nota = f.nota;
+    if(f.error){ estado = 'sin'; nota = f.error; }
+    else if(f.guardado){ estado = 'ok'; nota = '✓ Guardado'; }
+    else if(f.id && repetidos.has(f.id)){ estado = 'duda'; nota = 'Este jugador está en dos archivos: revisá'; }
+    return `<div class="imp-fila">
+      <div class="imp-archivo"><b>${esc(f.nombre || f.archivo)}</b>${esc(f.archivo)}</div>
+      <div>
+        <select class="${estado === 'ok' ? '' : estado}" onchange="importAsignar(${i}, this.value)" ${f.error || f.guardado ? 'disabled' : ''}>
+          <option value="">— Sin asignar (no se guarda) —</option>${opts}
+        </select>
+        <div class="imp-estado ${estado}">${esc(nota || '')}</div>
+      </div>
+      <div class="imp-resumen">${importResumen(f.res)}</div>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('select').forEach((sel, i) => { sel.value = _importFilas[i].id || ''; });
+  const pendientes = _importFilas.filter(f => f.id && !f.error && !f.guardado).length;
+  if(btn){
+    btn.disabled = !pendientes;
+    btn.textContent = pendientes ? `Guardar todo (${pendientes})` : 'Guardar todo';
+  }
+}
+function importAsignar(i, id){
+  const f = _importFilas[i]; if(!f) return;
+  f.id = id;
+  f.estado = id ? 'ok' : 'sin';
+  f.nota = id ? 'Asignado a mano' : 'Sin asignar: no se va a guardar';
+  if(id){ const m = importMapaLeer(); m[normTxt(f.nombre)] = id; importMapaGuardar(m); }
+  renderImport();
+}
+// Junta las temporadas nuevas del Excel con las que el jugador ya tenía
+// (las del Excel reemplazan a las del mismo año; el resto se mantiene).
+function mezclarTemporadas(nuevas, existentes){
+  const anios = new Set(nuevas.map(s => String(s.temporada)));
+  const viejas = (Array.isArray(existentes) ? existentes : []).filter(s => s && !anios.has(String(s.temporada)));
+  return [...nuevas, ...viejas].sort((a,b) => String(b.temporada || '').localeCompare(String(a.temporada || '')));
+}
+async function importGuardar(){
+  const filas = _importFilas.filter(f => f.id && !f.error && !f.guardado);
+  if(!filas.length) return;
+  const ids = filas.map(f => f.id);
+  if(new Set(ids).size !== ids.length){ toast('⚠️ Hay un jugador asignado a dos archivos: corregilo antes de guardar'); return; }
+  const btn = document.getElementById('btn-import-guardar');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  let ok = 0, mal = 0;
+  const ahora = new Date().toISOString();
+  for(const f of filas){
+    const j = jugadores.find(x => String(x.id) === String(f.id));
+    if(!j){ mal++; continue; }
+    const upd = {
+      stats: mezclarTemporadas(f.res.temporadas, j.stats),
+      stats_zonas: { princ: f.res.princ, perfil: f.res.perfil, zonas: f.res.zonas },
+      stats_source: 'wyscout',
+      stats_updated_at: ahora
+    };
+    const { error } = await sb.from('players').update(upd).eq('id', j.id).eq('empresa', EMPRESA);
+    if(error){ console.error(error); mal++; f.estado = 'sin'; f.nota = 'Error al guardar: ' + (error.message || ''); }
+    else {
+      ok++; f.guardado = true;
+      const m = importMapaLeer(); m[normTxt(f.nombre)] = String(j.id); importMapaGuardar(m);
+    }
+  }
+  await cargarJugadores();
+  renderImport();
+  toast(mal ? `Guardados ${ok} · con error ${mal}` : `✅ Estadísticas actualizadas: ${ok} jugador${ok === 1 ? '' : 'es'}`);
 }
 
 async function guardarJugador(){
