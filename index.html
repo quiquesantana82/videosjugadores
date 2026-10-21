@@ -347,6 +347,28 @@ header .fila-header{display:flex;align-items:center;gap:10px}
   padding:11px 20px;border-radius:999px;transition:transform .15s;
 }
 .btn-tm:active{transform:scale(.96)}
+/* ─── VALOR DE MERCADO (dorado) ─── */
+.valor-mercado{
+  align-self:flex-start;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;gap:2px;padding:14px 22px 12px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(212,175,55,.16),rgba(212,175,55,.04));
+  border:1px solid rgba(232,196,90,.55);
+  box-shadow:0 0 0 1px rgba(232,196,90,.08) inset,0 10px 30px rgba(212,175,55,.18);
+}
+.valor-mercado::after{
+  content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,236,170,.22),transparent);
+  animation:brillo 4.5s ease-in-out infinite;
+}
+@keyframes brillo{0%,60%{left:-60%}100%{left:130%}}
+.valor-mercado .vm-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#d9bd6a}
+.valor-mercado .vm-valor{
+  font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(30px,7vw,40px);line-height:1.05;letter-spacing:.01em;
+  background:linear-gradient(180deg,#fff1c1 0%,#f0cf6b 45%,#c99a2e 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.valor-mercado .vm-fuente{font-size:12px;color:var(--gris);letter-spacing:.04em}
+.valor-mercado .vm-fuente b{color:#d9bd6a;font-weight:600}
 .btn-tm img{height:22px;width:auto;display:block}
 .btn-tm.con-logo{background:#1a3151;border:1px solid rgba(255,255,255,.18);padding:10px 22px}
 .btn-tm.con-logo .tm-texto{display:none}
@@ -654,7 +676,8 @@ header .fila-header{display:flex;align-items:center;gap:10px}
     <div class="campo">
       <label>🔗 Perfil en Transfermarkt (opcional)</label>
       <input type="url" id="f-transfermarkt" placeholder="https://www.transfermarkt.com/…/profil/spieler/123456">
-      <div class="ayuda">Pegá el link del perfil del jugador en Transfermarkt. En la ficha aparece el botón "Ver en Transfermarkt" y también va en el PDF. Necesita la columna <b>transfermarkt</b> en Supabase.</div>
+      <input type="text" id="f-valor-mercado" placeholder="Valor de mercado, ej: € 1,2 M (opcional)" style="margin-top:8px">
+      <div class="ayuda">Pegá el link del perfil del jugador en Transfermarkt. En la ficha aparece el botón "Ver en Transfermarkt" y también va en el PDF. El valor de mercado se muestra en dorado en la ficha con "Dato: Transfermarkt" y la fecha en que lo actualizaste (podés escribir 1200000 y queda € 1,2 M). Necesita las columnas <b>transfermarkt</b>, <b>valor_mercado</b> y <b>valor_mercado_fecha</b> en Supabase.</div>
     </div>
 
     <div class="campo">
@@ -734,7 +757,7 @@ const T = {
     remates:'Remates', xg:'xG', precision_pases:'Precisión de pases',
     duelos_pct:'Duelos ganados', aereos_pct:'Aéreos ganados', intercepciones:'Intercepciones',
     goles_recibidos:'Goles recibidos', atajadas:'Atajadas', paradas_pct:'% de atajadas', xcg:'xCG',
-    actualizado:'Actualizado', fuente_datos:'Estadísticas oficiales provistas por', ver_en:'Ver en',
+    actualizado:'Actualizado', fuente_datos:'Estadísticas oficiales provistas por', ver_en:'Ver en', valor_mercado:'Valor de mercado', dato:'Dato',
     vacio_sin:'Todavía no hay jugadores cargados.', vacio_sin2:'Entrá al panel ⚙ para agregar el primero.',
     vacio_busca:'No hay resultados para esa búsqueda.', cargando:'Cargando jugadores…'
   },
@@ -750,7 +773,7 @@ const T = {
     remates:'Shots', xg:'xG', precision_pases:'Pass accuracy',
     duelos_pct:'Duels won', aereos_pct:'Aerials won', intercepciones:'Interceptions',
     goles_recibidos:'Goals conceded', atajadas:'Saves', paradas_pct:'Save %', xcg:'xCG',
-    actualizado:'Updated', fuente_datos:'Official statistics provided by', ver_en:'View on',
+    actualizado:'Updated', fuente_datos:'Official statistics provided by', ver_en:'View on', valor_mercado:'Market value', dato:'Source',
     vacio_sin:'No players loaded yet.', vacio_sin2:'Open the ⚙ panel to add the first one.',
     vacio_busca:'No results for that search.', cargando:'Loading players…'
   }
@@ -940,6 +963,7 @@ function renderFicha(j){
           ${j.nacimiento ? `<div class="dato"><label>${t('nacimiento')}</label><span>${fechaLinda(j.nacimiento)}</span></div>` : ''}
           ${ed !== null ? `<div class="dato"><label>${t('edad')}</label><span>${ed} ${t('anios')}</span></div>` : ''}
         </div>
+        ${valorMercadoHTML(j)}
         ${bioTexto ? `<p class="ficha-desc">${esc(bioTexto)}</p>` : ''}
         ${j.agencia ? `
         <div class="ficha-agencia">
@@ -1179,6 +1203,16 @@ async function descargarPDF(id){
       doc.setTextColor(...BLANCO); doc.text(fechaLinda(j.nacimiento) + (ed !== null ? '  ·  ' + ed + ' años' : ''), xInfo, yi + 5.5);
       yi += 14;
     }
+    if(j.valor_mercado){
+      const ORO = [222,184,84];
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...ORO);
+      doc.text('VALOR DE MERCADO', xInfo, yi);
+      doc.setFont('helvetica','bold'); doc.setFontSize(18);
+      doc.text(String(j.valor_mercado), xInfo, yi + 7.5);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...GRIS);
+      doc.text('Dato: Transfermarkt', xInfo, yi + 12.5);
+      yi += 19;
+    }
     y = Math.max(y + (foto ? fotoH + 10 : 0), yi + 4);
 
     // Bio
@@ -1327,6 +1361,7 @@ function abrirFormulario(id){
   document.getElementById('f-agencia-mail').value = j?.agencia_mail || '';
   document.getElementById('f-agencia-whatsapp').value = j?.agencia_whatsapp || '';
   document.getElementById('f-transfermarkt').value = j?.transfermarkt || '';
+  document.getElementById('f-valor-mercado').value = j?.valor_mercado || '';
   galeriaEdit = Array.isArray(j?.fotos) ? j.fotos.filter(Boolean).slice(0,5) : [];
   galeriaRender();
   const gUrl = document.getElementById('f-galeria-url'); if(gUrl) gUrl.value = '';
@@ -1886,8 +1921,15 @@ async function guardarJugador(){
     agencia_mail: document.getElementById('f-agencia-mail').value.trim() || null,
     agencia_whatsapp: document.getElementById('f-agencia-whatsapp').value.trim() || null,
     transfermarkt: tmNormalizar(document.getElementById('f-transfermarkt').value),
+    valor_mercado: valorMercadoNormalizar(document.getElementById('f-valor-mercado').value),
     fotos: galeriaEdit.slice()
   };
+  // La fecha del valor de mercado se actualiza sola cuando cambiás el valor
+  {
+    const previo = editandoId ? (jugadores.find(x => x.id === editandoId) || {}) : {};
+    if(!fila.valor_mercado) fila.valor_mercado_fecha = null;
+    else if(fila.valor_mercado !== (previo.valor_mercado || null) || !previo.valor_mercado_fecha) fila.valor_mercado_fecha = new Date().toISOString().slice(0,10);
+  }
 
   async function guardarFila(payload){
     if(editandoId){
@@ -1933,6 +1975,32 @@ async function guardarJugador(){
   }finally{
     btn.disabled = false;
   }
+}
+// "1200000" -> "€ 1,2 M" · "800000" -> "€ 800 mil" · cualquier otro texto queda como lo escribiste
+function valorMercadoNormalizar(v){
+  v = (v || '').trim();
+  if(!v) return null;
+  const solo = v.replace(/[€\s.]/g,'');
+  if(/^\d+$/.test(solo)){
+    const n = parseInt(solo, 10);
+    if(n >= 1e6) return '€ ' + (n/1e6).toLocaleString('es-UY',{maximumFractionDigits:2}) + ' M';
+    if(n >= 1e3) return '€ ' + Math.round(n/1e3) + ' mil';
+    return '€ ' + n;
+  }
+  return v;
+}
+function valorMercadoHTML(j){
+  if(!j.valor_mercado) return '';
+  let fecha = '';
+  if(j.valor_mercado_fecha){
+    const d = new Date(j.valor_mercado_fecha + 'T00:00:00');
+    if(!isNaN(d)) fecha = ' · ' + d.toLocaleDateString(idioma==='en'?'en-GB':'es-UY',{month:'short',year:'numeric'});
+  }
+  return `<div class="valor-mercado">
+    <span class="vm-label">${t('valor_mercado')}</span>
+    <span class="vm-valor">${esc(j.valor_mercado)}</span>
+    <span class="vm-fuente">${t('dato')}: <b>Transfermarkt</b>${esc(fecha)}</span>
+  </div>`;
 }
 // Link de Transfermarkt: acepta sin "https://" y descarta lo que no sea de transfermarkt
 function tmNormalizar(url){
