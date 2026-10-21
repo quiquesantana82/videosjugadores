@@ -959,7 +959,7 @@ const EMPRESA = 'videosjugadores';
 const ADMIN_PASS = 'videos2026';
 // WhatsApp de la agencia para los botones de contacto (código de país, sin + ni espacios).
 // Si queda vacío, WhatsApp abre para elegir a quién mandar el mensaje.
-const WHATSAPP_AGENCIA = '';
+const WHATSAPP_AGENCIA = '5493425191597';
 const POSICIONES = ['Arquero','Defensa central','Lateral derecho','Lateral izquierdo','Volante defensivo','Volante mixto','Volante ofensivo','Extremo derecho','Extremo izquierdo','Delantero centro'];
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -983,7 +983,7 @@ const T = {
     vacio_sin:'Todavía no hay jugadores cargados.', vacio_sin2:'Entrá al panel ⚙ para agregar el primero.',
     vacio_busca:'No hay resultados para esa búsqueda.', cargando:'Cargando jugadores…',
     hero_kicker:'Marketing deportivo · Scouting',
-    hero_t1:'Perfiles de futbolistas', hero_t2:'que', hero_t3:'venden',
+    hero_t1:'Tus videos,', hero_t2:'tus estadísticas', hero_t3:'en un solo perfil',
     hero_sub:'Presentamos a tus jugadores como los ve un club: <b>highlights</b>, <b>estadísticas oficiales de Wyscout</b> actualizadas cada semana y <b>valor de mercado de Transfermarkt</b>, en un perfil listo para compartir por WhatsApp.',
     cta_plataforma:'Ver jugadores', cta_perfil:'Quiero mi perfil', datos_de:'Datos de',
     n_jugadores:'Jugadores', n_ligas:'Ligas', n_minutos:'Minutos analizados', n_videos:'Videos',
@@ -1023,7 +1023,7 @@ const T = {
     vacio_sin:'No players loaded yet.', vacio_sin2:'Open the ⚙ panel to add the first one.',
     vacio_busca:'No results for that search.', cargando:'Loading players…',
     hero_kicker:'Sports marketing · Scouting',
-    hero_t1:'Football player profiles', hero_t2:'that', hero_t3:'sell',
+    hero_t1:'Your videos,', hero_t2:'your stats', hero_t3:'in one profile',
     hero_sub:'We present your players the way clubs see them: <b>highlights</b>, <b>official Wyscout statistics</b> updated every week and <b>Transfermarkt market value</b>, in a profile ready to share on WhatsApp.',
     cta_plataforma:'See players', cta_perfil:'Get a profile', datos_de:'Data from',
     n_jugadores:'Players', n_ligas:'Leagues', n_minutos:'Minutes analysed', n_videos:'Videos',
@@ -1331,7 +1331,7 @@ function renderPortada(){
     <div class="hero">
       <div>
         <div class="hero-kicker">${t('hero_kicker')}</div>
-        <h1>${t('hero_t1')} ${t('hero_t2')} <em>${t('hero_t3')}</em></h1>
+        <h1>${t('hero_t1')} ${t('hero_t2')} <em>${t('hero_t3')}</em>.</h1>
         <p class="hero-sub">${t('hero_sub')}</p>
         <div class="hero-ctas">
           <a class="cta cta-primario" href="#plataforma" onclick="irPlataforma(event)">${t('cta_plataforma')}</a>
