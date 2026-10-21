@@ -542,7 +542,28 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 }
 .dest-card h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;letter-spacing:.03em;text-transform:uppercase;line-height:1.05}
 .dest-card .dest-pos{color:var(--celeste);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
-.dest-stats{display:flex;gap:12px;margin-top:8px}
+.dest-stats{display:flex;gap:10px;margin-top:8px}
+.dest-stats div.on b{color:var(--celeste)}
+.dest-stats div.on span{color:var(--celeste)}
+.dest-tabs{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--linea);border-radius:999px;background:var(--carbon);margin-bottom:16px;flex-wrap:wrap}
+.dest-tab{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gris);padding:9px 18px;border-radius:999px;transition:background .15s,color .15s;
+}
+.dest-tab.activo{background:var(--celeste);color:var(--negro)}
+@media(hover:hover){.dest-tab:not(.activo):hover{color:var(--blanco)}}
+@media(max-width:560px){
+  .dest-tabs{display:flex;flex-wrap:nowrap;width:100%}
+  .dest-tab{flex:1;padding:9px 6px;font-size:14px;letter-spacing:.06em}
+  .dest-stats{gap:12px}
+  .dest-stats div.sec{display:none}
+  .dest-card .dest-valor{font-size:13px;padding:3px 8px}
+}
+.dest-card .dest-valor{
+  position:absolute;top:10px;right:10px;z-index:2;background:rgba(7,9,12,.75);border:1px solid rgba(87,184,232,.5);
+  color:var(--blanco);font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;padding:4px 10px;border-radius:999px;
+}
+.dest-card .dest-valor small{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:.08em;color:var(--celeste);margin-left:3px}
 .dest-stats div{display:flex;flex-direction:column}
 .dest-stats b{font-family:'Archivo',sans-serif;font-weight:900;font-size:18px;line-height:1}
 .dest-stats span{font-size:10px;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
@@ -987,7 +1008,7 @@ const T = {
     hero_sub:'Presentamos a tus jugadores como los ve un club: <b>highlights</b>, <b>estadísticas oficiales de Wyscout</b> actualizadas cada semana y <b>valor de mercado de Transfermarkt</b>, en un perfil listo para compartir por WhatsApp.',
     cta_plataforma:'Ver jugadores', cta_perfil:'Quiero mi perfil', datos_de:'Datos de',
     n_jugadores:'Jugadores', n_ligas:'Ligas', n_minutos:'Minutos analizados', n_videos:'Videos',
-    dest_t1:'Destacados', dest_t2:'de la temporada', dest_sub:'Los jugadores con más minutos según la última actualización de Wyscout.',
+    dest_t1:'Destacados', dest_t2:'de la temporada', dest_sub:'Los jugadores con más {x} según la última actualización de Wyscout.', rk_min:'Minutos', rk_gol:'Goles', rk_asi:'Asistencias', rkx_min:'minutos', rkx_gol:'goles', rkx_asi:'asistencias',
     pj:'PJ', min:'Min', gol:'Goles', asi:'Asist.',
     hl_t1:'Highlights', hl_t2:'en video', hl_sub:'Lo que primero mira un club: el jugador en acción.', ver_perfil:'Ver perfil',
     plat_t:'Plataforma', plat_sub:'Filtrá por posición, edad y liga, como en una herramienta de scouting.',
@@ -1027,7 +1048,7 @@ const T = {
     hero_sub:'We present your players the way clubs see them: <b>highlights</b>, <b>official Wyscout statistics</b> updated every week and <b>Transfermarkt market value</b>, in a profile ready to share on WhatsApp.',
     cta_plataforma:'See players', cta_perfil:'Get a profile', datos_de:'Data from',
     n_jugadores:'Players', n_ligas:'Leagues', n_minutos:'Minutes analysed', n_videos:'Videos',
-    dest_t1:'Top', dest_t2:'of the season', dest_sub:'Players with the most minutes in the latest Wyscout update.',
+    dest_t1:'Top', dest_t2:'of the season', dest_sub:'Players with the most {x} in the latest Wyscout update.', rk_min:'Minutes', rk_gol:'Goals', rk_asi:'Assists', rkx_min:'minutes', rkx_gol:'goals', rkx_asi:'assists',
     pj:'Apps', min:'Min', gol:'Goals', asi:'Assists',
     hl_t1:'Highlights', hl_t2:'on video', hl_sub:'What clubs look at first: the player in action.', ver_perfil:'View profile',
     plat_t:'Platform', plat_sub:'Filter by position, age and league, like a scouting tool.',
@@ -1351,24 +1372,10 @@ function renderPortada(){
     ${numeros.length > 1 ? `<div class="franja">${numeros.map(([n,l]) => `<div class="franja-item"><div class="franja-num">${n}</div><div class="franja-lbl">${l}</div></div>`).join('')}</div>` : ''}
 
     ${destacados.length >= 2 ? `
-    <div class="seccion-landing">
-      <div class="seccion-cab"><h2>${t('dest_t1')} <em>${t('dest_t2')}</em></h2><p>${t('dest_sub')}</p></div>
-      <div class="destacados">
-        ${destacados.map((j,i) => { const u = ultimaTemp(j); const p = posiciones(j)[0]; return `
-          <button class="dest-card" onclick="verFicha('${j.id}')">
-            ${j.foto ? `<img src="${esc(j.foto)}" alt="${esc(j.nombre)}" loading="lazy">` : ''}
-            <span class="dest-rank">#${i+1}</span>
-            <div class="dest-info">
-              <h3>${esc(j.nombre)}</h3>
-              ${p ? `<div class="dest-pos">${esc(traducirPos(p))}</div>` : ''}
-              <div class="dest-stats">
-                <div><b>${u.partidos ?? 0}</b><span>${t('pj')}</span></div>
-                <div><b>${Number(u.minutos||0).toLocaleString('es-UY')}</b><span>${t('min')}</span></div>
-                ${u.goles != null ? `<div><b>${u.goles}</b><span>${t('gol')}</span></div>` : ''}
-              </div>
-            </div>
-          </button>`; }).join('')}
-      </div>
+    <div class="seccion-landing" id="seccion-destacados">
+      <div class="seccion-cab"><h2>${t('dest_t1')} <em>${t('dest_t2')}</em></h2><p id="dest-sub"></p></div>
+      <div class="dest-tabs" id="dest-tabs"></div>
+      <div class="destacados" id="dest-grid"></div>
     </div>` : ''}
 
     ${_hlLista.length ? `
@@ -1425,8 +1432,54 @@ function renderPortada(){
     </div>
   `;
   const wf = document.getElementById('wsp-flotante'); if(wf) wf.href = wsp;
+  renderDestacados();
 }
 let _hlLista = [];
+
+/* ---- Destacados: rankings por minutos, goles y asistencias ---- */
+let _rankTipo = 'min';
+const RANK_CAMPO = { min:'minutos', gol:'goles', asi:'asistencias' };
+function rankingDe(tipo){
+  const c = RANK_CAMPO[tipo];
+  return jugadores.filter(j => { const u = ultimaTemp(j); return u && Number(u[c]) > 0; })
+    .sort((a,b) => {
+      const ua = ultimaTemp(a), ub = ultimaTemp(b);
+      return (Number(ub[c])||0) - (Number(ua[c])||0) || (Number(ub.minutos)||0) - (Number(ua.minutos)||0);
+    }).slice(0,4);
+}
+function setRanking(tipo){ _rankTipo = tipo; renderDestacados(); }
+function renderDestacados(){
+  const grid = document.getElementById('dest-grid'), tabs = document.getElementById('dest-tabs'), sub = document.getElementById('dest-sub');
+  if(!grid) return;
+  const disponibles = ['min','gol','asi'].filter(k => rankingDe(k).length >= 2);
+  if(!disponibles.includes(_rankTipo)) _rankTipo = disponibles[0] || 'min';
+  tabs.innerHTML = disponibles.map(k => `<button class="dest-tab ${k === _rankTipo ? 'activo' : ''}" onclick="setRanking('${k}')">${t('rk_' + k)}</button>`).join('');
+  tabs.style.display = disponibles.length > 1 ? '' : 'none';
+  sub.textContent = t('dest_sub').replace('{x}', t('rkx_' + _rankTipo));
+  const campo = RANK_CAMPO[_rankTipo];
+  const etiqueta = { min:t('min'), gol:t('gol'), asi:t('asi') }[_rankTipo];
+  grid.innerHTML = rankingDe(_rankTipo).map((j,i) => {
+    const u = ultimaTemp(j); const p = posiciones(j)[0];
+    // En celular se muestran PJ, minutos y la estadística elegida; las demás se ocultan (clase "sec")
+    const st = (k, val, lbl) => `<div class="${k === _rankTipo ? 'on' : ((k === 'gol' || k === 'asi') ? 'sec' : '')}"><b>${val}</b><span>${lbl}</span></div>`;
+    return `
+    <button class="dest-card" onclick="verFicha('${j.id}')">
+      ${j.foto ? `<img src="${esc(j.foto)}" alt="${esc(j.nombre)}" loading="lazy">` : ''}
+      <span class="dest-rank">#${i+1}</span>
+      <span class="dest-valor">${Number(u[campo]||0).toLocaleString('es-UY')}<small>${etiqueta}</small></span>
+      <div class="dest-info">
+        <h3>${esc(j.nombre)}</h3>
+        ${p ? `<div class="dest-pos">${esc(traducirPos(p))}</div>` : ''}
+        <div class="dest-stats">
+          ${st('', u.partidos ?? 0, t('pj'))}
+          ${st('min', Number(u.minutos||0).toLocaleString('es-UY'), t('min'))}
+          ${u.goles != null ? st('gol', u.goles, t('gol')) : ''}
+          ${u.asistencias != null ? st('asi', u.asistencias, t('asi')) : ''}
+        </div>
+      </div>
+    </button>`;
+  }).join('');
+}
 
 /* ================= FICHA ================= */
 function verFicha(id){
