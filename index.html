@@ -347,7 +347,10 @@ header .fila-header{display:flex;align-items:center;gap:10px}
   padding:11px 20px;border-radius:999px;transition:transform .15s;
 }
 .btn-tm:active{transform:scale(.96)}
-.btn-tm img{height:18px;width:auto;display:block}
+.btn-tm img{height:22px;width:auto;display:block}
+.btn-tm.con-logo{background:#1a3151;border:1px solid rgba(255,255,255,.18);padding:10px 22px}
+.btn-tm.con-logo .tm-texto{display:none}
+@media(hover:hover){.btn-tm.con-logo:hover{border-color:var(--celeste)}}
 .fuente-datos{
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;padding-top:14px;
   border-top:1px solid var(--linea);color:var(--gris);font-size:13px;
@@ -953,7 +956,7 @@ function renderFicha(j){
         <div class="fila-botones">
           <a class="btn-wsp" href="https://wa.me/?text=${textoWsp}" target="_blank" rel="noopener">${t('compartir')}</a>
           <button class="btn-pdf" id="btn-pdf" onclick="descargarPDF('${j.id}')">${t('pdf')}</button>
-          ${j.transfermarkt ? `<a class="btn-tm" href="${esc(j.transfermarkt)}" target="_blank" rel="noopener">${t('ver_en')}<img src="/logos/transfermarkt.png" alt="Transfermarkt" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><span>Transfermarkt</span></a>` : ''}
+          ${j.transfermarkt ? `<a class="btn-tm" href="${esc(j.transfermarkt)}" target="_blank" rel="noopener" aria-label="${t('ver_en')} Transfermarkt" title="${t('ver_en')} Transfermarkt"><img src="https://tmsi.akamaized.net/head/tm_logo_rebrush.svg" alt="Transfermarkt" onload="this.parentNode.classList.add('con-logo')" onerror="this.remove()"><span class="tm-texto">${t('ver_en')} Transfermarkt</span></a>` : ''}
         </div>
       </div>
     </div>
