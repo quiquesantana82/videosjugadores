@@ -54,9 +54,16 @@ export default async (req, context) => {
   if (desc.length > 155) desc = desc.slice(0, 152).trimEnd() + '…';
 
   // WhatsApp solo muestra fotos que sean link real (http/https), en JPG o PNG (NO webp), y no base64.
-  const foto = fotoParaPreview(j?.foto);
+  const fotoOriginal = fotoParaPreview(j?.foto);
 
   const origen = url.origin;
+  // Las fotos originales pesan varios MB y WhatsApp no muestra previews pesadas.
+  // Pasamos la foto por el Image CDN de Netlify: JPG liviano (~100 KB), cuadrado y
+  // recortado desde arriba para que se vea la cara del jugador.
+  const OG_LADO = 800;
+  const foto = fotoOriginal
+    ? `${origen}/.netlify/images?url=${encodeURIComponent(fotoOriginal)}&w=${OG_LADO}&h=${OG_LADO}&fit=cover&position=top&fm=jpg&q=75`
+    : null;
   const urlCanonica = `${origen}/jugador/${id}`;
   // Redirige a la app (raíz + hash). NUNCA a /jugador/ID de nuevo, para no reinvocar la función.
   const destino = id ? `/#jugador-${id}` : '/';
@@ -72,8 +79,9 @@ export default async (req, context) => {
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${esc(urlCanonica)}">
 ${foto ? `<meta property="og:image" content="${esc(foto)}">
-<meta property="og:image:width" content="1080">
-<meta property="og:image:height" content="1350">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="${OG_LADO}">
+<meta property="og:image:height" content="${OG_LADO}">
 <meta property="og:image:alt" content="${esc(nombre)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${esc(foto)}">` : ''}
