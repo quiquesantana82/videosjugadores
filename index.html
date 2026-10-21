@@ -443,6 +443,205 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 .stats-pos-lbl{font-size:13px;color:var(--gris);text-align:center;margin-top:-8px}
 .stats-pos-lbl b{color:var(--blanco)}
 
+/* ============ PORTADA (landing) ============ */
+.hero{
+  position:relative;display:grid;gap:28px;align-items:center;
+  padding:18px 0 34px;margin-bottom:8px;
+}
+@media(min-width:900px){.hero{grid-template-columns:1.15fr .85fr;padding:30px 0 50px}}
+.hero::before{
+  content:'';position:absolute;inset:-40px -22px auto;height:120%;z-index:-1;pointer-events:none;
+  background:radial-gradient(60% 70% at 20% 10%,rgba(87,184,232,.16),transparent 70%),
+             radial-gradient(40% 50% at 90% 60%,rgba(212,175,55,.08),transparent 70%);
+}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:14px;letter-spacing:.24em;text-transform:uppercase;color:var(--celeste);margin-bottom:14px;
+}
+.hero-kicker::before{content:'';width:26px;height:2px;background:var(--celeste)}
+.hero h1{
+  font-family:'Archivo',sans-serif;font-weight:900;text-transform:uppercase;
+  font-size:clamp(36px,7.4vw,70px);line-height:.95;letter-spacing:-.01em;
+}
+.hero h1 em{font-style:normal;color:var(--celeste)}
+.hero-sub{color:#c3ccd6;font-size:clamp(17px,2.2vw,20px);line-height:1.55;margin:18px 0 26px;max-width:560px}
+.hero-sub b{color:var(--blanco);font-weight:600}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px}
+.cta{
+  display:inline-flex;align-items:center;gap:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:18px;letter-spacing:.1em;text-transform:uppercase;padding:15px 28px;border-radius:999px;
+  transition:transform .15s,box-shadow .15s;
+}
+.cta:active{transform:scale(.96)}
+.cta-primario{background:var(--celeste);color:var(--negro);box-shadow:0 10px 30px rgba(87,184,232,.3)}
+.cta-wsp{background:#25D366;color:#062b12;box-shadow:0 10px 30px rgba(37,211,102,.22)}
+.cta-borde{border:1px solid var(--linea);color:var(--blanco)}
+@media(hover:hover){.cta:hover{transform:translateY(-2px)}}
+.hero-fuentes{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin-top:26px;color:var(--gris);font-size:13px;letter-spacing:.04em}
+.fuente-chip{
+  display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;
+  border:1px solid var(--linea);background:var(--carbon);color:var(--blanco);
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;
+}
+.fuente-chip img{height:18px;width:auto}
+.fuente-chip.tm{background:#1a3151;border-color:rgba(255,255,255,.14)}
+.hero-mosaico{position:relative;height:clamp(320px,52vw,470px);max-width:470px;width:100%;justify-self:center}
+.hero-mosaico .hm-foto{
+  position:absolute;width:56%;aspect-ratio:4/5;border-radius:16px;overflow:hidden;
+  border:1px solid var(--linea);background:var(--panel);box-shadow:0 24px 60px rgba(0,0,0,.55);
+  transition:transform .3s ease;
+}
+.hero-mosaico .hm-foto img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.hero-mosaico .hm-foto span{
+  position:absolute;left:0;right:0;bottom:0;padding:24px 12px 10px;
+  background:linear-gradient(180deg,transparent,rgba(7,9,12,.92));
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.05em;text-transform:uppercase;
+}
+.hm-1{left:0;top:10%;transform:rotate(-5deg);z-index:1}
+.hm-2{left:22%;top:0;z-index:3;transform:rotate(1deg)}
+.hm-3{right:0;top:14%;transform:rotate(6deg);z-index:2}
+@media(hover:hover){.hero-mosaico .hm-foto:hover{transform:rotate(0) scale(1.03);z-index:4}}
+
+/* franja de números */
+.franja{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--linea);
+  border:1px solid var(--linea);border-radius:var(--radius);overflow:hidden;margin-bottom:46px;
+}
+@media(min-width:720px){.franja{grid-template-columns:repeat(4,1fr)}}
+.franja-item{background:var(--carbon);padding:18px 16px;text-align:center}
+.franja-num{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(26px,5vw,36px);color:var(--blanco);line-height:1}
+.franja-lbl{margin-top:6px;color:var(--gris);font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:.16em;text-transform:uppercase}
+
+/* secciones de portada */
+.seccion-landing{margin-bottom:54px}
+.seccion-cab{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.seccion-cab h2{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(28px,5.5vw,40px);
+  letter-spacing:.04em;text-transform:uppercase;line-height:1;
+}
+.seccion-cab h2 em{font-style:normal;color:var(--celeste)}
+.seccion-cab p{color:var(--gris);font-size:15px;max-width:520px}
+
+/* destacados */
+.destacados{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:900px){.destacados{grid-template-columns:repeat(4,1fr)}}
+.dest-card{
+  position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--linea);
+  background:var(--carbon);text-align:left;aspect-ratio:3/4;display:block;width:100%;
+  transition:transform .18s,border-color .18s;
+}
+@media(hover:hover){.dest-card:hover{transform:translateY(-4px);border-color:var(--celeste)}}
+.dest-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center}
+.dest-card .dest-rank{
+  position:absolute;top:10px;left:10px;z-index:2;background:var(--celeste);color:var(--negro);
+  font-family:'Archivo',sans-serif;font-weight:900;font-size:14px;padding:3px 9px;border-radius:999px;
+}
+.dest-card .dest-info{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;padding:40px 12px 12px;
+  background:linear-gradient(180deg,transparent,rgba(7,9,12,.95) 45%);
+}
+.dest-card h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;letter-spacing:.03em;text-transform:uppercase;line-height:1.05}
+.dest-card .dest-pos{color:var(--celeste);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.dest-stats{display:flex;gap:12px;margin-top:8px}
+.dest-stats div{display:flex;flex-direction:column}
+.dest-stats b{font-family:'Archivo',sans-serif;font-weight:900;font-size:18px;line-height:1}
+.dest-stats span{font-size:10px;color:var(--gris);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+
+/* highlights */
+.hl-tira{
+  display:grid;grid-auto-flow:column;grid-auto-columns:min(82vw,420px);gap:16px;
+  overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;margin:0 -22px;padding-left:22px;padding-right:22px;
+  scrollbar-width:thin;scrollbar-color:var(--linea) transparent;
+}
+@media(min-width:1100px){.hl-tira{margin:0 -40px;padding-left:40px;padding-right:40px}}
+.hl-card{scroll-snap-align:start;display:flex;flex-direction:column;gap:10px}
+.hl-video{
+  position:relative;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--linea);background:var(--panel);cursor:pointer;
+}
+.hl-video img{width:100%;height:100%;object-fit:cover;object-position:center 20%;transition:transform .3s}
+.hl-video::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,9,12,.05),rgba(7,9,12,.55))}
+.hl-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:3}
+.hl-play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+  width:64px;height:64px;border-radius:999px;background:var(--celeste);color:var(--negro);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.5);
+  transition:transform .15s;
+}
+.hl-play svg{width:24px;height:24px;margin-left:4px}
+@media(hover:hover){.hl-video:hover img{transform:scale(1.04)}.hl-video:hover .hl-play{transform:translate(-50%,-50%) scale(1.08)}}
+.hl-meta{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hl-meta h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;letter-spacing:.04em;text-transform:uppercase;line-height:1.1}
+.hl-meta span{color:var(--gris);font-size:13px}
+.hl-meta button{
+  flex-shrink:0;color:var(--celeste);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;
+  letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(87,184,232,.35);padding:7px 12px;border-radius:999px;
+}
+
+/* plataforma: filtros */
+.filtros{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.filtros .buscador{flex:1 1 240px;margin:0}
+.filtro-sel{
+  flex:0 1 auto;background:var(--carbon);color:var(--blanco);border:1px solid var(--linea);border-radius:999px;
+  padding:12px 34px 12px 16px;font-size:15px;appearance:none;-webkit-appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238B97A5' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;
+}
+.filtro-sel.activo{border-color:var(--celeste);color:var(--celeste)}
+.filtro-sel:focus{outline:none;border-color:var(--celeste)}
+.filtro-limpiar{color:var(--gris);font-size:14px;text-decoration:underline;padding:0 6px}
+.card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:8px;font-size:13px;color:var(--gris)}
+.card-meta b{color:var(--blanco);font-weight:600}
+.card-vm{
+  font-family:'Archivo',sans-serif;font-weight:900;font-size:14px;
+  background:linear-gradient(180deg,#fff1c1,#f0cf6b 50%,#c99a2e);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.card-badge-video{
+  position:absolute;top:10px;right:10px;z-index:2;display:inline-flex;align-items:center;gap:5px;
+  background:rgba(7,9,12,.7);border:1px solid rgba(255,255,255,.15);color:var(--blanco);
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:999px;
+}
+.card-badge-video svg{width:9px;height:9px;fill:var(--celeste)}
+
+/* servicios */
+.servicios{display:grid;grid-template-columns:1fr;gap:1px;background:var(--linea);border:1px solid var(--linea);border-radius:var(--radius);overflow:hidden}
+@media(min-width:640px){.servicios{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1000px){.servicios{grid-template-columns:repeat(3,1fr)}}
+.servicio{background:var(--carbon);padding:24px 22px}
+.servicio .sv-num{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;color:var(--celeste)}
+.servicio h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:23px;letter-spacing:.03em;text-transform:uppercase;margin:8px 0 6px}
+.servicio p{color:#b2bcc7;font-size:15px;line-height:1.55}
+
+/* agencias */
+.agencias{display:flex;flex-wrap:wrap;gap:12px}
+.agencia-chip{
+  display:flex;align-items:center;gap:10px;background:var(--carbon);border:1px solid var(--linea);
+  border-radius:12px;padding:10px 16px;min-height:62px;
+}
+.agencia-chip img{height:42px;width:42px;object-fit:contain;border-radius:8px;background:var(--panel);padding:3px}
+.agencia-chip span{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.05em;text-transform:uppercase}
+
+/* cierre */
+.cierre{
+  position:relative;overflow:hidden;text-align:center;border-radius:20px;padding:48px 22px;
+  border:1px solid rgba(87,184,232,.35);
+  background:radial-gradient(80% 120% at 50% 0%,rgba(87,184,232,.2),transparent 70%),var(--carbon);
+}
+.cierre h2{font-family:'Archivo',sans-serif;font-weight:900;text-transform:uppercase;font-size:clamp(28px,5.5vw,46px);line-height:1}
+.cierre p{color:#c3ccd6;font-size:17px;margin:14px auto 24px;max-width:560px;line-height:1.55}
+.cierre .hero-ctas{justify-content:center}
+
+/* WhatsApp flotante */
+.wsp-flotante{
+  position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;
+  width:58px;height:58px;border-radius:999px;background:#25D366;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .15s;
+}
+.wsp-flotante svg{width:30px;height:30px;fill:#fff}
+.wsp-flotante:active{transform:scale(.94)}
+@media(hover:hover){.wsp-flotante:hover{transform:scale(1.06)}}
+
 /* ============ ADMIN ============ */
 .modal{
   position:fixed;inset:0;z-index:90;background:rgba(4,6,9,.8);
@@ -550,12 +749,28 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 <main>
   <!-- VISTA: LISTA -->
   <section id="vista-lista">
-    <div class="titulo-seccion">
-      <h2>Jugadores</h2>
-      <span class="cant" id="cant-jugadores"></span>
+    <!-- Portada: se arma en renderPortada() -->
+    <div id="portada-arriba"></div>
+
+    <div id="plataforma" style="scroll-margin-top:80px">
+      <div class="seccion-cab">
+        <div class="titulo-seccion" style="margin:0">
+          <h2 id="tit-plataforma">Jugadores</h2>
+          <span class="cant" id="cant-jugadores"></span>
+        </div>
+        <p id="sub-plataforma"></p>
+      </div>
+      <div class="filtros">
+        <input type="text" class="buscador" id="buscador" placeholder="Buscar jugador…" oninput="renderLista()">
+        <select class="filtro-sel" id="f-filtro-pos" onchange="renderLista()"></select>
+        <select class="filtro-sel" id="f-filtro-edad" onchange="renderLista()"></select>
+        <select class="filtro-sel" id="f-filtro-liga" onchange="renderLista()"></select>
+        <select class="filtro-sel" id="f-filtro-orden" onchange="renderLista()"></select>
+      </div>
+      <div id="contenedor-lista" class="cargando">Cargando jugadores…</div>
     </div>
-    <input type="text" class="buscador" id="buscador" placeholder="Buscar jugador…" oninput="renderLista()">
-    <div id="contenedor-lista" class="cargando">Cargando jugadores…</div>
+
+    <div id="portada-abajo"></div>
   </section>
 
   <!-- VISTA: FICHA -->
@@ -730,6 +945,10 @@ header .fila-header{display:flex;align-items:center;gap:10px}
   </div>
 </div>
 
+<a class="wsp-flotante" id="wsp-flotante" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.5.2-.7.2-1.3.2-1.5-.1-.1-.3-.2-.6-.3M12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4c-1-1.6-1.5-3.4-1.5-5.2 0-5.4 4.4-9.8 9.8-9.8 2.6 0 5.1 1 6.9 2.9 1.9 1.9 2.9 4.3 2.9 6.9 0 5.4-4.4 9.8-9.8 9.8M20.4 3.6C18.2 1.3 15.2 0 12 0 5.4 0 .1 5.3.1 11.9c0 2.1.5 4.1 1.6 5.9L0 24l6.3-1.7c1.7.9 3.7 1.4 5.7 1.4 6.6 0 11.9-5.3 11.9-11.9 0-3.2-1.2-6.2-3.5-8.4"/></svg>
+</a>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -738,6 +957,9 @@ const SUPABASE_URL = 'https://epvgqigrcyooavgskmzc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_-m_OmQzyG290M3pOaPCd8Q_e58eq4cT';
 const EMPRESA = 'videosjugadores';
 const ADMIN_PASS = 'videos2026';
+// WhatsApp de la agencia para los botones de contacto (código de país, sin + ni espacios).
+// Si queda vacío, WhatsApp abre para elegir a quién mandar el mensaje.
+const WHATSAPP_AGENCIA = '5493425191597';
 const POSICIONES = ['Arquero','Defensa central','Lateral derecho','Lateral izquierdo','Volante defensivo','Volante mixto','Volante ofensivo','Extremo derecho','Extremo izquierdo','Delantero centro'];
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -759,7 +981,31 @@ const T = {
     goles_recibidos:'Goles recibidos', atajadas:'Atajadas', paradas_pct:'% de atajadas', xcg:'xCG',
     actualizado:'Actualizado', fuente_datos:'Estadísticas oficiales provistas por', ver_en:'Ver en', valor_mercado:'Valor de mercado', dato:'Dato',
     vacio_sin:'Todavía no hay jugadores cargados.', vacio_sin2:'Entrá al panel ⚙ para agregar el primero.',
-    vacio_busca:'No hay resultados para esa búsqueda.', cargando:'Cargando jugadores…'
+    vacio_busca:'No hay resultados para esa búsqueda.', cargando:'Cargando jugadores…',
+    hero_kicker:'Marketing deportivo · Scouting',
+    hero_t1:'Tus videos,', hero_t2:'tus estadísticas', hero_t3:'en un solo perfil',
+    hero_sub:'Presentamos a tus jugadores como los ve un club: <b>highlights</b>, <b>estadísticas oficiales de Wyscout</b> actualizadas cada semana y <b>valor de mercado de Transfermarkt</b>, en un perfil listo para compartir por WhatsApp.',
+    cta_plataforma:'Ver jugadores', cta_perfil:'Quiero mi perfil', datos_de:'Datos de',
+    n_jugadores:'Jugadores', n_ligas:'Ligas', n_minutos:'Minutos analizados', n_videos:'Videos',
+    dest_t1:'Destacados', dest_t2:'de la temporada', dest_sub:'Los jugadores con más minutos según la última actualización de Wyscout.',
+    pj:'PJ', min:'Min', gol:'Goles', asi:'Asist.',
+    hl_t1:'Highlights', hl_t2:'en video', hl_sub:'Lo que primero mira un club: el jugador en acción.', ver_perfil:'Ver perfil',
+    plat_t:'Plataforma', plat_sub:'Filtrá por posición, edad y liga, como en una herramienta de scouting.',
+    f_pos:'Todas las posiciones', f_edad:'Todas las edades', f_liga:'Todas las ligas',
+    pos_arq:'Arqueros', pos_def:'Defensores', pos_med:'Mediocampistas', pos_del:'Delanteros',
+    edad_21:'Sub-21', edad_25:'21 a 25', edad_26:'26 o más',
+    orden_nombre:'Orden: nombre', orden_min:'Orden: más minutos', orden_valor:'Orden: mayor valor', orden_joven:'Orden: más jóvenes',
+    limpiar:'Limpiar filtros',
+    serv_t1:'Qué incluye', serv_t2:'cada perfil', serv_sub:'Todo lo que un jugador necesita para que lo vean los clubes.',
+    s1t:'Perfil web profesional', s1d:'Ficha propia con foto, trayectoria, datos y link para compartir por WhatsApp con vista previa.',
+    s2t:'Highlights y video análisis', s2d:'Edición de jugadas y análisis de rendimiento pensados para directores deportivos y scouts.',
+    s3t:'Estadísticas Wyscout', s3d:'Partidos, minutos, goles, precisión de pases y duelos, actualizados cada semana con datos oficiales.',
+    s4t:'Valor de mercado', s4d:'El valor de Transfermarkt destacado en el perfil, con acceso directo a su ficha.',
+    s5t:'PDF para clubes', s5d:'Un dossier descargable con datos y videos, listo para mandar a un club.',
+    s6t:'Contenido para redes', s6d:'Diseño de carruseles, gráficos de partido y piezas para Instagram del jugador.',
+    ag_t1:'Agencias', ag_t2:'que confían', ag_sub:'Representantes que usan la plataforma para mostrar a sus jugadores.',
+    cierre_t:'Sumá a tu jugador a la plataforma', cierre_sub:'Armamos su perfil con video, datos oficiales y valor de mercado, y lo dejamos listo para mostrar a clubes.',
+    wsp_msg:'Hola! Quiero sumar un jugador a VIDEOSJUGADORES'
   },
   en: {
     jugadores:'Players', buscar:'Search player…', volver:'← Back to players',
@@ -775,7 +1021,31 @@ const T = {
     goles_recibidos:'Goals conceded', atajadas:'Saves', paradas_pct:'Save %', xcg:'xCG',
     actualizado:'Updated', fuente_datos:'Official statistics provided by', ver_en:'View on', valor_mercado:'Market value', dato:'Source',
     vacio_sin:'No players loaded yet.', vacio_sin2:'Open the ⚙ panel to add the first one.',
-    vacio_busca:'No results for that search.', cargando:'Loading players…'
+    vacio_busca:'No results for that search.', cargando:'Loading players…',
+    hero_kicker:'Sports marketing · Scouting',
+    hero_t1:'Your videos,', hero_t2:'your stats', hero_t3:'in one profile',
+    hero_sub:'We present your players the way clubs see them: <b>highlights</b>, <b>official Wyscout statistics</b> updated every week and <b>Transfermarkt market value</b>, in a profile ready to share on WhatsApp.',
+    cta_plataforma:'See players', cta_perfil:'Get a profile', datos_de:'Data from',
+    n_jugadores:'Players', n_ligas:'Leagues', n_minutos:'Minutes analysed', n_videos:'Videos',
+    dest_t1:'Top', dest_t2:'of the season', dest_sub:'Players with the most minutes in the latest Wyscout update.',
+    pj:'Apps', min:'Min', gol:'Goals', asi:'Assists',
+    hl_t1:'Highlights', hl_t2:'on video', hl_sub:'What clubs look at first: the player in action.', ver_perfil:'View profile',
+    plat_t:'Platform', plat_sub:'Filter by position, age and league, like a scouting tool.',
+    f_pos:'All positions', f_edad:'All ages', f_liga:'All leagues',
+    pos_arq:'Goalkeepers', pos_def:'Defenders', pos_med:'Midfielders', pos_del:'Forwards',
+    edad_21:'Under 21', edad_25:'21 to 25', edad_26:'26 and over',
+    orden_nombre:'Sort: name', orden_min:'Sort: most minutes', orden_valor:'Sort: highest value', orden_joven:'Sort: youngest',
+    limpiar:'Clear filters',
+    serv_t1:'What every', serv_t2:'profile includes', serv_sub:'Everything a player needs to get noticed by clubs.',
+    s1t:'Professional web profile', s1d:'A dedicated page with photo, career, data and a WhatsApp share link with preview.',
+    s2t:'Highlights & video analysis', s2d:'Clip editing and performance analysis built for sporting directors and scouts.',
+    s3t:'Wyscout statistics', s3d:'Matches, minutes, goals, pass accuracy and duels, updated weekly with official data.',
+    s4t:'Market value', s4d:'Transfermarkt value featured on the profile, with a direct link to their page.',
+    s5t:'PDF for clubs', s5d:'A downloadable dossier with data and videos, ready to send to a club.',
+    s6t:'Social media content', s6d:'Carousels, match graphics and Instagram pieces for the player.',
+    ag_t1:'Agencies', ag_t2:'that trust us', ag_sub:'Agents who use the platform to showcase their players.',
+    cierre_t:'Add your player to the platform', cierre_sub:'We build their profile with video, official data and market value, ready to show to clubs.',
+    wsp_msg:'Hi! I want to add a player to VIDEOSJUGADORES'
   }
 };
 const t = k => (T[idioma] && T[idioma][k]) || (T.es[k] || k);
@@ -796,13 +1066,18 @@ function setIdioma(lang){
   if(document.getElementById('vista-ficha').style.display !== 'none' && _fichaActual){
     renderFicha(_fichaActual);
   }
+  renderPortada();
   renderLista();
 }
 function actualizarUIIdioma(){
   const btn = document.getElementById('btn-idioma');
   if(btn) btn.innerHTML = idioma === 'es' ? 'ES <span style="color:var(--gris)">/ EN</span>' : '<span style="color:var(--gris)">ES /</span> EN';
-  const h2 = document.querySelector('#vista-lista .titulo-seccion h2');
+  const h2 = document.getElementById('tit-plataforma');
   if(h2) h2.textContent = t('jugadores');
+  const sub = document.getElementById('sub-plataforma');
+  if(sub) sub.textContent = t('plat_sub');
+  const wf = document.getElementById('wsp-flotante');
+  if(wf) wf.href = linkWspAgencia();
   const bus = document.getElementById('buscador');
   if(bus) bus.placeholder = t('buscar');
 }
@@ -826,6 +1101,8 @@ function irInicio(e){
   mostrarVista('vista-lista');
 }
 function mostrarVista(id){
+  const wf = document.getElementById('wsp-flotante');
+  if(wf) wf.style.display = (id === 'vista-admin' ? 'none' : 'flex');
   ['vista-lista','vista-ficha','vista-admin'].forEach(v=>{
     document.getElementById(v).style.display = (v===id ? 'block' : 'none');
   });
@@ -846,6 +1123,7 @@ async function cargarJugadores(){
       '<div class="vacio">No se pudieron cargar los jugadores. Revisá la conexión y recargá la página.</div>';
     return;
   }
+  renderPortada();
   renderLista();
   if(adminActivo) renderAdmin();
   procesarHash();
@@ -895,9 +1173,27 @@ function esc(s){
 /* ================= LISTA ================= */
 function renderLista(){
   const cont = document.getElementById('contenedor-lista');
-  const q = (document.getElementById('buscador').value || '').toLowerCase();
-  const lista = jugadores.filter(j => (j.nombre||'').toLowerCase().includes(q));
-  document.getElementById('cant-jugadores').textContent = jugadores.length ? '(' + jugadores.length + ')' : '';
+  armarFiltros();
+  const q = normTxt(document.getElementById('buscador').value || '');
+  const fPos = valorFiltro('f-filtro-pos'), fEdad = valorFiltro('f-filtro-edad'), fLiga = valorFiltro('f-filtro-liga');
+  const orden = valorFiltro('f-filtro-orden') || 'nombre';
+  let lista = jugadores.filter(j => {
+    if(q && !normTxt(j.nombre).includes(q)) return false;
+    if(fPos && grupoPosicion(j) !== fPos) return false;
+    if(fEdad){
+      const e = edad(j.nacimiento);
+      if(e === null) return false;
+      if(fEdad === '21' && !(e < 21)) return false;
+      if(fEdad === '25' && !(e >= 21 && e <= 25)) return false;
+      if(fEdad === '26' && !(e >= 26)) return false;
+    }
+    if(fLiga && !ligasJugador(j).includes(fLiga)) return false;
+    return true;
+  });
+  if(orden === 'min') lista.sort((a,b) => ((ultimaTemp(b)||{}).minutos||0) - ((ultimaTemp(a)||{}).minutos||0));
+  else if(orden === 'valor') lista.sort((a,b) => valorNum(b.valor_mercado) - valorNum(a.valor_mercado));
+  else if(orden === 'joven') lista.sort((a,b) => (edad(a.nacimiento) ?? 99) - (edad(b.nacimiento) ?? 99));
+  document.getElementById('cant-jugadores').textContent = jugadores.length ? '(' + (lista.length !== jugadores.length ? lista.length + '/' : '') + jugadores.length + ')' : '';
 
   if(!jugadores.length){
     cont.className = '';
@@ -906,20 +1202,231 @@ function renderLista(){
   }
   if(!lista.length){
     cont.className = '';
-    cont.innerHTML = `<div class="vacio">${t('vacio_busca')}</div>`;
+    cont.innerHTML = `<div class="vacio">${t('vacio_busca')}<br><button class="filtro-limpiar" onclick="limpiarFiltros()">${t('limpiar')}</button></div>`;
     return;
   }
   cont.className = 'grid-jugadores';
-  cont.innerHTML = lista.map(j => `
+  cont.innerHTML = lista.map(j => {
+    const ed = edad(j.nacimiento);
+    const ut = ultimaTemp(j);
+    const tieneVideo = [j.video, j.video2, j.video3, j.video4].some(v => vimeoEmbed(v));
+    const meta = [];
+    if(ed !== null) meta.push(`<span><b>${ed}</b> ${t('anios')}</span>`);
+    if(ut && ut.minutos) meta.push(`<span><b>${Number(ut.minutos).toLocaleString('es-UY')}</b>' ${esc(ut.temporada_label || ut.temporada || '')}</span>`);
+    if(j.valor_mercado) meta.push(`<span class="card-vm">${esc(j.valor_mercado)}</span>`);
+    return `
     <button class="card-jugador" onclick="verFicha('${j.id}')">
-      <div class="card-foto">${j.foto ? `<img src="${j.foto}" alt="${esc(j.nombre)}" loading="lazy">` : '<div class="sin-foto">👤</div>'}</div>
+      <div class="card-foto">
+        ${j.foto ? `<img src="${j.foto}" alt="${esc(j.nombre)}" loading="lazy">` : '<div class="sin-foto">👤</div>'}
+        ${tieneVideo ? `<span class="card-badge-video"><svg viewBox="0 0 10 10"><path d="M1 0l9 5-9 5z"/></svg>Video</span>` : ''}
+      </div>
       <div class="card-info">
         <h3>${esc(j.nombre)}</h3>
         <div class="chips">${posiciones(j).slice(0,2).map(p=>`<span class="chip">${esc(traducirPos(p))}</span>`).join('')}</div>
+        ${meta.length ? `<div class="card-meta">${meta.join('')}</div>` : ''}
         <div class="card-agencia ${j.agencia ? '' : 'vacia'}">${j.agencia ? esc(j.agencia) : ''}</div>
       </div>
-    </button>`).join('');
+    </button>`;
+  }).join('');
 }
+
+/* ================= PORTADA ================= */
+function linkWspAgencia(){
+  const txt = encodeURIComponent(t('wsp_msg'));
+  const num = String(WHATSAPP_AGENCIA || '').replace(/\D/g,'');
+  return num ? `https://wa.me/${num}?text=${txt}` : `https://wa.me/?text=${txt}`;
+}
+function ultimaTemp(j){
+  const ts = Array.isArray(j.stats) ? j.stats.filter(Boolean) : [];
+  if(!ts.length) return null;
+  return ts.slice().sort((a,b) => String(b.temporada||'').localeCompare(String(a.temporada||'')))[0];
+}
+function ligasJugador(j){
+  const ut = ultimaTemp(j);
+  return ut && ut.ligas ? String(ut.ligas).split(',').map(x => x.trim()).filter(Boolean) : [];
+}
+// "€ 1,2 M" -> 1200000 · "€ 800 mil" -> 800000 · "€ 900k" -> 900000
+function valorNum(v){
+  if(!v) return 0;
+  const s = normTxt(v).replace(/€|eur|\s/g,'');
+  const m = s.match(/([\d.,]+)(m|mill|mil|k)?/);
+  if(!m) return 0;
+  let n = parseFloat(m[1].replace(/\.(?=\d{3}\b)/g,'').replace(',','.'));
+  if(isNaN(n)) return 0;
+  if(m[2] && m[2].startsWith('m') && m[2] !== 'mil') n *= 1e6;
+  else if(m[2] === 'mil' || m[2] === 'k') n *= 1e3;
+  return n;
+}
+function grupoPosicion(j){
+  const p = normTxt(j.posicion || '').split(',')[0] || '';
+  if(/arquero|portero|golero/.test(p)) return 'arq';
+  if(/volante|medio|mediocentro|pivote|enganche|interior/.test(p)) return 'med';
+  if(/central|lateral|defens|carrilero|zaguero/.test(p)) return 'def';
+  if(/extremo|delantero|punta|atacante|wing/.test(p)) return 'del';
+  return '';
+}
+function valorFiltro(id){ const el = document.getElementById(id); return el ? el.value : ''; }
+function limpiarFiltros(){
+  ['f-filtro-pos','f-filtro-edad','f-filtro-liga'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  const b = document.getElementById('buscador'); if(b) b.value = '';
+  renderLista();
+}
+function armarFiltros(){
+  const opt = (v, txt, sel) => `<option value="${esc(v)}" ${v === sel ? 'selected' : ''}>${esc(txt)}</option>`;
+  const set = (id, html) => {
+    const el = document.getElementById(id); if(!el) return;
+    const v = el.value; el.innerHTML = html;
+    if([...el.options].some(o => o.value === v)) el.value = v;
+    el.classList.toggle('activo', !!el.value && id !== 'f-filtro-orden');
+  };
+  set('f-filtro-pos', opt('', t('f_pos')) + ['arq','def','med','del'].filter(g => jugadores.some(j => grupoPosicion(j) === g)).map(g => opt(g, t('pos_' + g))).join(''));
+  set('f-filtro-edad', opt('', t('f_edad')) + opt('21', t('edad_21')) + opt('25', t('edad_25')) + opt('26', t('edad_26')));
+  const ligas = [...new Set(jugadores.flatMap(ligasJugador))].sort((a,b) => a.localeCompare(b));
+  set('f-filtro-liga', opt('', t('f_liga')) + ligas.map(l => opt(l, l)).join(''));
+  const fl = document.getElementById('f-filtro-liga'); if(fl) fl.style.display = ligas.length ? '' : 'none';
+  set('f-filtro-orden', opt('nombre', t('orden_nombre')) + opt('min', t('orden_min')) + (jugadores.some(j => j.valor_mercado) ? opt('valor', t('orden_valor')) : '') + opt('joven', t('orden_joven')));
+}
+function irPlataforma(e){
+  if(e) e.preventDefault();
+  const el = document.getElementById('plataforma');
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function videosDeJugador(j){ return [j.video, j.video2, j.video3, j.video4].map(vimeoEmbed).filter(Boolean); }
+function miniaturaVideo(embed, j){
+  const m = embed.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+  if(m) return `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg`;
+  return j.foto || '';
+}
+function hlPlay(el, embed){
+  if(el.querySelector('iframe')) return;
+  const src = embed + (embed.includes('?') ? '&' : '?') + 'autoplay=1';
+  el.insertAdjacentHTML('beforeend', `<iframe src="${esc(src)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`);
+}
+function renderPortada(){
+  const arriba = document.getElementById('portada-arriba');
+  const abajo = document.getElementById('portada-abajo');
+  if(!arriba || !abajo) return;
+  const conFoto = jugadores.filter(j => j.foto);
+  const conStats = jugadores.filter(j => ultimaTemp(j));
+  const destacados = conStats.slice().sort((a,b) => (ultimaTemp(b).minutos||0) - (ultimaTemp(a).minutos||0)).slice(0,4);
+  // Fotos del mosaico: primero los destacados con foto, después el resto
+  const mosaico = [...destacados.filter(j => j.foto), ...conFoto.filter(j => !destacados.includes(j))].slice(0,3);
+  // Highlights: un video por jugador, priorizando destacados
+  const conVideo = [...destacados, ...jugadores.filter(j => !destacados.includes(j))].filter(j => videosDeJugador(j).length).slice(0,8);
+  _hlLista = conVideo.map(j => ({ j, embed: videosDeJugador(j)[0] }));
+
+  const ligas = new Set(jugadores.flatMap(ligasJugador));
+  const minutos = conStats.reduce((a,j) => a + (Number(ultimaTemp(j).minutos)||0), 0);
+  const nVideos = jugadores.reduce((a,j) => a + videosDeJugador(j).length, 0);
+  const numeros = [
+    [jugadores.length, t('n_jugadores')],
+    ligas.size ? [ligas.size, t('n_ligas')] : null,
+    minutos ? [minutos.toLocaleString('es-UY'), t('n_minutos')] : null,
+    nVideos ? [nVideos, t('n_videos')] : null
+  ].filter(Boolean);
+  const wsp = linkWspAgencia();
+  const playSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 3l15 9-15 9z"/></svg>';
+
+  arriba.innerHTML = `
+    <div class="hero">
+      <div>
+        <div class="hero-kicker">${t('hero_kicker')}</div>
+        <h1>${t('hero_t1')} ${t('hero_t2')} <em>${t('hero_t3')}</em>.</h1>
+        <p class="hero-sub">${t('hero_sub')}</p>
+        <div class="hero-ctas">
+          <a class="cta cta-primario" href="#plataforma" onclick="irPlataforma(event)">${t('cta_plataforma')}</a>
+          <a class="cta cta-wsp" href="${wsp}" target="_blank" rel="noopener">${t('cta_perfil')}</a>
+        </div>
+        <div class="hero-fuentes">
+          <span>${t('datos_de')}</span>
+          <span class="fuente-chip"><img src="/logos/wyscout.png" alt="" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><span>Wyscout</span></span>
+          <span class="fuente-chip tm"><img src="https://tmsi.akamaized.net/head/tm_logo_rebrush.svg" alt="Transfermarkt" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><span>Transfermarkt</span></span>
+        </div>
+      </div>
+      ${mosaico.length ? `<div class="hero-mosaico">
+        ${mosaico.map((j,i) => `<button class="hm-foto hm-${i+1}" onclick="verFicha('${j.id}')" aria-label="${esc(j.nombre)}"><img src="${esc(j.foto)}" alt="${esc(j.nombre)}"><span>${esc(j.nombre)}</span></button>`).join('')}
+      </div>` : ''}
+    </div>
+
+    ${numeros.length > 1 ? `<div class="franja">${numeros.map(([n,l]) => `<div class="franja-item"><div class="franja-num">${n}</div><div class="franja-lbl">${l}</div></div>`).join('')}</div>` : ''}
+
+    ${destacados.length >= 2 ? `
+    <div class="seccion-landing">
+      <div class="seccion-cab"><h2>${t('dest_t1')} <em>${t('dest_t2')}</em></h2><p>${t('dest_sub')}</p></div>
+      <div class="destacados">
+        ${destacados.map((j,i) => { const u = ultimaTemp(j); const p = posiciones(j)[0]; return `
+          <button class="dest-card" onclick="verFicha('${j.id}')">
+            ${j.foto ? `<img src="${esc(j.foto)}" alt="${esc(j.nombre)}" loading="lazy">` : ''}
+            <span class="dest-rank">#${i+1}</span>
+            <div class="dest-info">
+              <h3>${esc(j.nombre)}</h3>
+              ${p ? `<div class="dest-pos">${esc(traducirPos(p))}</div>` : ''}
+              <div class="dest-stats">
+                <div><b>${u.partidos ?? 0}</b><span>${t('pj')}</span></div>
+                <div><b>${Number(u.minutos||0).toLocaleString('es-UY')}</b><span>${t('min')}</span></div>
+                ${u.goles != null ? `<div><b>${u.goles}</b><span>${t('gol')}</span></div>` : ''}
+              </div>
+            </div>
+          </button>`; }).join('')}
+      </div>
+    </div>` : ''}
+
+    ${_hlLista.length ? `
+    <div class="seccion-landing">
+      <div class="seccion-cab"><h2>${t('hl_t1')} <em>${t('hl_t2')}</em></h2><p>${t('hl_sub')}</p></div>
+      <div class="hl-tira">
+        ${_hlLista.map((h,i) => { const p = posiciones(h.j)[0]; const thumb = miniaturaVideo(h.embed, h.j); return `
+          <div class="hl-card">
+            <div class="hl-video" onclick="hlPlay(this, _hlLista[${i}].embed)" role="button" aria-label="Play ${esc(h.j.nombre)}">
+              ${thumb ? `<img src="${esc(thumb)}" alt="" loading="lazy">` : ''}
+              <span class="hl-play">${playSvg}</span>
+            </div>
+            <div class="hl-meta">
+              <div><h3>${esc(h.j.nombre)}</h3>${p ? `<span>${esc(traducirPos(p))}</span>` : ''}</div>
+              <button onclick="verFicha('${h.j.id}')">${t('ver_perfil')}</button>
+            </div>
+          </div>`; }).join('')}
+      </div>
+    </div>` : ''}
+  `;
+
+  const agencias = [];
+  jugadores.forEach(j => {
+    if(!j.agencia) return;
+    const k = normTxt(j.agencia);
+    const ya = agencias.find(a => a.k === k);
+    if(ya){ if(!ya.logo && j.agencia_logo) ya.logo = j.agencia_logo; }
+    else agencias.push({ k, nombre: j.agencia, logo: j.agencia_logo || '' });
+  });
+  const servicios = [1,2,3,4,5,6];
+  abajo.innerHTML = `
+    <div class="seccion-landing" style="margin-top:56px">
+      <div class="seccion-cab"><h2>${t('serv_t1')} <em>${t('serv_t2')}</em></h2><p>${t('serv_sub')}</p></div>
+      <div class="servicios">
+        ${servicios.map(n => `<div class="servicio"><div class="sv-num">0${n}</div><h3>${t('s'+n+'t')}</h3><p>${t('s'+n+'d')}</p></div>`).join('')}
+      </div>
+    </div>
+
+    ${agencias.length ? `
+    <div class="seccion-landing">
+      <div class="seccion-cab"><h2>${t('ag_t1')} <em>${t('ag_t2')}</em></h2><p>${t('ag_sub')}</p></div>
+      <div class="agencias">
+        ${agencias.map(a => `<div class="agencia-chip">${a.logo ? `<img src="${esc(a.logo)}" alt="" loading="lazy" onerror="this.remove()">` : ''}<span>${esc(a.nombre)}</span></div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="cierre">
+      <h2>${t('cierre_t')}</h2>
+      <p>${t('cierre_sub')}</p>
+      <div class="hero-ctas">
+        <a class="cta cta-wsp" href="${wsp}" target="_blank" rel="noopener">${t('cta_perfil')}</a>
+        <a class="cta cta-borde" href="#plataforma" onclick="irPlataforma(event)">${t('cta_plataforma')}</a>
+      </div>
+    </div>
+  `;
+  const wf = document.getElementById('wsp-flotante'); if(wf) wf.href = wsp;
+}
+let _hlLista = [];
 
 /* ================= FICHA ================= */
 function verFicha(id){
@@ -2048,9 +2555,8 @@ function toast(msg){
 window.addEventListener('hashchange', procesarHash);
 document.addEventListener('DOMContentLoaded', () => {
   // Si entra con link directo a un jugador (WhatsApp), saltamos el splash
-  if(location.hash.startsWith('#jugador-') || location.pathname.startsWith('/jugador/') || sessionStorage.getItem('vj_entro')){
-    document.getElementById('splash').classList.add('oculto');
-  }
+  // La portada nueva reemplaza al splash: lo ocultamos siempre.
+  document.getElementById('splash').classList.add('oculto');
   document.documentElement.lang = idioma;
   actualizarUIIdioma();
   cargarJugadores();
