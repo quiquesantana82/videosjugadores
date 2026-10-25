@@ -453,6 +453,7 @@ header .fila-header{display:flex;align-items:center;gap:10px}
   content:'';position:absolute;inset:-40px -22px auto;height:120%;z-index:-1;pointer-events:none;
   background:radial-gradient(60% 70% at 20% 10%,rgba(87,184,232,.16),transparent 70%),
              radial-gradient(40% 50% at 90% 60%,rgba(212,175,55,.08),transparent 70%);
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 22%);mask-image:linear-gradient(180deg,transparent,#000 22%);
 }
 .hero-kicker{
   display:inline-flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;
@@ -501,6 +502,43 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 .hm-2{left:22%;top:0;z-index:3;transform:rotate(1deg)}
 .hm-3{right:0;top:14%;transform:rotate(6deg);z-index:2}
 @media(hover:hover){.hero-mosaico .hm-foto:hover{transform:rotate(0) scale(1.03);z-index:4}}
+
+/* titular: entrada palabra por palabra */
+.hero h1 .pal{display:inline-block;opacity:0;transform:translateY(.45em);filter:blur(6px);animation:palEntra .7s cubic-bezier(.2,.7,.2,1) forwards}
+.hero h1 em .pal{background:linear-gradient(90deg,var(--celeste),#9bdcff,var(--celeste));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:palEntra .7s cubic-bezier(.2,.7,.2,1) forwards, palBrillo 4s ease-in-out 1.6s infinite}
+@keyframes palEntra{to{opacity:1;transform:none;filter:none}}
+@keyframes palBrillo{0%,100%{background-position:0 0}50%{background-position:100% 0}}
+
+/* cinta infinita de jugadores */
+.cinta{
+  position:relative;overflow:hidden;margin:4px -22px 22px;padding:6px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+}
+.cinta-pista{display:flex;gap:12px;width:max-content;animation:cintaCorre var(--cinta-dur,40s) linear infinite}
+@media(min-width:1100px){.cinta{margin-left:-40px;margin-right:-40px}}
+@media(hover:hover){.cinta:hover .cinta-pista{animation-play-state:paused}}
+@keyframes cintaCorre{to{transform:translateX(calc(-50% - 6px))}}
+.cinta-card{
+  display:flex;align-items:center;gap:11px;flex:none;min-width:236px;padding:9px 16px 9px 9px;
+  border:1px solid var(--linea);border-radius:999px;background:rgba(20,26,34,.78);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:left;color:var(--blanco);
+  transition:border-color .2s,background .2s,transform .2s;
+}
+@media(hover:hover){.cinta-card:hover{border-color:var(--celeste);background:rgba(87,184,232,.1);transform:translateY(-2px)}}
+.cinta-card img,.cinta-card .cc-sin{width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:top center;flex:none;background:var(--panel);border:1px solid var(--linea)}
+.cinta-card .cc-sin{display:grid;place-items:center;font-size:20px}
+.cc-txt{min-width:0}
+.cc-nom{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;line-height:1.1}
+.cc-meta{display:flex;align-items:center;gap:7px;margin-top:3px;font-size:12px;color:var(--gris);white-space:nowrap}
+.cc-meta .cc-pos{color:var(--celeste);font-weight:700;letter-spacing:.06em}
+.cc-meta .cc-vm{color:var(--blanco);font-weight:600}
+.cc-club{max-width:120px;overflow:hidden;text-overflow:ellipsis}
+@media (prefers-reduced-motion:reduce){
+  .cinta{overflow-x:auto}
+  .cinta-pista{animation:none}
+  .hero h1 .pal{opacity:1;transform:none;filter:none}
+}
 
 /* franja de números */
 .franja{
@@ -1342,17 +1380,33 @@ function renderPortada(){
   const numeros = [
     [jugadores.length, t('n_jugadores')],
     ligas.size ? [ligas.size, t('n_ligas')] : null,
-    minutos ? [minutos.toLocaleString('es-UY'), t('n_minutos')] : null,
+    minutos ? [minutos, t('n_minutos')] : null,
     nVideos ? [nVideos, t('n_videos')] : null
   ].filter(Boolean);
+  // Cinta: jugadores con foto, priorizando los de más minutos (repetidos hasta llenar el ancho)
+  const paraCinta = [...destacados.filter(j => j.foto), ...conFoto.filter(j => !destacados.includes(j))];
+  let cintaBase = paraCinta.slice();
+  while(cintaBase.length && cintaBase.length < 8) cintaBase = cintaBase.concat(paraCinta);
+  const cintaHtml = cintaBase.length >= 3 ? `
+    <div class="cinta" aria-label="${esc(t('n_jugadores'))}">
+      <div class="cinta-pista" style="--cinta-dur:${Math.max(28, cintaBase.length * 5)}s">
+        ${[...cintaBase, ...cintaBase].map((j,i) => cintaCard(j, i >= cintaBase.length)).join('')}
+      </div>
+    </div>` : '';
   const wsp = linkWspAgencia();
   const playSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 3l15 9-15 9z"/></svg>';
 
+  // Titular partido en palabras para la entrada escalonada
+  let _pi = 0;
+  const palabras = s => String(s).split(/\s+/).filter(Boolean).map(w => `<span class="pal" style="animation-delay:${(0.15 + 0.09 * _pi++).toFixed(2)}s">${w}</span>`).join(' ');
+  const h1 = `${palabras(t('hero_t1') + ' ' + t('hero_t2'))} <em>${palabras(t('hero_t3') + '.')}</em>`;
+
   arriba.innerHTML = `
+    ${cintaHtml}
     <div class="hero">
       <div>
         <div class="hero-kicker">${t('hero_kicker')}</div>
-        <h1>${t('hero_t1')} ${t('hero_t2')} <em>${t('hero_t3')}</em>.</h1>
+        <h1 aria-label="${esc(t('hero_t1') + ' ' + t('hero_t2') + ' ' + t('hero_t3'))}.">${h1}</h1>
         <p class="hero-sub">${t('hero_sub')}</p>
         <div class="hero-ctas">
           <a class="cta cta-primario" href="#plataforma" onclick="irPlataforma(event)">${t('cta_plataforma')}</a>
@@ -1369,7 +1423,7 @@ function renderPortada(){
       </div>` : ''}
     </div>
 
-    ${numeros.length > 1 ? `<div class="franja">${numeros.map(([n,l]) => `<div class="franja-item"><div class="franja-num">${n}</div><div class="franja-lbl">${l}</div></div>`).join('')}</div>` : ''}
+    ${numeros.length > 1 ? `<div class="franja">${numeros.map(([n,l]) => `<div class="franja-item"><div class="franja-num" data-n="${Number(n)||0}">${Number(n).toLocaleString('es-UY')}</div><div class="franja-lbl">${l}</div></div>`).join('')}</div>` : ''}
 
     ${destacados.length >= 2 ? `
     <div class="seccion-landing" id="seccion-destacados">
@@ -1433,8 +1487,52 @@ function renderPortada(){
   `;
   const wf = document.getElementById('wsp-flotante'); if(wf) wf.href = wsp;
   renderDestacados();
+  animarContadores(arriba);
 }
 let _hlLista = [];
+
+/* ---- Efectos de portada: cinta de jugadores y contadores ---- */
+function clubActual(j){
+  // Primera línea de la trayectoria = etapa más reciente ("años | club")
+  const lineas = String(j.trayectoria || '').split('\n').map(l => l.trim()).filter(Boolean);
+  if(!lineas.length) return '';
+  const partes = lineas[0].split('|');
+  return (partes[1] || '').trim();
+}
+function cintaCard(j, duplicado){
+  const p = posiciones(j)[0], ed = edad(j.nacimiento), club = clubActual(j);
+  const meta = [
+    p ? `<span class="cc-pos">${esc(traducirPos(p))}</span>` : '',
+    ed !== null ? `<span>${ed} ${t('anios')}</span>` : '',
+    j.valor_mercado ? `<span class="cc-vm">${esc(j.valor_mercado)}</span>` : (club ? `<span class="cc-club">${esc(club)}</span>` : '')
+  ].filter(Boolean).join('<span>·</span>');
+  return `<button class="cinta-card" onclick="verFicha('${j.id}')" ${duplicado ? 'tabindex="-1" aria-hidden="true"' : ''}>
+    ${j.foto ? `<img src="${esc(j.foto)}" alt="" loading="lazy">` : '<span class="cc-sin">👤</span>'}
+    <span class="cc-txt"><span class="cc-nom">${esc(j.nombre)}</span>${meta ? `<span class="cc-meta">${meta}</span>` : ''}</span>
+  </button>`;
+}
+let _obsContadores = null;
+function animarContadores(raiz){
+  const nums = [...raiz.querySelectorAll('.franja-num[data-n]')];
+  if(!nums.length) return;
+  const reducido = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reducido || !('IntersectionObserver' in window)) return; // ya muestran el valor final
+  nums.forEach(el => el.textContent = '0');
+  const correr = el => {
+    const fin = Number(el.dataset.n) || 0, dur = 1400, t0 = performance.now();
+    const paso = ahora => {
+      const k = Math.min(1, (ahora - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = Math.round(fin * e).toLocaleString('es-UY');
+      if(k < 1) requestAnimationFrame(paso);
+    };
+    requestAnimationFrame(paso);
+  };
+  if(_obsContadores) _obsContadores.disconnect();
+  _obsContadores = new IntersectionObserver(entradas => {
+    entradas.forEach(en => { if(en.isIntersecting){ correr(en.target); _obsContadores.unobserve(en.target); } });
+  }, { threshold: .4 });
+  nums.forEach(el => _obsContadores.observe(el));
+}
 
 /* ---- Destacados: rankings por minutos, goles y asistencias ---- */
 let _rankTipo = 'min';
