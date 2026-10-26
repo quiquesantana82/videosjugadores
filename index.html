@@ -653,51 +653,48 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 .vista-toggle button{display:flex;align-items:center;gap:6px;padding:0 14px;min-height:44px;color:var(--gris);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
 .vista-toggle button svg{width:15px;height:15px;fill:currentColor}
 .vista-toggle button.activo{background:rgba(87,184,232,.14);color:var(--celeste)}
-.tabla-jug{border:1px solid var(--linea);border-radius:var(--radius);overflow:hidden;background:var(--carbon)}
-.tj-cab,.fila-jug{display:grid;grid-template-columns:minmax(0,1fr) 34px auto;align-items:center;gap:10px;padding:0 12px}
-@media(min-width:760px){.tj-cab,.fila-jug{grid-template-columns:minmax(220px,2.3fr) minmax(90px,1fr) 52px minmax(170px,1.9fr) 84px 96px;gap:16px;padding:0 18px}}
-.tj-cab{min-height:40px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gris);border-bottom:1px solid var(--linea);background:var(--panel)}
-.fila-jug{width:100%;min-height:64px;text-align:left;border-bottom:1px solid var(--linea);transition:background .15s ease}
-.fila-jug:last-child{border-bottom:0}
-@media(hover:hover){.fila-jug:hover{background:rgba(87,184,232,.06)}.fila-jug:hover .fj-nom{color:var(--celeste)}}
-.fila-jug:active{background:rgba(87,184,232,.1)}
-.fila-jug:focus-visible{outline:2px solid var(--celeste);outline-offset:-2px}
+.tabla-jug{border:1px solid var(--linea);border-radius:var(--radius);background:var(--carbon);overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.tabla-jug table{border-collapse:separate;border-spacing:0;width:100%;min-width:max-content}
+.tabla-jug th,.tabla-jug td{padding:0 12px;white-space:nowrap;border-bottom:1px solid var(--linea);text-align:center;background:var(--carbon)}
+.tabla-jug tbody tr:last-child td{border-bottom:0}
+.tabla-jug th{height:40px;background:var(--panel);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris);cursor:pointer;user-select:none}
+.tabla-jug th.activo{color:var(--celeste)}
+.tabla-jug th .flecha{font-size:10px;margin-left:3px}
+.tabla-jug td{height:62px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px}
+.tabla-jug tbody tr{cursor:pointer}
+@media(hover:hover){.tabla-jug tbody tr:hover td{background:#111923}.tabla-jug tbody tr:hover .fj-nom{color:var(--celeste)}}
+.tabla-jug tbody tr:focus-visible td{background:#111923}
+.tabla-jug tbody tr:focus-visible{outline:none}
+.tabla-jug .c-jug{position:sticky;left:0;z-index:1;text-align:left;padding-left:12px;border-right:1px solid var(--linea);min-width:150px;max-width:165px}
+@media(max-width:759px){.tabla-jug .fj-sub{display:none}.tabla-jug .fj-foto{width:32px;height:32px}.fj-nom{font-size:15px}}
+@media(min-width:760px){.tabla-jug .c-jug{min-width:260px;max-width:320px;padding-left:18px}}
+.tabla-jug .c-izq{text-align:left}
+.tabla-jug .c-gris{color:var(--gris);font-family:'Barlow',sans-serif;font-weight:500;font-size:14px}
+.tabla-jug .nd{color:var(--linea);font-weight:500}
 .fj-jug{display:flex;align-items:center;gap:10px;min-width:0}
-.fj-foto{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:top center;flex:none;background:var(--panel);border:1px solid var(--linea)}
-.fj-foto.sin{display:grid;place-items:center;font-size:18px;color:var(--gris)}
+.fj-foto{width:38px;height:38px;border-radius:50%;object-fit:cover;object-position:top center;flex:none;background:var(--panel);border:1px solid var(--linea)}
+.fj-foto.sin{display:grid;place-items:center;font-size:17px;color:var(--gris)}
 .fj-txt{display:flex;flex-direction:column;min-width:0;gap:2px}
-.fj-nom{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .15s ease}
-@media(min-width:760px){.fj-nom{font-size:18px;display:block;white-space:nowrap;text-overflow:ellipsis}}
-.fila-jug{padding-top:10px;padding-bottom:10px}
-.fj-sub{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gris);min-width:0;white-space:nowrap;overflow:hidden}
+.fj-nom{font-weight:700;font-size:16px;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .15s ease}
+@media(min-width:760px){.fj-nom{font-size:18px}}
+.fj-sub{display:flex;align-items:center;gap:6px;font-family:'Barlow',sans-serif;font-weight:500;font-size:12.5px;color:var(--gris);min-width:0;overflow:hidden}
 .fj-sub > span{overflow:hidden;text-overflow:ellipsis}
-.fj-sub .fj-sigla{color:var(--celeste);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;flex:none}
 .fj-video{display:inline-flex;align-items:center;gap:3px;color:var(--celeste);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;flex:none}
 .fj-video svg{width:8px;height:8px;fill:currentColor}
-.fj-sub-d{display:none}
-.fj-pos,.fj-club,.fj-min,.tj-cab .c-pos,.tj-cab .c-club,.tj-cab .c-min{display:none}
-@media(min-width:760px){
-  .fj-sub-d{display:flex}.fj-sub-m{display:none}
-  .fj-pos,.fj-club,.tj-cab .c-pos,.tj-cab .c-club{display:flex}
-  .fj-min,.tj-cab .c-min{display:block}
-}
-.fj-pos{flex-wrap:wrap;gap:4px}
+.fj-pos{display:flex;gap:4px;justify-content:center}
 .sigla{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--celeste);background:rgba(87,184,232,.12);border:1px solid rgba(87,184,232,.3);padding:2px 7px;border-radius:6px}
-.fj-edad{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;text-align:center}
-.fj-club{align-items:center;gap:10px;min-width:0}
+.fj-club{display:flex;align-items:center;gap:10px;max-width:230px}
 .fj-club-txt{display:flex;flex-direction:column;min-width:0}
-.fj-club-txt b{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fj-club-txt small{font-size:12px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fj-club-txt b{font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis}
+.fj-club-txt small{font-family:'Barlow',sans-serif;font-weight:400;font-size:12px;color:var(--gris);overflow:hidden;text-overflow:ellipsis}
+.fj-vm{color:#E8C46A}
+.tarjeta{display:inline-block;width:9px;height:12px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.tarjeta.am{background:#F2C94C}.tarjeta.ro{background:var(--rojo)}
+.tabla-pista{font-size:12px;color:var(--gris);margin:8px 2px 0;display:flex;align-items:center;gap:6px}
+@media(min-width:1200px){.tabla-pista{display:none}}
 .escudo{width:28px;height:28px;flex:none;display:grid;place-items:center}
 .escudo img{width:100%;height:100%;object-fit:contain}
 .escudo .esc-ini{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--panel);border:1px solid var(--linea);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--gris)}
-.fj-sub-m .escudo{width:16px;height:16px}
-.fj-sub-m .escudo .esc-ini{display:none}
-.fj-min{font-size:14px;color:var(--gris);text-align:right;white-space:nowrap}
-.fj-min b{color:var(--blanco);font-weight:600}
-.fj-vm{text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:#E8C46A;white-space:nowrap}
-.fj-vm.fj-sin{color:var(--linea)}
-.tj-cab .c-edad{text-align:center}.tj-cab .c-min,.tj-cab .c-vm{text-align:right}
 .filtro-limpiar{color:var(--gris);font-size:14px;text-decoration:underline;padding:0 6px}
 .card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:8px;font-size:13px;color:var(--gris)}
 .card-meta b{color:var(--blanco);font-weight:600}
@@ -936,6 +933,17 @@ header .fila-header{display:flex;align-items:center;gap:10px}
     </div>
 
     <div class="campo">
+      <label>🏟️ Club actual y altura</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input type="text" id="f-club" list="lista-clubes" placeholder="Club actual, ej: Defensor Sporting" style="flex:2 1 200px" oninput="autoEscudoClub()">
+        <input type="number" id="f-altura" placeholder="Altura (cm), ej: 178" min="140" max="215" inputmode="numeric" style="flex:1 1 120px">
+      </div>
+      <datalist id="lista-clubes"></datalist>
+      <input type="url" id="f-club-escudo" placeholder="Link del escudo del club (PNG/SVG)" style="margin-top:8px">
+      <div class="ayuda">Al escribir el club te sugiere los que ya cargaste. El escudo se carga <b>una sola vez por club</b>: si otro jugador del mismo club ya lo tiene, se completa solo y se usa en todos. Si dejás el club vacío, se toma el de la primera línea de la trayectoria. Necesita las columnas <b>club</b> (text), <b>altura</b> (int4) y <b>club_escudo</b> (text) en Supabase.</div>
+    </div>
+
+    <div class="campo">
       <label>Posición (podés marcar más de una)</label>
       <div class="posiciones-grid" id="f-posiciones"></div>
       <input type="text" id="f-pos-otra" placeholder="Otra posición (opcional)" style="margin-top:10px">
@@ -999,12 +1007,6 @@ header .fila-header{display:flex;align-items:center;gap:10px}
       <input type="text" id="f-agencia-mail" placeholder="Mail de contacto (opcional)" style="margin-bottom:8px">
       <input type="text" id="f-agencia-whatsapp" placeholder="WhatsApp, ej: 59899123456 (opcional)">
       <div class="ayuda">El WhatsApp va con código de país y sin el <b>+</b> ni espacios (ej. <b>59899123456</b>). Si dejás la agencia vacía, en el listado el recuadro queda en blanco. Necesita las columnas <b>agencia</b>, <b>agencia_logo</b>, <b>agencia_mail</b> y <b>agencia_whatsapp</b> en Supabase (ver aviso al guardar).</div>
-    </div>
-
-    <div class="campo">
-      <label>🛡️ Escudo del club actual (opcional)</label>
-      <input type="url" id="f-club-escudo" placeholder="Link del escudo (PNG/SVG). Vacío = se busca solo">
-      <div class="ayuda">El club actual sale de la <b>primera línea de la trayectoria</b>. Si lo dejás vacío, el escudo se busca solo por el nombre del club; si no aparece o sale uno equivocado, pegá acá el link de la imagen. Necesita la columna <b>club_escudo</b> (text) en Supabase.</div>
     </div>
 
     <div class="campo">
@@ -1097,6 +1099,7 @@ const T = {
     partidos:'Partidos', minutos:'Minutos', goles:'Goles', asistencias:'Asistencias',
     remates:'Remates', xg:'xG', precision_pases:'Precisión de pases',
     duelos_pct:'Duelos ganados', aereos_pct:'Aéreos ganados', intercepciones:'Intercepciones',
+    pases_largos_pct:'Precisión pases largos', despejes:'Despejes', amarillas:'Tarjetas amarillas', rojas:'Tarjetas rojas', regates_pct:'Regates exitosos', recuperaciones:'Recuperaciones', altura:'Altura', club_actual:'Club',
     goles_recibidos:'Goles recibidos', atajadas:'Atajadas', paradas_pct:'% de atajadas', xcg:'xCG',
     actualizado:'Actualizado', fuente_datos:'Estadísticas oficiales provistas por', ver_en:'Ver en', valor_mercado:'Valor de mercado', dato:'Dato',
     vacio_sin:'Todavía no hay jugadores cargados.', vacio_sin2:'Entrá al panel ⚙ para agregar el primero.',
@@ -1137,6 +1140,7 @@ const T = {
     partidos:'Matches', minutos:'Minutes', goles:'Goals', asistencias:'Assists',
     remates:'Shots', xg:'xG', precision_pases:'Pass accuracy',
     duelos_pct:'Duels won', aereos_pct:'Aerials won', intercepciones:'Interceptions',
+    pases_largos_pct:'Long pass accuracy', despejes:'Clearances', amarillas:'Yellow cards', rojas:'Red cards', regates_pct:'Successful dribbles', recuperaciones:'Recoveries', altura:'Height', club_actual:'Club',
     goles_recibidos:'Goals conceded', atajadas:'Saves', paradas_pct:'Save %', xcg:'xCG',
     actualizado:'Updated', fuente_datos:'Official statistics provided by', ver_en:'View on', valor_mercado:'Market value', dato:'Source',
     vacio_sin:'No players loaded yet.', vacio_sin2:'Open the ⚙ panel to add the first one.',
@@ -1328,7 +1332,6 @@ function renderLista(){
   if(vistaLista === 'lista'){
     cont.className = '';
     cont.innerHTML = renderTablaJugadores(lista);
-    buscarEscudos(lista);
     return;
   }
   cont.className = 'grid-jugadores';
@@ -1386,113 +1389,106 @@ function inicialesClub(c){
   const pal = String(c).replace(/[^\p{L}\s]/gu,' ').split(/\s+/).filter(w => w.length > 2 || /^[A-Z]{2,}$/.test(w));
   return (pal.length > 1 ? pal.slice(0,2).map(w => w[0]).join('') : (pal[0] || c).slice(0,2)).toUpperCase();
 }
-// --- Escudos: link manual (columna club_escudo) o búsqueda automática en Wikipedia, cacheada en el navegador
-const ESC_KEY = 'vj_escudos_v2';
-let _escudos = {};
-try{ _escudos = JSON.parse(localStorage.getItem(ESC_KEY) || '{}') || {}; }catch(e){ _escudos = {}; }
-try{ localStorage.removeItem('vj_escudos_v1'); }catch(e){}
-const _escPend = {};
-function guardarCacheEscudos(){ try{ localStorage.setItem(ESC_KEY, JSON.stringify(_escudos)); }catch(e){} }
-function escudoUrl(j){
-  if(j.club_escudo) return j.club_escudo;
-  const c = clubActual(j); if(!c) return '';
-  const v = _escudos[normTxt(c)];
-  return v && v.u ? v.u : '';
+// --- Escudos: link manual (columna club_escudo), compartido entre los jugadores del mismo club
+function escudosPorClub(){
+  const m = {};
+  jugadores.forEach(j => { const c = clubActual(j); if(c && j.club_escudo && !m[normTxt(c)]) m[normTxt(c)] = j.club_escudo; });
+  return m;
 }
-function escudoHTML(j){
+function escudoUrl(j, mapa){
   const c = clubActual(j); if(!c) return '';
-  const u = escudoUrl(j);
-  const k = j.club_escudo ? '' : normTxt(c);
+  return j.club_escudo || (mapa || escudosPorClub())[normTxt(c)] || '';
+}
+function escudoHTML(j, mapa){
+  const c = clubActual(j); if(!c) return '';
+  const u = escudoUrl(j, mapa);
   const ini = `<span class=\\'esc-ini\\'>${esc(inicialesClub(c))}</span>`;
-  const inner = u ? `<img src="${esc(u)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='${ini}'">`
-                  : `<span class="esc-ini">${esc(inicialesClub(c))}</span>`;
-  return `<span class="escudo" ${k ? `data-escudo="${esc(k)}"` : ''}>${inner}</span>`;
+  return `<span class="escudo">${u ? `<img src="${esc(u)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='${ini}'">` : `<span class="esc-ini">${esc(inicialesClub(c))}</span>`}</span>`;
 }
-function variantesClub(c){
-  const base = String(c).trim();
-  const corto = base
-    .replace(/^(club atl[eé]tico|club deportivo|club social y deportivo|club|c\.\s?a\.|c\.\s?d\.|ca|cd|csd|fc|sd|ud|cf|ac|as|ss|asd)\s+/i,'')
-    .replace(/\s+(club|fc|cf|sc|ac|f\.c\.)$/i,'').trim();
-  return [...new Set([base, corto].filter(x => x && x.length > 2))];
+function autoEscudoClub(){
+  const c = document.getElementById('f-club').value.trim(), inp = document.getElementById('f-club-escudo');
+  if(!c || !inp || inp.value.trim()) return;
+  const u = escudosPorClub()[normTxt(c)];
+  if(u) inp.value = u;
 }
-// Nombre de archivo que parece un escudo (evita traer fotos de estadios o jugadores)
-const RE_ESCUDO = /escudo|logo|crest|badge|emblem|shield|insignia|wappen|scudo|bras[aã]o|\.svg$/i;
-async function escudoWiki(lang, q){
-  const url = `https://${lang}.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=4&gsrnamespace=0`
-            + `&gsrsearch=${encodeURIComponent(q)}&prop=pageimages&piprop=thumbnail%7Cname&pithumbsize=96&pilicense=any`;
-  const r = await fetch(url);
-  if(!r.ok) throw new Error('http ' + r.status);
-  const d = await r.json();
-  const pages = Object.values((d.query && d.query.pages) || {}).sort((x,y) => (x.index||0) - (y.index||0));
-  const p = pages.find(p => p.thumbnail && p.pageimage && RE_ESCUDO.test(p.pageimage));
-  return p ? p.thumbnail.source : '';
+let _tjOrden = { k:'', dir:-1 };
+function ordenarTabla(k){
+  if(_tjOrden.k === k) _tjOrden.dir *= -1;
+  else _tjOrden = { k, dir: (k === 'jug' || k === 'club' || k === 'pos') ? 1 : -1 };
+  renderLista();
 }
-async function consultarEscudo(club){
-  let huboRespuesta = false;
-  const intentos = [];
-  for(const v of variantesClub(club)){
-    intentos.push(['es', v + ' fútbol'], ['en', v + ' football club']);
-  }
-  for(const [lang, q] of intentos){
-    try{
-      const u = await escudoWiki(lang, q);
-      huboRespuesta = true;
-      if(u) return u;
-    }catch(e){ /* red: se reintenta en otra visita */ }
-  }
-  return huboRespuesta ? '' : undefined;
-}
-async function buscarEscudos(lista){
-  const ahora = Date.now(), SEMANA = 3 * 864e5;
-  const clubes = [...new Set(lista.filter(j => !j.club_escudo).map(clubActual).filter(Boolean))];
-  const pend = clubes.filter(c => {
-    const k = normTxt(c), v = _escudos[k];
-    if(_escPend[k]) return false;
-    return !v || (!v.u && ahora - (v.t || 0) > SEMANA);
-  });
-  for(const c of pend){
-    const k = normTxt(c);
-    _escPend[k] = 1;
-    const u = await consultarEscudo(c);
-    delete _escPend[k];
-    if(u === undefined) continue;
-    _escudos[k] = { u, t: Date.now() };
-    guardarCacheEscudos();
-    if(u) document.querySelectorAll('[data-escudo]').forEach(el => {
-      if(el.getAttribute('data-escudo') === k) el.innerHTML = `<img src="${esc(u)}" alt="" loading="lazy">`;
-    });
-    await new Promise(r => setTimeout(r, 150));
-  }
+function anioNac(j){ const m = String(j.nacimiento || '').match(/^(\d{4})/); return m ? +m[1] : null; }
+function COLS_TABLA(){
+  const en = idioma === 'en';
+  const st = k => j => { const u = ultimaTemp(j); return u && u[k] != null && u[k] !== '' ? +u[k] : null; };
+  return [
+    { k:'pos',  lbl:'Pos', tip: en ? 'Positions' : 'Posiciones', val: j => grupoPosicion(j) ? ['arq','def','med','del'].indexOf(grupoPosicion(j)) : 9, txt: true },
+    { k:'anio', lbl: en ? 'Year' : 'Año', tip: en ? 'Year of birth' : 'Año de nacimiento', val: anioNac },
+    { k:'alt',  lbl: en ? 'Hgt' : 'Alt.', tip: en ? 'Height (cm)' : 'Altura (cm)', val: j => j.altura ? +j.altura : null },
+    { k:'club', lbl:'Club', tip:'Club', val: j => clubActual(j) || null, txt: true },
+    { k:'pj',   lbl: en ? 'MP' : 'PJ', tip: en ? 'Matches played (last season)' : 'Partidos jugados (última temporada)', val: st('partidos') },
+    { k:'min',  lbl:'Min', tip: en ? 'Minutes played' : 'Minutos jugados', val: st('minutos') },
+    { k:'gol',  lbl: en ? 'G' : 'G', tip: en ? 'Goals' : 'Goles', val: st('goles') },
+    { k:'asi',  lbl:'A', tip: en ? 'Assists' : 'Asistencias', val: st('asistencias') },
+    { k:'pase', lbl: en ? 'Pass %' : '% Pase', tip: en ? 'Pass accuracy' : 'Precisión de pases', val: st('precision_pases'), pct: true },
+    { k:'pl',   lbl: en ? 'Long %' : '% P. largo', tip: en ? 'Long pass accuracy' : 'Precisión de pases largos', val: st('pases_largos_pct'), pct: true },
+    { k:'rem',  lbl: en ? 'Shots' : 'Rem.', tip: en ? 'Shots' : 'Remates', val: st('remates') },
+    { k:'reg',  lbl: en ? 'Drb %' : '% Reg.', tip: en ? 'Successful dribbles' : 'Regates exitosos', val: st('regates_pct'), pct: true },
+    { k:'desp', lbl: en ? 'Clr' : 'Desp.', tip: en ? 'Clearances' : 'Despejes', val: st('despejes') },
+    { k:'rec',  lbl: en ? 'Rec' : 'Recup.', tip: en ? 'Recoveries' : 'Recuperaciones', val: st('recuperaciones') },
+    { k:'ta',   lbl:'<span class="tarjeta am"></span>', tip: en ? 'Yellow cards' : 'Tarjetas amarillas', val: st('amarillas') },
+    { k:'tr',   lbl:'<span class="tarjeta ro"></span>', tip: en ? 'Red cards' : 'Tarjetas rojas', val: st('rojas') },
+    { k:'vm',   lbl: en ? 'Value' : 'Valor', tip: en ? 'Market value' : 'Valor de mercado', val: j => j.valor_mercado ? valorNum(j.valor_mercado) : null }
+  ];
 }
 function renderTablaJugadores(lista){
   const en = idioma === 'en';
-  const cab = `<div class="tj-cab" aria-hidden="true">
-    <span>${en ? 'Player' : 'Jugador'}</span><span class="c-pos">${en ? 'Pos' : 'Pos'}</span><span class="c-edad">${en ? 'Age' : 'Edad'}</span>
-    <span class="c-club">Club</span><span class="c-min">${en ? 'Minutes' : 'Minutos'}</span><span class="c-vm">${en ? 'Value' : 'Valor'}</span></div>`;
+  // solo columnas que tengan algún dato en la lista actual (pos y club siempre)
+  const cols = COLS_TABLA().filter(c => c.k === 'pos' || c.k === 'club' || lista.some(j => c.val(j) != null));
+  if(_tjOrden.k){
+    const c = _tjOrden.k === 'jug' ? { val: j => normTxt(j.nombre), txt: true } : cols.find(c => c.k === _tjOrden.k);
+    if(c){
+      lista = lista.slice().sort((a,b) => {
+        const va = c.val(a), vb = c.val(b);
+        if(va == null && vb == null) return 0;
+        if(va == null) return 1;
+        if(vb == null) return -1;
+        return (c.txt ? String(va).localeCompare(String(vb)) : va - vb) * _tjOrden.dir;
+      });
+    }
+  }
+  const mapa = escudosPorClub();
+  const flecha = k => _tjOrden.k === k ? `<span class="flecha">${_tjOrden.dir > 0 ? '▲' : '▼'}</span>` : '';
+  const th = (k, lbl, tip, cls='') => `<th class="${cls} ${_tjOrden.k === k ? 'activo' : ''}" title="${esc(tip)}" onclick="ordenarTabla('${k}')">${lbl}${flecha(k)}</th>`;
+  const cab = `<tr>${th('jug', en ? 'Player' : 'Jugador', en ? 'Player' : 'Jugador', 'c-jug')}${cols.map(c => th(c.k, c.lbl, c.tip, c.k === 'club' ? 'c-izq' : '')).join('')}</tr>`;
+  const nd = '<span class="nd">—</span>';
+  const celda = (c, j) => {
+    if(c.k === 'pos') return `<td><span class="fj-pos">${posiciones(j).slice(0,2).map(p => `<span class="sigla" title="${esc(traducirPos(p))}">${esc(siglaPos(p))}</span>`).join('') || nd}</span></td>`;
+    if(c.k === 'club'){
+      const club = clubActual(j), liga = ligasJugador(j)[0] || '';
+      return `<td class="c-izq">${club ? `<span class="fj-club">${escudoHTML(j, mapa)}<span class="fj-club-txt"><b>${esc(club)}</b>${liga ? `<small>${esc(liga)}</small>` : ''}</span></span>` : nd}</td>`;
+    }
+    if(c.k === 'vm') return `<td class="fj-vm">${j.valor_mercado ? esc(j.valor_mercado) : nd}</td>`;
+    const v = c.val(j);
+    if(v == null) return `<td>${nd}</td>`;
+    if(c.k === 'alt') return `<td>${v}<span class="c-gris"> cm</span></td>`;
+    if(c.k === 'anio') return `<td>${v}</td>`;
+    return `<td>${c.pct ? Math.round(v) + '<span class="c-gris">%</span>' : Number(v).toLocaleString('es-UY')}</td>`;
+  };
   const filas = lista.map(j => {
-    const ed = edad(j.nacimiento), ut = ultimaTemp(j), club = clubActual(j);
-    const pos = posiciones(j);
-    const liga = ligasJugador(j)[0] || '';
     const tieneVideo = [j.video, j.video2, j.video3, j.video4].some(v => vimeoEmbed(v));
-    const vid = tieneVideo ? `<span class="fj-video"><svg viewBox="0 0 10 10"><path d="M1 0l9 5-9 5z"/></svg>Video</span>` : '';
-    const subD = [j.agencia ? `<span>${esc(j.agencia)}</span>` : '', vid].filter(Boolean).join('');
-    const subM = [pos[0] ? `<span class="fj-sigla">${esc(siglaPos(pos[0]))}</span>` : '', club ? escudoHTML(j) + `<span>${esc(club)}</span>` : ''].join('');
-    return `<button class="fila-jug" onclick="verFicha('${j.id}')" aria-label="${esc(j.nombre)}">
-      <span class="fj-jug">
+    const sub = [j.agencia ? `<span>${esc(j.agencia)}</span>` : '', tieneVideo ? `<span class="fj-video"><svg viewBox="0 0 10 10"><path d="M1 0l9 5-9 5z"/></svg>Video</span>` : ''].join('');
+    return `<tr tabindex="0" onclick="verFicha('${j.id}')" onkeydown="if(event.key==='Enter')verFicha('${j.id}')" aria-label="${esc(j.nombre)}">
+      <td class="c-jug"><span class="fj-jug">
         ${j.foto ? `<img class="fj-foto" src="${esc(j.foto)}" alt="" loading="lazy">` : '<span class="fj-foto sin">👤</span>'}
-        <span class="fj-txt"><span class="fj-nom">${esc(j.nombre)}</span>
-          ${subD ? `<span class="fj-sub fj-sub-d">${subD}</span>` : ''}
-          ${subM ? `<span class="fj-sub fj-sub-m">${subM}</span>` : ''}
-        </span>
-      </span>
-      <span class="fj-pos">${pos.slice(0,3).map(p => `<span class="sigla" title="${esc(traducirPos(p))}">${esc(siglaPos(p))}</span>`).join('')}</span>
-      <span class="fj-edad">${ed !== null ? ed : '—'}</span>
-      <span class="fj-club">${club ? escudoHTML(j) + `<span class="fj-club-txt"><b>${esc(club)}</b>${liga ? `<small>${esc(liga)}</small>` : ''}</span>` : '<span class="fj-club-txt"><small>—</small></span>'}</span>
-      <span class="fj-min">${ut && ut.minutos ? `<b>${Number(ut.minutos).toLocaleString('es-UY')}</b>'` : '—'}</span>
-      <span class="fj-vm ${j.valor_mercado ? '' : 'fj-sin'}">${j.valor_mercado ? esc(j.valor_mercado) : '—'}</span>
-    </button>`;
+        <span class="fj-txt"><span class="fj-nom">${esc(j.nombre)}</span>${sub ? `<span class="fj-sub">${sub}</span>` : ''}</span>
+      </span></td>
+      ${cols.map(c => celda(c, j)).join('')}
+    </tr>`;
   }).join('');
-  return `<div class="tabla-jug">${cab}${filas}</div>`;
+  const hayStats = lista.some(j => ultimaTemp(j));
+  return `<div class="tabla-jug"><table><thead>${cab}</thead><tbody>${filas}</tbody></table></div>
+    <div class="tabla-pista">${en ? 'Swipe sideways to see all columns · tap a header to sort' : 'Deslizá hacia el costado para ver todas las columnas · tocá un título para ordenar'}${hayStats ? (en ? ' · stats: last season' : ' · estadísticas: última temporada') : ''}</div>`;
 }
 
 /* ================= PORTADA ================= */
@@ -1699,7 +1695,8 @@ let _hlLista = [];
 
 /* ---- Efectos de portada: cinta de jugadores y contadores ---- */
 function clubActual(j){
-  // Primera línea de la trayectoria = etapa más reciente ("años | club")
+  if(j.club && String(j.club).trim()) return String(j.club).trim();
+  // Si no hay club cargado: primera línea de la trayectoria = etapa más reciente ("años | club")
   const lineas = String(j.trayectoria || '').split('\n').map(l => l.trim()).filter(Boolean);
   if(!lineas.length) return '';
   const partes = lineas[0].split('|');
@@ -1826,6 +1823,8 @@ function renderFicha(j){
         <div class="dato-fila">
           ${j.nacimiento ? `<div class="dato"><label>${t('nacimiento')}</label><span>${fechaLinda(j.nacimiento)}</span></div>` : ''}
           ${ed !== null ? `<div class="dato"><label>${t('edad')}</label><span>${ed} ${t('anios')}</span></div>` : ''}
+          ${j.altura ? `<div class="dato"><label>${t('altura')}</label><span>${esc(j.altura)} cm</span></div>` : ''}
+          ${clubActual(j) ? `<div class="dato"><label>${t('club_actual')}</label><span style="display:flex;align-items:center;gap:8px">${escudoHTML(j)}${esc(clubActual(j))}</span></div>` : ''}
         </div>
         ${valorMercadoHTML(j)}
         ${bioTexto ? `<p class="ficha-desc">${esc(bioTexto)}</p>` : ''}
@@ -1973,7 +1972,13 @@ function statsTablaHTML(s){
     if(s.duelos_pct!=null) out += barra('duelos_pct', s.duelos_pct, 55);
     if(s.aereos_pct!=null) out += barra('aereos_pct', s.aereos_pct, 55);
     if(s.intercepciones!=null) out += simple('intercepciones', s.intercepciones);
+    if(s.pases_largos_pct!=null) out += barra('pases_largos_pct', s.pases_largos_pct, 55);
+    if(s.regates_pct!=null) out += barra('regates_pct', s.regates_pct, 50);
+    if(s.despejes!=null) out += simple('despejes', s.despejes);
+    if(s.recuperaciones!=null) out += simple('recuperaciones', s.recuperaciones);
   }
+  if(s.amarillas!=null) out += simple('amarillas', s.amarillas);
+  if(s.rojas!=null) out += simple('rojas', s.rojas);
   return out;
 }
 function switchFichaTemporada(i){
@@ -2065,6 +2070,12 @@ async function descargarPDF(id){
     if(j.nacimiento){
       doc.setTextColor(...GRIS); doc.text('NACIMIENTO', xInfo, yi);
       doc.setTextColor(...BLANCO); doc.text(fechaLinda(j.nacimiento) + (ed !== null ? '  ·  ' + ed + ' años' : ''), xInfo, yi + 5.5);
+      yi += 14;
+    }
+    if(clubActual(j) || j.altura){
+      doc.setFont('helvetica','normal'); doc.setFontSize(10.5);
+      doc.setTextColor(...GRIS); doc.text([clubActual(j) ? 'CLUB' : '', j.altura ? 'ALTURA' : ''].filter(Boolean).join('  ·  '), xInfo, yi);
+      doc.setTextColor(...BLANCO); doc.text([clubActual(j), j.altura ? j.altura + ' cm' : ''].filter(Boolean).join('  ·  '), xInfo, yi + 5.5);
       yi += 14;
     }
     if(j.valor_mercado){
@@ -2226,6 +2237,10 @@ function abrirFormulario(id){
   document.getElementById('f-agencia-whatsapp').value = j?.agencia_whatsapp || '';
   document.getElementById('f-transfermarkt').value = j?.transfermarkt || '';
   document.getElementById('f-club-escudo').value = j?.club_escudo || '';
+  document.getElementById('f-club').value = j?.club || '';
+  document.getElementById('f-altura').value = j?.altura || '';
+  const dl = document.getElementById('lista-clubes');
+  if(dl) dl.innerHTML = [...new Set(jugadores.map(clubActual).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).map(c => `<option value="${esc(c)}">`).join('');
   document.getElementById('f-valor-mercado').value = j?.valor_mercado || '';
   galeriaEdit = Array.isArray(j?.fotos) ? j.fotos.filter(Boolean).slice(0,5) : [];
   galeriaRender();
@@ -2393,6 +2408,18 @@ function parseWyscout(rows){
   const grupos = {};
   data.forEach(r => { const y = wyYear(r); (grupos[y] = grupos[y] || []).push(r); });
   const sumc = (rs,c) => rs.reduce((a,r) => a + (r.length > c ? wyNum(r[c]) : 0), 0);
+  // Columnas extra: se ubican por el título (inglés o español) para no depender del orden del export
+  const cab = (rows[0] || []).map(h => normTxt(h));
+  const col = re => { const i = cab.findIndex(h => re.test(h)); return i >= 0 ? i : -1; };
+  const C = {
+    pl:   col(/^long passes|^pases largos/),
+    reg:  col(/^dribbles|^regates/),
+    am:   col(/yellow card|tarjeta amarilla|^amarillas?$/),
+    ro:   col(/red card|tarjeta roja|^rojas?$/),
+    desp: col(/^clearances|^despejes/),
+    rec:  col(/^recoveries|^recuperaciones/)
+  };
+  const pctPar = (rs, c) => { if(c < 0) return null; const tot = sumc(rs, c), ok = sumc(rs, c + 1); return tot ? Math.round(100 * ok / tot) : null; };
 
   const temporadas = Object.keys(grupos).sort().reverse().map(anio => {
     const rs = grupos[anio];
@@ -2418,7 +2445,13 @@ function parseWyscout(rows){
       if(duelos) s.duelos_pct = Math.round(100 * duelosg / duelos);
       if(aereos) s.aereos_pct = Math.round(100 * aereosg / aereos);
       if(inter) s.intercepciones = Math.round(inter);
+      const pl = pctPar(rs, C.pl); if(pl != null) s.pases_largos_pct = pl;
+      const rg = pctPar(rs, C.reg); if(rg != null) s.regates_pct = rg;
+      if(C.desp >= 0) s.despejes = Math.round(sumc(rs, C.desp));
+      if(C.rec >= 0) s.recuperaciones = Math.round(sumc(rs, C.rec));
     }
+    if(C.am >= 0) s.amarillas = Math.round(sumc(rs, C.am));
+    if(C.ro >= 0) s.rojas = Math.round(sumc(rs, C.ro));
     return s;
   });
   return { princ, perfil, zonas, temporadas };
@@ -2476,9 +2509,16 @@ function renderStatsEditor(){
     const arq = esArqueroSeason(s);
     const extra = [];
     if(!arq){
-      if(s.remates != null) extra.push(statEditNum(i,'remates','Remates',s.remates));
+      extra.push(statEditNum(i,'remates','Remates',s.remates));
+      extra.push(statEditNum(i,'precision_pases','% Pases',s.precision_pases));
+      extra.push(statEditNum(i,'pases_largos_pct','% P. largos',s.pases_largos_pct));
+      extra.push(statEditNum(i,'regates_pct','% Regates',s.regates_pct));
+      extra.push(statEditNum(i,'despejes','Despejes',s.despejes));
+      extra.push(statEditNum(i,'recuperaciones','Recuperac.',s.recuperaciones));
       if(s.intercepciones != null) extra.push(statEditNum(i,'intercepciones','Intercep.',s.intercepciones));
     }
+    extra.push(statEditNum(i,'amarillas','Amarillas',s.amarillas));
+    extra.push(statEditNum(i,'rojas','Rojas',s.rojas));
     return `<div class="stat-edit-fila">
       <div class="stat-edit-head">
         <input type="text" value="${esc(s.temporada_label||s.temporada||'')}" onchange="statsSet(${i},'temporada',this.value)" placeholder="Temporada (ej: 2025)">
@@ -2787,6 +2827,8 @@ async function guardarJugador(){
     agencia_whatsapp: document.getElementById('f-agencia-whatsapp').value.trim() || null,
     transfermarkt: tmNormalizar(document.getElementById('f-transfermarkt').value),
     club_escudo: document.getElementById('f-club-escudo').value.trim() || null,
+    club: document.getElementById('f-club').value.trim() || null,
+    altura: parseInt(document.getElementById('f-altura').value, 10) || null,
     valor_mercado: valorMercadoNormalizar(document.getElementById('f-valor-mercado').value),
     fotos: galeriaEdit.slice()
   };
