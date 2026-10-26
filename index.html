@@ -1386,10 +1386,11 @@ function inicialesClub(c){
   const pal = String(c).replace(/[^\p{L}\s]/gu,' ').split(/\s+/).filter(w => w.length > 2 || /^[A-Z]{2,}$/.test(w));
   return (pal.length > 1 ? pal.slice(0,2).map(w => w[0]).join('') : (pal[0] || c).slice(0,2)).toUpperCase();
 }
-// --- Escudos: link manual (columna club_escudo) o búsqueda automática en TheSportsDB, cacheada en el navegador
-const ESC_KEY = 'vj_escudos_v1';
+// --- Escudos: link manual (columna club_escudo) o búsqueda automática en Wikipedia, cacheada en el navegador
+const ESC_KEY = 'vj_escudos_v2';
 let _escudos = {};
 try{ _escudos = JSON.parse(localStorage.getItem(ESC_KEY) || '{}') || {}; }catch(e){ _escudos = {}; }
+try{ localStorage.removeItem('vj_escudos_v1'); }catch(e){}
 const _escPend = {};
 function guardarCacheEscudos(){ try{ localStorage.setItem(ESC_KEY, JSON.stringify(_escudos)); }catch(e){} }
 function escudoUrl(j){
@@ -1402,34 +1403,47 @@ function escudoHTML(j){
   const c = clubActual(j); if(!c) return '';
   const u = escudoUrl(j);
   const k = j.club_escudo ? '' : normTxt(c);
-  const inner = u ? `<img src="${esc(u)}" alt="" loading="lazy" onerror="this.onerror=null;if(/\\/tiny$/.test(this.src))this.src=this.src.replace(/\\/tiny$/,'');else this.parentNode.innerHTML='<span class=\\'esc-ini\\'>${esc(inicialesClub(c))}</span>'">`
+  const ini = `<span class=\\'esc-ini\\'>${esc(inicialesClub(c))}</span>`;
+  const inner = u ? `<img src="${esc(u)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='${ini}'">`
                   : `<span class="esc-ini">${esc(inicialesClub(c))}</span>`;
   return `<span class="escudo" ${k ? `data-escudo="${esc(k)}"` : ''}>${inner}</span>`;
 }
 function variantesClub(c){
   const base = String(c).trim();
-  const sinPref = base.replace(/^(club atl[eé]tico|club deportivo|club social y deportivo|club|c\.\s?a\.|c\.\s?d\.|ca|cd|csd|fc|sd|ud|cf|ac|as|ss|asd)\s+/i,'').replace(/\s+(fc|cf|sc|ac|f\.c\.)$/i,'').trim();
-  const sinTilde = sinPref.normalize('NFD').replace(/[̀-ͯ]/g,'');
-  return [...new Set([base, sinPref, sinTilde].filter(x => x && x.length > 2))];
+  const corto = base
+    .replace(/^(club atl[eé]tico|club deportivo|club social y deportivo|club|c\.\s?a\.|c\.\s?d\.|ca|cd|csd|fc|sd|ud|cf|ac|as|ss|asd)\s+/i,'')
+    .replace(/\s+(club|fc|cf|sc|ac|f\.c\.)$/i,'').trim();
+  return [...new Set([base, corto].filter(x => x && x.length > 2))];
+}
+// Nombre de archivo que parece un escudo (evita traer fotos de estadios o jugadores)
+const RE_ESCUDO = /escudo|logo|crest|badge|emblem|shield|insignia|wappen|scudo|bras[aã]o|\.svg$/i;
+async function escudoWiki(lang, q){
+  const url = `https://${lang}.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=4&gsrnamespace=0`
+            + `&gsrsearch=${encodeURIComponent(q)}&prop=pageimages&piprop=thumbnail%7Cname&pithumbsize=96&pilicense=any`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error('http ' + r.status);
+  const d = await r.json();
+  const pages = Object.values((d.query && d.query.pages) || {}).sort((x,y) => (x.index||0) - (y.index||0));
+  const p = pages.find(p => p.thumbnail && p.pageimage && RE_ESCUDO.test(p.pageimage));
+  return p ? p.thumbnail.source : '';
 }
 async function consultarEscudo(club){
   let huboRespuesta = false;
+  const intentos = [];
   for(const v of variantesClub(club)){
+    intentos.push(['es', v + ' fútbol'], ['en', v + ' football club']);
+  }
+  for(const [lang, q] of intentos){
     try{
-      const r = await fetch('https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=' + encodeURIComponent(v));
-      if(!r.ok) continue;
+      const u = await escudoWiki(lang, q);
       huboRespuesta = true;
-      const d = await r.json();
-      const eq = (d.teams || []).filter(t => !t.strSport || t.strSport === 'Soccer');
-      const t = eq.find(t => normTxt(t.strTeam) === normTxt(v)) || eq[0];
-      const b = t && (t.strBadge || t.strTeamBadge);
-      if(b) return b + '/tiny';
-    }catch(e){ /* red / CORS: se reintenta en otra visita */ }
+      if(u) return u;
+    }catch(e){ /* red: se reintenta en otra visita */ }
   }
   return huboRespuesta ? '' : undefined;
 }
 async function buscarEscudos(lista){
-  const ahora = Date.now(), SEMANA = 7 * 864e5;
+  const ahora = Date.now(), SEMANA = 3 * 864e5;
   const clubes = [...new Set(lista.filter(j => !j.club_escudo).map(clubActual).filter(Boolean))];
   const pend = clubes.filter(c => {
     const k = normTxt(c), v = _escudos[k];
@@ -1445,9 +1459,9 @@ async function buscarEscudos(lista){
     _escudos[k] = { u, t: Date.now() };
     guardarCacheEscudos();
     if(u) document.querySelectorAll('[data-escudo]').forEach(el => {
-      if(el.getAttribute('data-escudo') === k) el.innerHTML = `<img src="${esc(u)}" alt="" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(/\\/tiny$/,'')">`;
+      if(el.getAttribute('data-escudo') === k) el.innerHTML = `<img src="${esc(u)}" alt="" loading="lazy">`;
     });
-    await new Promise(r => setTimeout(r, 400));
+    await new Promise(r => setTimeout(r, 150));
   }
 }
 function renderTablaJugadores(lista){
