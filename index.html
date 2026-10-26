@@ -648,6 +648,56 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 }
 .filtro-sel.activo{border-color:var(--celeste);color:var(--celeste)}
 .filtro-sel:focus{outline:none;border-color:var(--celeste)}
+/* ============ VISTA LISTA (tabla compacta) ============ */
+.vista-toggle{display:flex;border:1px solid var(--linea);border-radius:999px;overflow:hidden;background:var(--carbon);flex:none}
+.vista-toggle button{display:flex;align-items:center;gap:6px;padding:0 14px;min-height:44px;color:var(--gris);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.vista-toggle button svg{width:15px;height:15px;fill:currentColor}
+.vista-toggle button.activo{background:rgba(87,184,232,.14);color:var(--celeste)}
+.tabla-jug{border:1px solid var(--linea);border-radius:var(--radius);overflow:hidden;background:var(--carbon)}
+.tj-cab,.fila-jug{display:grid;grid-template-columns:minmax(0,1fr) 34px auto;align-items:center;gap:10px;padding:0 12px}
+@media(min-width:760px){.tj-cab,.fila-jug{grid-template-columns:minmax(220px,2.3fr) minmax(90px,1fr) 52px minmax(170px,1.9fr) 84px 96px;gap:16px;padding:0 18px}}
+.tj-cab{min-height:40px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gris);border-bottom:1px solid var(--linea);background:var(--panel)}
+.fila-jug{width:100%;min-height:64px;text-align:left;border-bottom:1px solid var(--linea);transition:background .15s ease}
+.fila-jug:last-child{border-bottom:0}
+@media(hover:hover){.fila-jug:hover{background:rgba(87,184,232,.06)}.fila-jug:hover .fj-nom{color:var(--celeste)}}
+.fila-jug:active{background:rgba(87,184,232,.1)}
+.fila-jug:focus-visible{outline:2px solid var(--celeste);outline-offset:-2px}
+.fj-jug{display:flex;align-items:center;gap:10px;min-width:0}
+.fj-foto{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:top center;flex:none;background:var(--panel);border:1px solid var(--linea)}
+.fj-foto.sin{display:grid;place-items:center;font-size:18px;color:var(--gris)}
+.fj-txt{display:flex;flex-direction:column;min-width:0;gap:2px}
+.fj-nom{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .15s ease}
+@media(min-width:760px){.fj-nom{font-size:18px;display:block;white-space:nowrap;text-overflow:ellipsis}}
+.fila-jug{padding-top:10px;padding-bottom:10px}
+.fj-sub{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gris);min-width:0;white-space:nowrap;overflow:hidden}
+.fj-sub > span{overflow:hidden;text-overflow:ellipsis}
+.fj-sub .fj-sigla{color:var(--celeste);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;flex:none}
+.fj-video{display:inline-flex;align-items:center;gap:3px;color:var(--celeste);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;flex:none}
+.fj-video svg{width:8px;height:8px;fill:currentColor}
+.fj-sub-d{display:none}
+.fj-pos,.fj-club,.fj-min,.tj-cab .c-pos,.tj-cab .c-club,.tj-cab .c-min{display:none}
+@media(min-width:760px){
+  .fj-sub-d{display:flex}.fj-sub-m{display:none}
+  .fj-pos,.fj-club,.tj-cab .c-pos,.tj-cab .c-club{display:flex}
+  .fj-min,.tj-cab .c-min{display:block}
+}
+.fj-pos{flex-wrap:wrap;gap:4px}
+.sigla{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--celeste);background:rgba(87,184,232,.12);border:1px solid rgba(87,184,232,.3);padding:2px 7px;border-radius:6px}
+.fj-edad{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;text-align:center}
+.fj-club{align-items:center;gap:10px;min-width:0}
+.fj-club-txt{display:flex;flex-direction:column;min-width:0}
+.fj-club-txt b{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fj-club-txt small{font-size:12px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.escudo{width:28px;height:28px;flex:none;display:grid;place-items:center}
+.escudo img{width:100%;height:100%;object-fit:contain}
+.escudo .esc-ini{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--panel);border:1px solid var(--linea);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--gris)}
+.fj-sub-m .escudo{width:16px;height:16px}
+.fj-sub-m .escudo .esc-ini{display:none}
+.fj-min{font-size:14px;color:var(--gris);text-align:right;white-space:nowrap}
+.fj-min b{color:var(--blanco);font-weight:600}
+.fj-vm{text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:#E8C46A;white-space:nowrap}
+.fj-vm.fj-sin{color:var(--linea)}
+.tj-cab .c-edad{text-align:center}.tj-cab .c-min,.tj-cab .c-vm{text-align:right}
 .filtro-limpiar{color:var(--gris);font-size:14px;text-decoration:underline;padding:0 6px}
 .card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:8px;font-size:13px;color:var(--gris)}
 .card-meta b{color:var(--blanco);font-weight:600}
@@ -825,6 +875,10 @@ header .fila-header{display:flex;align-items:center;gap:10px}
         <select class="filtro-sel" id="f-filtro-edad" onchange="renderLista()"></select>
         <select class="filtro-sel" id="f-filtro-liga" onchange="renderLista()"></select>
         <select class="filtro-sel" id="f-filtro-orden" onchange="renderLista()"></select>
+        <div class="vista-toggle" role="group" aria-label="Vista">
+          <button type="button" id="btn-vista-lista" onclick="cambiarVistaLista('lista')" aria-label="Lista"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2.4" rx="1"/><rect x="1" y="6.8" width="14" height="2.4" rx="1"/><rect x="1" y="11.6" width="14" height="2.4" rx="1"/></svg><span>Lista</span></button>
+          <button type="button" id="btn-vista-tarjetas" onclick="cambiarVistaLista('tarjetas')" aria-label="Tarjetas"><svg viewBox="0 0 16 16"><rect x="1" y="1" width="6.2" height="6.2" rx="1.2"/><rect x="8.8" y="1" width="6.2" height="6.2" rx="1.2"/><rect x="1" y="8.8" width="6.2" height="6.2" rx="1.2"/><rect x="8.8" y="8.8" width="6.2" height="6.2" rx="1.2"/></svg><span>Tarjetas</span></button>
+        </div>
       </div>
       <div id="contenedor-lista" class="cargando">Cargando jugadores…</div>
     </div>
@@ -945,6 +999,12 @@ header .fila-header{display:flex;align-items:center;gap:10px}
       <input type="text" id="f-agencia-mail" placeholder="Mail de contacto (opcional)" style="margin-bottom:8px">
       <input type="text" id="f-agencia-whatsapp" placeholder="WhatsApp, ej: 59899123456 (opcional)">
       <div class="ayuda">El WhatsApp va con código de país y sin el <b>+</b> ni espacios (ej. <b>59899123456</b>). Si dejás la agencia vacía, en el listado el recuadro queda en blanco. Necesita las columnas <b>agencia</b>, <b>agencia_logo</b>, <b>agencia_mail</b> y <b>agencia_whatsapp</b> en Supabase (ver aviso al guardar).</div>
+    </div>
+
+    <div class="campo">
+      <label>🛡️ Escudo del club actual (opcional)</label>
+      <input type="url" id="f-club-escudo" placeholder="Link del escudo (PNG/SVG). Vacío = se busca solo">
+      <div class="ayuda">El club actual sale de la <b>primera línea de la trayectoria</b>. Si lo dejás vacío, el escudo se busca solo por el nombre del club; si no aparece o sale uno equivocado, pegá acá el link de la imagen. Necesita la columna <b>club_escudo</b> (text) en Supabase.</div>
     </div>
 
     <div class="campo">
@@ -1264,6 +1324,13 @@ function renderLista(){
     cont.innerHTML = `<div class="vacio">${t('vacio_busca')}<br><button class="filtro-limpiar" onclick="limpiarFiltros()">${t('limpiar')}</button></div>`;
     return;
   }
+  actualizarToggleVista();
+  if(vistaLista === 'lista'){
+    cont.className = '';
+    cont.innerHTML = renderTablaJugadores(lista);
+    buscarEscudos(lista);
+    return;
+  }
   cont.className = 'grid-jugadores';
   cont.innerHTML = lista.map(j => {
     const ed = edad(j.nacimiento);
@@ -1287,6 +1354,131 @@ function renderLista(){
       </div>
     </button>`;
   }).join('');
+}
+
+/* ================= LISTA COMPACTA + ESCUDOS ================= */
+let vistaLista = 'lista';
+try{ vistaLista = localStorage.getItem('vj_vista_lista') || 'lista'; }catch(e){}
+function cambiarVistaLista(v){
+  vistaLista = v;
+  try{ localStorage.setItem('vj_vista_lista', v); }catch(e){}
+  renderLista();
+}
+function actualizarToggleVista(){
+  const bl = document.getElementById('btn-vista-lista'), bt = document.getElementById('btn-vista-tarjetas');
+  if(bl) bl.classList.toggle('activo', vistaLista === 'lista');
+  if(bt) bt.classList.toggle('activo', vistaLista !== 'lista');
+  const en = idioma === 'en';
+  if(bl) bl.querySelector('span').textContent = en ? 'List' : 'Lista';
+  if(bt) bt.querySelector('span').textContent = en ? 'Cards' : 'Tarjetas';
+}
+const SIGLAS_POS = {
+  'Arquero':['ARQ','GK'], 'Defensa central':['DFC','CB'], 'Lateral derecho':['LD','RB'], 'Lateral izquierdo':['LI','LB'],
+  'Volante defensivo':['MCD','DM'], 'Volante mixto':['MC','CM'], 'Volante ofensivo':['MCO','AM'],
+  'Extremo derecho':['ED','RW'], 'Extremo izquierdo':['EI','LW'], 'Delantero centro':['DC','ST']
+};
+function siglaPos(p){
+  const s = SIGLAS_POS[p];
+  if(s) return idioma === 'en' ? s[1] : s[0];
+  return String(p).split(/\s+/).filter(Boolean).map(w => w[0]).join('').slice(0,3).toUpperCase();
+}
+function inicialesClub(c){
+  const pal = String(c).replace(/[^\p{L}\s]/gu,' ').split(/\s+/).filter(w => w.length > 2 || /^[A-Z]{2,}$/.test(w));
+  return (pal.length > 1 ? pal.slice(0,2).map(w => w[0]).join('') : (pal[0] || c).slice(0,2)).toUpperCase();
+}
+// --- Escudos: link manual (columna club_escudo) o búsqueda automática en TheSportsDB, cacheada en el navegador
+const ESC_KEY = 'vj_escudos_v1';
+let _escudos = {};
+try{ _escudos = JSON.parse(localStorage.getItem(ESC_KEY) || '{}') || {}; }catch(e){ _escudos = {}; }
+const _escPend = {};
+function guardarCacheEscudos(){ try{ localStorage.setItem(ESC_KEY, JSON.stringify(_escudos)); }catch(e){} }
+function escudoUrl(j){
+  if(j.club_escudo) return j.club_escudo;
+  const c = clubActual(j); if(!c) return '';
+  const v = _escudos[normTxt(c)];
+  return v && v.u ? v.u : '';
+}
+function escudoHTML(j){
+  const c = clubActual(j); if(!c) return '';
+  const u = escudoUrl(j);
+  const k = j.club_escudo ? '' : normTxt(c);
+  const inner = u ? `<img src="${esc(u)}" alt="" loading="lazy" onerror="this.onerror=null;if(/\\/tiny$/.test(this.src))this.src=this.src.replace(/\\/tiny$/,'');else this.parentNode.innerHTML='<span class=\\'esc-ini\\'>${esc(inicialesClub(c))}</span>'">`
+                  : `<span class="esc-ini">${esc(inicialesClub(c))}</span>`;
+  return `<span class="escudo" ${k ? `data-escudo="${esc(k)}"` : ''}>${inner}</span>`;
+}
+function variantesClub(c){
+  const base = String(c).trim();
+  const sinPref = base.replace(/^(club atl[eé]tico|club deportivo|club social y deportivo|club|c\.\s?a\.|c\.\s?d\.|ca|cd|csd|fc|sd|ud|cf|ac|as|ss|asd)\s+/i,'').replace(/\s+(fc|cf|sc|ac|f\.c\.)$/i,'').trim();
+  const sinTilde = sinPref.normalize('NFD').replace(/[̀-ͯ]/g,'');
+  return [...new Set([base, sinPref, sinTilde].filter(x => x && x.length > 2))];
+}
+async function consultarEscudo(club){
+  let huboRespuesta = false;
+  for(const v of variantesClub(club)){
+    try{
+      const r = await fetch('https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=' + encodeURIComponent(v));
+      if(!r.ok) continue;
+      huboRespuesta = true;
+      const d = await r.json();
+      const eq = (d.teams || []).filter(t => !t.strSport || t.strSport === 'Soccer');
+      const t = eq.find(t => normTxt(t.strTeam) === normTxt(v)) || eq[0];
+      const b = t && (t.strBadge || t.strTeamBadge);
+      if(b) return b + '/tiny';
+    }catch(e){ /* red / CORS: se reintenta en otra visita */ }
+  }
+  return huboRespuesta ? '' : undefined;
+}
+async function buscarEscudos(lista){
+  const ahora = Date.now(), SEMANA = 7 * 864e5;
+  const clubes = [...new Set(lista.filter(j => !j.club_escudo).map(clubActual).filter(Boolean))];
+  const pend = clubes.filter(c => {
+    const k = normTxt(c), v = _escudos[k];
+    if(_escPend[k]) return false;
+    return !v || (!v.u && ahora - (v.t || 0) > SEMANA);
+  });
+  for(const c of pend){
+    const k = normTxt(c);
+    _escPend[k] = 1;
+    const u = await consultarEscudo(c);
+    delete _escPend[k];
+    if(u === undefined) continue;
+    _escudos[k] = { u, t: Date.now() };
+    guardarCacheEscudos();
+    if(u) document.querySelectorAll('[data-escudo]').forEach(el => {
+      if(el.getAttribute('data-escudo') === k) el.innerHTML = `<img src="${esc(u)}" alt="" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(/\\/tiny$/,'')">`;
+    });
+    await new Promise(r => setTimeout(r, 400));
+  }
+}
+function renderTablaJugadores(lista){
+  const en = idioma === 'en';
+  const cab = `<div class="tj-cab" aria-hidden="true">
+    <span>${en ? 'Player' : 'Jugador'}</span><span class="c-pos">${en ? 'Pos' : 'Pos'}</span><span class="c-edad">${en ? 'Age' : 'Edad'}</span>
+    <span class="c-club">Club</span><span class="c-min">${en ? 'Minutes' : 'Minutos'}</span><span class="c-vm">${en ? 'Value' : 'Valor'}</span></div>`;
+  const filas = lista.map(j => {
+    const ed = edad(j.nacimiento), ut = ultimaTemp(j), club = clubActual(j);
+    const pos = posiciones(j);
+    const liga = ligasJugador(j)[0] || '';
+    const tieneVideo = [j.video, j.video2, j.video3, j.video4].some(v => vimeoEmbed(v));
+    const vid = tieneVideo ? `<span class="fj-video"><svg viewBox="0 0 10 10"><path d="M1 0l9 5-9 5z"/></svg>Video</span>` : '';
+    const subD = [j.agencia ? `<span>${esc(j.agencia)}</span>` : '', vid].filter(Boolean).join('');
+    const subM = [pos[0] ? `<span class="fj-sigla">${esc(siglaPos(pos[0]))}</span>` : '', club ? escudoHTML(j) + `<span>${esc(club)}</span>` : ''].join('');
+    return `<button class="fila-jug" onclick="verFicha('${j.id}')" aria-label="${esc(j.nombre)}">
+      <span class="fj-jug">
+        ${j.foto ? `<img class="fj-foto" src="${esc(j.foto)}" alt="" loading="lazy">` : '<span class="fj-foto sin">👤</span>'}
+        <span class="fj-txt"><span class="fj-nom">${esc(j.nombre)}</span>
+          ${subD ? `<span class="fj-sub fj-sub-d">${subD}</span>` : ''}
+          ${subM ? `<span class="fj-sub fj-sub-m">${subM}</span>` : ''}
+        </span>
+      </span>
+      <span class="fj-pos">${pos.slice(0,3).map(p => `<span class="sigla" title="${esc(traducirPos(p))}">${esc(siglaPos(p))}</span>`).join('')}</span>
+      <span class="fj-edad">${ed !== null ? ed : '—'}</span>
+      <span class="fj-club">${club ? escudoHTML(j) + `<span class="fj-club-txt"><b>${esc(club)}</b>${liga ? `<small>${esc(liga)}</small>` : ''}</span>` : '<span class="fj-club-txt"><small>—</small></span>'}</span>
+      <span class="fj-min">${ut && ut.minutos ? `<b>${Number(ut.minutos).toLocaleString('es-UY')}</b>'` : '—'}</span>
+      <span class="fj-vm ${j.valor_mercado ? '' : 'fj-sin'}">${j.valor_mercado ? esc(j.valor_mercado) : '—'}</span>
+    </button>`;
+  }).join('');
+  return `<div class="tabla-jug">${cab}${filas}</div>`;
 }
 
 /* ================= PORTADA ================= */
@@ -2019,6 +2211,7 @@ function abrirFormulario(id){
   document.getElementById('f-agencia-mail').value = j?.agencia_mail || '';
   document.getElementById('f-agencia-whatsapp').value = j?.agencia_whatsapp || '';
   document.getElementById('f-transfermarkt').value = j?.transfermarkt || '';
+  document.getElementById('f-club-escudo').value = j?.club_escudo || '';
   document.getElementById('f-valor-mercado').value = j?.valor_mercado || '';
   galeriaEdit = Array.isArray(j?.fotos) ? j.fotos.filter(Boolean).slice(0,5) : [];
   galeriaRender();
@@ -2579,6 +2772,7 @@ async function guardarJugador(){
     agencia_mail: document.getElementById('f-agencia-mail').value.trim() || null,
     agencia_whatsapp: document.getElementById('f-agencia-whatsapp').value.trim() || null,
     transfermarkt: tmNormalizar(document.getElementById('f-transfermarkt').value),
+    club_escudo: document.getElementById('f-club-escudo').value.trim() || null,
     valor_mercado: valorMercadoNormalizar(document.getElementById('f-valor-mercado').value),
     fotos: galeriaEdit.slice()
   };
