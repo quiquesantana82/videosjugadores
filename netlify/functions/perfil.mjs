@@ -174,10 +174,86 @@ function limpiarBasicos(d){
   return out;
 }
 
+// ---------- Diagnóstico: /.netlify/functions/perfil?accion=diagnostico&clave=CLAVE_DEL_PANEL ----------
+// Revisa la configuración sin mostrar ninguna clave. Con &mail=1 manda un mail de prueba a ADMIN_EMAIL.
+async function diagnostico(req, url){
+  const filas = [];
+  const fila = (ok, titulo, detalle) => filas.push({ ok, titulo, detalle });
+  const vars = ['SUPABASE_SECRET_KEY','RESEND_API_KEY','ADMIN_EMAIL','ADMIN_PASSWORD','APROBAR_SECRET','MAIL_FROM'];
+  const clave = env('ADMIN_PASSWORD');
+  if(clave && url.searchParams.get('clave') !== clave){
+    return html('<h1>Diagnóstico</h1><p>Agregá <b>&amp;clave=</b> con la contraseña del panel ⚙ al final del link.</p>', 401);
+  }
+  for(const v of vars){
+    const val = env(v);
+    let det = val ? 'cargada' : 'falta cargarla en Netlify';
+    if(v === 'ADMIN_EMAIL' && val) det = esc(val);
+    if(v === 'MAIL_FROM' && val) det = esc(val);
+    if(v === 'MAIL_FROM' && !val) det = 'opcional, pero sin ella los mails solo te llegan a vos (remitente de prueba de Resend)';
+    if(v === 'SUPABASE_SECRET_KEY' && val && !/^(sb_secret_|eyJ)/.test(val)) det = 'cargada, pero no parece una clave secreta (debería empezar con sb_secret_ o eyJ)';
+    if(v === 'RESEND_API_KEY' && val && !val.startsWith('re_')) det = 'cargada, pero no parece una key de Resend (debería empezar con re_)';
+    fila(v === 'MAIL_FROM' ? (val ? true : null) : !!val && !/no parece/.test(det), v, det);
+  }
+  fila(true, 'Dirección del sitio', esc(sitio(req)) + ' <span style="color:#8B97A5">(se usa en los links de los mails)</span>');
+
+  // Supabase: clave y columnas
+  if(env('SUPABASE_SECRET_KEY')){
+    try{ await rest(`players?empresa=eq.${EMPRESA}&select=id&limit=1`); fila(true, 'Conexión a Supabase con la clave secreta', 'funciona'); }
+    catch(e){ fila(false, 'Conexión a Supabase con la clave secreta', esc(e.message)); }
+    try{ await rest(`players?empresa=eq.${EMPRESA}&select=owner_id,owner_email,estado,plan,club,altura,club_escudo&limit=1`); fila(true, 'Columnas nuevas en la tabla players', 'están todas'); }
+    catch(e){ fila(false, 'Columnas nuevas en la tabla players', 'falta correr el SQL de las columnas — ' + esc(e.message)); }
+  }
+  // Supabase Auth: confirmación de mail
+  try{
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/settings`, { headers: { apikey: SUPABASE_PUBLIC } });
+    const st = await r.json();
+    if(st.disable_signup) fila(false, 'Registro de usuarios', 'está desactivado en Supabase (Authentication → Sign In / Providers → "Allow new users to sign up")');
+    else fila(true, 'Registro de usuarios', 'habilitado');
+    fila(st.mailer_autoconfirm ? true : false, '"Confirm email" apagado', st.mailer_autoconfirm ? 'sí, los jugadores entran directo al registrarse' : 'todavía está prendido: apagalo en Authentication → Sign In / Providers → Email');
+  }catch(e){ fila(null, 'Configuración de Supabase Auth', 'no se pudo leer'); }
+  // Resend: dominio
+  if(env('RESEND_API_KEY')){
+    try{
+      const r = await fetch('https://api.resend.com/domains', { headers: { Authorization: 'Bearer ' + env('RESEND_API_KEY') } });
+      const d = await r.json().catch(() => ({}));
+      if(r.ok){
+        const dom = (d.data || []).find(x => /videosjugadores\.com$/i.test(x.name));
+        fila(dom && dom.status === 'verified', 'Dominio en Resend', dom ? esc(dom.name) + ': ' + esc(dom.status) : 'no aparece videosjugadores.com en esta cuenta de Resend');
+      } else if(d && d.name === 'restricted_api_key'){
+        fila(true, 'Key de Resend', 'válida (solo envío)');
+      } else {
+        fila(false, 'Key de Resend', 'Resend la rechaza: ' + esc(d.message || r.status));
+      }
+    }catch(e){ fila(null, 'Key de Resend', 'no se pudo consultar'); }
+    const from = env('MAIL_FROM');
+    if(from) fila(/@videosjugadores\.com>?\s*$/i.test(from), 'Remitente con tu dominio', esc(from));
+  }
+  // Mail de prueba
+  if(url.searchParams.get('mail') === '1'){
+    const ok = await mandarMail(env('ADMIN_EMAIL'), 'Prueba de VIDEOSJUGADORES ✅', plantilla('¡Los mails funcionan!', ['Este es un mail de prueba del diagnóstico. Si te llegó, los avisos de registro y aprobación también van a llegar.']));
+    fila(ok, 'Mail de prueba a ' + esc(env('ADMIN_EMAIL') || '(sin ADMIN_EMAIL)'), ok ? 'enviado: revisá la bandeja (y el spam)' : 'no se pudo enviar (mirá los logs de la función en Netlify)');
+  }
+  const ico = ok => ok === true ? '✅' : ok === false ? '❌' : '⚠️';
+  const linkMail = esc(url.pathname + '?accion=diagnostico&mail=1' + (clave ? '&clave=' + encodeURIComponent(url.searchParams.get('clave') || '') : ''));
+  const todoOk = filas.every(f => f.ok !== false);
+  return new Response(`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Diagnóstico</title>
+  <style>body{margin:0;background:#07090C;color:#F4F6F8;font-family:system-ui,sans-serif;padding:24px}main{max-width:720px;margin:0 auto}
+  h1{font-size:24px}table{width:100%;border-collapse:collapse;background:#0E1218;border:1px solid #232C38;border-radius:12px;overflow:hidden}
+  td{padding:12px 14px;border-bottom:1px solid #232C38;vertical-align:top;font-size:15px}td:first-child{width:28px}td b{display:block;margin-bottom:2px}
+  .r{margin:16px 0;padding:14px 16px;border-radius:12px;background:${todoOk ? 'rgba(87,184,232,.1)' : 'rgba(232,87,87,.1)'};border:1px solid ${todoOk ? 'rgba(87,184,232,.4)' : 'rgba(232,87,87,.4)'}}
+  a{display:inline-block;margin-top:16px;background:#57B8E8;color:#07090C;font-weight:700;text-decoration:none;padding:12px 20px;border-radius:999px}</style></head>
+  <body><main><h1>Diagnóstico de VIDEOSJUGADORES</h1>
+  <div class="r">${todoOk ? 'Todo lo que se puede revisar desde acá está bien.' : 'Hay cosas para corregir (marcadas con ❌).'}</div>
+  <table>${filas.map(f => `<tr><td>${ico(f.ok)}</td><td><b>${f.titulo}</b>${f.detalle}</td></tr>`).join('')}</table>
+  <p style="color:#8B97A5;font-size:14px;margin-top:14px">No se puede revisar desde acá: las Redirect URLs de Supabase (solo afectan a "Me olvidé la contraseña").</p>
+  <a href="${linkMail}">Mandarme un mail de prueba</a></main></body></html>`, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
+}
+
 export default async (req) => {
   const url = new URL(req.url);
   try{
     // ----- Aprobar desde el link del mail -----
+    if(req.method === 'GET' && url.searchParams.get('accion') === 'diagnostico') return diagnostico(req, url);
     if(req.method === 'GET'){
       if(url.searchParams.get('accion') !== 'aprobar') return html('<h1>Nada por acá</h1>', 404);
       const id = url.searchParams.get('id') || '', t = url.searchParams.get('t') || '';
