@@ -770,7 +770,7 @@ header .fila-header{display:flex;align-items:center;gap:10px}
   display:block;color:var(--gris);font-family:'Barlow Condensed',sans-serif;
   font-size:14px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;
 }
-.campo input[type=text],.campo input[type=password],.campo input[type=date],.campo input[type=url],.campo textarea{
+.campo input[type=text],.campo input[type=password],.campo input[type=date],.campo input[type=url],.campo input[type=email],.campo input[type=number],.campo textarea{
   width:100%;background:var(--panel);border:1px solid var(--linea);border-radius:10px;
   color:var(--blanco);padding:12px 14px;outline:none;transition:border-color .15s;
 }
@@ -816,6 +816,46 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 .admin-item button{padding:8px 10px;border-radius:8px;font-size:17px}
 .admin-item .editar{color:var(--celeste)}
 .admin-item .borrar{color:var(--rojo)}
+/* ============ CUENTA DE JUGADOR ============ */
+.btn-cuenta{display:flex;align-items:center;gap:6px;border:1px solid var(--celeste);color:var(--celeste);border-radius:999px;padding:7px 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;transition:background .15s}
+.btn-cuenta:hover{background:rgba(87,184,232,.12)}
+.auth-tabs{display:flex;border:1px solid var(--linea);border-radius:999px;overflow:hidden;margin-bottom:20px}
+.auth-tabs button{flex:1;min-height:44px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--gris)}
+.auth-tabs button.activo{background:rgba(87,184,232,.14);color:var(--celeste)}
+.auth-msg{font-size:14px;line-height:1.5;border-radius:10px;padding:10px 12px;margin-bottom:14px;display:none}
+.auth-msg.error{display:block;background:rgba(232,87,87,.1);border:1px solid rgba(232,87,87,.35);color:#F2A0A0}
+.auth-msg.ok{display:block;background:rgba(87,184,232,.1);border:1px solid rgba(87,184,232,.35);color:var(--blanco)}
+.link-chico{color:var(--gris);font-size:14px;text-decoration:underline;margin-top:12px;display:inline-block}
+.mp-wrap{max-width:760px;margin:0 auto;padding:10px 0 60px}
+.mp-cab{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.mp-cab h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:34px;letter-spacing:.03em;text-transform:uppercase;line-height:1}
+.mp-cab small{display:block;color:var(--gris);font-size:14px;margin-top:6px}
+.mp-estado{border-radius:var(--radius);padding:16px 18px;margin-bottom:18px;display:flex;gap:14px;align-items:flex-start;line-height:1.5}
+.mp-estado b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:19px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+.mp-estado .ico{font-size:24px;line-height:1}
+.mp-estado.pend{background:rgba(232,196,106,.08);border:1px solid rgba(232,196,106,.35)}
+.mp-estado.pend b{color:#E8C46A}
+.mp-estado.ok{background:rgba(87,184,232,.08);border:1px solid rgba(87,184,232,.35)}
+.mp-estado.ok b{color:var(--celeste)}
+.mp-estado p{color:var(--gris);font-size:14px}
+.mp-acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.mp-caja{background:var(--carbon);border:1px solid var(--linea);border-radius:var(--radius);padding:20px 18px;margin-bottom:18px}
+.mp-caja h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px}
+.mp-foto{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.mp-foto img,.mp-foto .sin{width:96px;height:120px;border-radius:12px;object-fit:cover;object-position:top center;background:var(--panel);border:1px solid var(--linea);flex:none}
+.mp-foto .sin{display:grid;place-items:center;font-size:40px;color:var(--gris)}
+.mp-dos{display:grid;gap:0 12px;grid-template-columns:1fr}
+@media(min-width:560px){.mp-dos{grid-template-columns:1fr 1fr}}
+.mp-pro{background:linear-gradient(135deg,rgba(232,196,106,.12),rgba(87,184,232,.06));border:1px solid rgba(232,196,106,.4);border-radius:var(--radius);padding:20px 18px}
+.mp-pro h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;letter-spacing:.05em;text-transform:uppercase;color:#E8C46A;margin-bottom:6px}
+.mp-pro p{color:var(--gris);font-size:14px;margin-bottom:12px}
+.mp-pro ul{list-style:none;display:grid;gap:7px;margin-bottom:16px;font-size:15px}
+.mp-pro li::before{content:'★';color:#E8C46A;margin-right:8px}
+.badge-pend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#E8C46A;border:1px solid rgba(232,196,106,.45);border-radius:999px;padding:2px 8px;flex:none}
+.badge-reg{font-size:12px;color:var(--gris);flex:none}
+.admin-item .aprobar{color:var(--negro);background:#E8C46A;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+@media(max-width:520px){.btn-cuenta span{display:none}.btn-cuenta{padding:7px 10px}}
+
 .barra-admin{
   display:flex;justify-content:space-between;align-items:center;gap:12px;
   flex-wrap:wrap;margin-bottom:20px;
@@ -847,6 +887,7 @@ header .fila-header{display:flex;align-items:center;gap:10px}
     <div class="wordmark"><span class="wm-videos">VIDEOS</span><span class="wm-jugadores">JUGADORES</span></div>
   </a>
   <div class="fila-header">
+    <button class="btn-cuenta" id="btn-cuenta" onclick="abrirCuenta()" aria-label="Mi cuenta">👤 <span id="btn-cuenta-txt">Ingresar</span></button>
     <button class="btn-idioma" id="btn-idioma" onclick="setIdioma(idioma==='es'?'en':'es')" aria-label="Idioma / Language">ES / EN</button>
     <button class="btn-admin" onclick="abrirAdmin()" aria-label="Panel de administración">⚙</button>
   </div>
@@ -886,6 +927,9 @@ header .fila-header{display:flex;align-items:center;gap:10px}
   <!-- VISTA: FICHA -->
   <section id="vista-ficha" style="display:none"></section>
 
+  <!-- VISTA: MI PERFIL (jugador registrado) -->
+  <section id="vista-perfil" style="display:none"></section>
+
   <!-- VISTA: ADMIN -->
   <section id="vista-admin" style="display:none">
     <div class="barra-admin">
@@ -917,6 +961,47 @@ header .fila-header{display:flex;align-items:center;gap:10px}
   </div>
 </div>
 
+<!-- MODAL CUENTA (registro / ingreso) -->
+<div class="modal" id="modal-auth">
+  <div class="modal-caja" style="max-width:420px">
+    <div class="auth-tabs">
+      <button type="button" id="tab-registro" onclick="authModo('registro')">Crear perfil</button>
+      <button type="button" id="tab-ingresar" onclick="authModo('ingresar')">Ingresar</button>
+    </div>
+    <div class="auth-msg" id="auth-msg"></div>
+    <div id="auth-registro">
+      <p style="color:var(--gris);font-size:14px;line-height:1.5;margin-bottom:16px">Creá tu perfil <b style="color:var(--blanco)">gratis</b>: foto, videos, posición y club, listo para compartir con clubes y representantes.</p>
+      <div class="campo"><label>Nombre y apellido</label><input type="text" id="reg-nombre" autocomplete="name" placeholder="Ej: Joaquín Montecinos"></div>
+      <div class="campo"><label>Mail</label><input type="email" id="reg-email" autocomplete="email" placeholder="tu@mail.com"></div>
+      <div class="campo"><label>Contraseña</label><input type="password" id="reg-pass" autocomplete="new-password" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')registrarse()"></div>
+      <div class="fila-botones">
+        <button class="btn btn-primario" id="btn-registrarse" onclick="registrarse()">Crear mi perfil</button>
+        <button class="btn btn-secundario" onclick="cerrarModal('modal-auth')">Cancelar</button>
+      </div>
+    </div>
+    <div id="auth-ingresar" style="display:none">
+      <div class="campo"><label>Mail</label><input type="email" id="log-email" autocomplete="email" placeholder="tu@mail.com"></div>
+      <div class="campo"><label>Contraseña</label><input type="password" id="log-pass" autocomplete="current-password" onkeydown="if(event.key==='Enter')ingresar()"></div>
+      <div class="fila-botones">
+        <button class="btn btn-primario" id="btn-ingresar" onclick="ingresar()">Ingresar</button>
+        <button class="btn btn-secundario" onclick="cerrarModal('modal-auth')">Cancelar</button>
+      </div>
+      <a href="#" class="link-chico" onclick="olvideClave(event)">Me olvidé la contraseña</a>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVA CONTRASEÑA (link de recuperación) -->
+<div class="modal" id="modal-nueva-clave">
+  <div class="modal-caja" style="max-width:400px">
+    <h3>Nueva contraseña</h3>
+    <div class="campo"><label>Contraseña nueva</label><input type="password" id="nueva-pass" autocomplete="new-password" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')guardarNuevaClave()"></div>
+    <div class="fila-botones">
+      <button class="btn btn-primario" onclick="guardarNuevaClave()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL FORMULARIO -->
 <div class="modal" id="modal-form">
   <div class="modal-caja">
@@ -930,6 +1015,12 @@ header .fila-header{display:flex;align-items:center;gap:10px}
     <div class="campo">
       <label>Fecha de nacimiento</label>
       <input type="date" id="f-nacimiento">
+    </div>
+
+    <div class="campo">
+      <label>✉️ Mail del jugador (opcional)</label>
+      <input type="email" id="f-owner-email" placeholder="jugador@mail.com">
+      <div class="ayuda">Si el jugador se registra en el sitio con este mail, entra directo a editar su perfil básico (foto, videos, posición, club y altura), sin pasar por aprobación. Necesita las columnas <b>owner_id</b>, <b>owner_email</b>, <b>estado</b> y <b>plan</b> en Supabase.</div>
     </div>
 
     <div class="campo">
@@ -1107,7 +1198,7 @@ const T = {
     hero_kicker:'Marketing deportivo · Scouting',
     hero_t1:'Tus videos,', hero_t2:'tus estadísticas', hero_t3:'en un solo perfil',
     hero_sub:'Presentamos a tus jugadores como los ve un club: <b>highlights</b>, <b>estadísticas oficiales de Wyscout</b> actualizadas cada semana y <b>valor de mercado de Transfermarkt</b>, en un perfil listo para compartir por WhatsApp.',
-    cta_plataforma:'Ver jugadores', cta_perfil:'Quiero mi perfil', datos_de:'Datos de',
+    cta_plataforma:'Ver jugadores', cta_perfil:'Quiero mi perfil', cta_gratis:'Creá tu perfil gratis', datos_de:'Datos de',
     n_jugadores:'Jugadores', n_ligas:'Ligas', n_minutos:'Minutos analizados', n_videos:'Videos',
     dest_t1:'Destacados', dest_t2:'de la temporada', dest_sub:'Los jugadores con más {x} según la última actualización de Wyscout.', rk_min:'Minutos', rk_gol:'Goles', rk_asi:'Asistencias', rkx_min:'minutos', rkx_gol:'goles', rkx_asi:'asistencias',
     pj:'PJ', min:'Min', gol:'Goles', asi:'Asist.',
@@ -1148,7 +1239,7 @@ const T = {
     hero_kicker:'Sports marketing · Scouting',
     hero_t1:'Your videos,', hero_t2:'your stats', hero_t3:'in one profile',
     hero_sub:'We present your players the way clubs see them: <b>highlights</b>, <b>official Wyscout statistics</b> updated every week and <b>Transfermarkt market value</b>, in a profile ready to share on WhatsApp.',
-    cta_plataforma:'See players', cta_perfil:'Get a profile', datos_de:'Data from',
+    cta_plataforma:'See players', cta_perfil:'Get a profile', cta_gratis:'Create your free profile', datos_de:'Data from',
     n_jugadores:'Players', n_ligas:'Leagues', n_minutos:'Minutes analysed', n_videos:'Videos',
     dest_t1:'Top', dest_t2:'of the season', dest_sub:'Players with the most {x} in the latest Wyscout update.', rk_min:'Minutes', rk_gol:'Goals', rk_asi:'Assists', rkx_min:'minutes', rkx_gol:'goals', rkx_asi:'assists',
     pj:'Apps', min:'Min', gol:'Goals', asi:'Assists',
@@ -1207,7 +1298,9 @@ function actualizarUIIdioma(){
 
 let _fichaActual = null;
 
-let jugadores = [];
+let jugadores = [];      // los que se ven en el sitio público
+let jugadoresTodos = []; // incluye perfiles pendientes de aprobación (para el admin)
+const esPublico = j => !['pendiente','rechazado'].includes(j.estado);
 let editandoId = null;
 let fotoBase64 = null;
 let fotoExistente = null;
@@ -1226,7 +1319,7 @@ function irInicio(e){
 function mostrarVista(id){
   const wf = document.getElementById('wsp-flotante');
   if(wf) wf.style.display = (id === 'vista-admin' ? 'none' : 'flex');
-  ['vista-lista','vista-ficha','vista-admin'].forEach(v=>{
+  ['vista-lista','vista-ficha','vista-admin','vista-perfil'].forEach(v=>{
     document.getElementById(v).style.display = (v===id ? 'block' : 'none');
   });
   window.scrollTo({top:0});
@@ -1239,7 +1332,8 @@ async function cargarJugadores(){
       .select('*').eq('empresa', EMPRESA)
       .order('nombre', {ascending:true});
     if(error) throw error;
-    jugadores = data || [];
+    jugadoresTodos = data || [];
+    jugadores = jugadoresTodos.filter(esPublico);
   }catch(err){
     console.error(err);
     document.getElementById('contenedor-lista').innerHTML =
@@ -1392,7 +1486,7 @@ function inicialesClub(c){
 // --- Escudos: link manual (columna club_escudo), compartido entre los jugadores del mismo club
 function escudosPorClub(){
   const m = {};
-  jugadores.forEach(j => { const c = clubActual(j); if(c && j.club_escudo && !m[normTxt(c)]) m[normTxt(c)] = j.club_escudo; });
+  jugadoresTodos.forEach(j => { const c = clubActual(j); if(c && j.club_escudo && !m[normTxt(c)]) m[normTxt(c)] = j.club_escudo; });
   return m;
 }
 function escudoUrl(j, mapa){
@@ -1612,6 +1706,7 @@ function renderPortada(){
         <p class="hero-sub">${t('hero_sub')}</p>
         <div class="hero-ctas">
           <a class="cta cta-primario" href="#plataforma" onclick="irPlataforma(event)">${t('cta_plataforma')}</a>
+          <a class="cta cta-borde" href="#" onclick="abrirRegistro(event)">👤 ${t('cta_gratis')}</a>
           <a class="cta cta-wsp" href="${wsp}" target="_blank" rel="noopener">${t('cta_perfil')}</a>
         </div>
         <div class="hero-fuentes">
@@ -1682,6 +1777,7 @@ function renderPortada(){
       <h2>${t('cierre_t')}</h2>
       <p>${t('cierre_sub')}</p>
       <div class="hero-ctas">
+        <a class="cta cta-primario" href="#" onclick="abrirRegistro(event)">👤 ${t('cta_gratis')}</a>
         <a class="cta cta-wsp" href="${wsp}" target="_blank" rel="noopener">${t('cta_perfil')}</a>
         <a class="cta cta-borde" href="#plataforma" onclick="irPlataforma(event)">${t('cta_plataforma')}</a>
       </div>
@@ -1789,6 +1885,10 @@ function verFicha(id){
 }
 function procesarHash(){
   // Acepta el hash (#jugador-ID) y también la ruta del link compartido (/jugador/ID)
+  if(location.hash === '#mi-perfil'){
+    if(document.getElementById('vista-perfil').style.display === 'none') abrirMiPerfil();
+    return;
+  }
   let id = null;
   const mh = location.hash.match(/^#jugador-([\w-]+)$/);
   if(mh){
@@ -2174,6 +2274,265 @@ async function descargarPDF(id){
   }
 }
 
+
+/* ================= CUENTA DE JUGADOR (registro, ingreso y Mi perfil) ================= */
+let sesion = null, miPerfil = null, miFotoNueva = null;
+const FN_PERFIL = '/.netlify/functions/perfil';
+function actualizarBotonCuenta(){
+  const t = document.getElementById('btn-cuenta-txt');
+  if(t) t.textContent = sesion ? 'Mi perfil' : 'Ingresar';
+}
+sb.auth.onAuthStateChange((ev, s) => {
+  sesion = s; actualizarBotonCuenta();
+  if(ev === 'PASSWORD_RECOVERY') setTimeout(() => abrirModal('modal-nueva-clave'), 300);
+});
+sb.auth.getSession().then(({ data }) => { sesion = data.session; actualizarBotonCuenta(); });
+
+function abrirCuenta(){ sesion ? abrirMiPerfil() : abrirAuth('ingresar'); }
+function abrirRegistro(e){ if(e) e.preventDefault(); sesion ? abrirMiPerfil() : abrirAuth('registro'); }
+function authMsg(txt, tipo){
+  const el = document.getElementById('auth-msg');
+  el.className = 'auth-msg' + (txt ? ' ' + (tipo || 'error') : '');
+  el.innerHTML = txt || '';
+}
+function authModo(m){
+  document.getElementById('tab-registro').classList.toggle('activo', m === 'registro');
+  document.getElementById('tab-ingresar').classList.toggle('activo', m === 'ingresar');
+  document.getElementById('auth-registro').style.display = m === 'registro' ? '' : 'none';
+  document.getElementById('auth-ingresar').style.display = m === 'ingresar' ? '' : 'none';
+  authMsg('');
+}
+function abrirAuth(m){
+  authModo(m);
+  abrirModal('modal-auth');
+  setTimeout(() => document.getElementById(m === 'registro' ? 'reg-nombre' : 'log-email').focus(), 120);
+}
+function errorAuthLindo(e){
+  const m = (e && e.message) || '';
+  if(/already registered|already been registered/i.test(m)) return 'Ese mail ya tiene una cuenta. Tocá <b>Ingresar</b>.';
+  if(/invalid login/i.test(m)) return 'Mail o contraseña incorrectos.';
+  if(/not confirmed/i.test(m)) return 'Todavía no confirmaste tu mail. Revisá tu bandeja de entrada (y el spam).';
+  if(/at least 6|password should be/i.test(m)) return 'La contraseña tiene que tener al menos 6 caracteres.';
+  if(/rate limit|too many/i.test(m)) return 'Demasiados intentos seguidos. Esperá unos minutos y probá de nuevo.';
+  if(/invalid.*email|email.*invalid/i.test(m)) return 'Ese mail no parece válido.';
+  return 'No se pudo completar: ' + esc(m || 'revisá la conexión');
+}
+async function registrarse(){
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const pass = document.getElementById('reg-pass').value;
+  if(nombre.length < 3) return authMsg('Poné tu nombre y apellido.');
+  if(!/^\S+@\S+\.\S+$/.test(email)) return authMsg('Poné un mail válido.');
+  if(pass.length < 6) return authMsg('La contraseña tiene que tener al menos 6 caracteres.');
+  const btn = document.getElementById('btn-registrarse'); btn.disabled = true;
+  try{
+    const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { nombre, empresa: EMPRESA }, emailRedirectTo: location.origin + '/#mi-perfil' } });
+    if(error) throw error;
+    if(data && data.user && Array.isArray(data.user.identities) && !data.user.identities.length)
+      return authMsg('Ese mail ya tiene una cuenta. Tocá <b>Ingresar</b>.');
+    if(!data.session){
+      authMsg('¡Listo! Te mandamos un mail para <b>confirmar tu cuenta</b>. Tocá el link y después ingresá con tu mail y contraseña.', 'ok');
+      return;
+    }
+    sesion = data.session; actualizarBotonCuenta();
+    cerrarModal('modal-auth');
+    abrirMiPerfil();
+  }catch(e){ authMsg(errorAuthLindo(e)); }
+  finally{ btn.disabled = false; }
+}
+async function ingresar(){
+  const email = document.getElementById('log-email').value.trim().toLowerCase();
+  const pass = document.getElementById('log-pass').value;
+  if(!email || !pass) return authMsg('Completá mail y contraseña.');
+  const btn = document.getElementById('btn-ingresar'); btn.disabled = true;
+  try{
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if(error) throw error;
+    sesion = data.session; actualizarBotonCuenta();
+    cerrarModal('modal-auth');
+    abrirMiPerfil();
+  }catch(e){ authMsg(errorAuthLindo(e)); }
+  finally{ btn.disabled = false; }
+}
+async function olvideClave(e){
+  if(e) e.preventDefault();
+  const email = document.getElementById('log-email').value.trim().toLowerCase();
+  if(!/^\S+@\S+\.\S+$/.test(email)) return authMsg('Escribí tu mail arriba y volvé a tocar "Me olvidé la contraseña".');
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/' });
+  if(error) return authMsg(errorAuthLindo(error));
+  authMsg('Te mandamos un mail con un link para crear una contraseña nueva.', 'ok');
+}
+async function guardarNuevaClave(){
+  const pass = document.getElementById('nueva-pass').value;
+  if(pass.length < 6){ toast('Mínimo 6 caracteres'); return; }
+  const { error } = await sb.auth.updateUser({ password: pass });
+  if(error){ toast('No se pudo cambiar: ' + error.message); return; }
+  cerrarModal('modal-nueva-clave');
+  toast('Contraseña actualizada ✓');
+  abrirMiPerfil();
+}
+async function salirCuenta(){
+  await sb.auth.signOut();
+  sesion = null; miPerfil = null; actualizarBotonCuenta();
+  irInicio();
+}
+async function llamarPerfil(accion, extra){
+  const { data } = await sb.auth.getSession();
+  const token = data && data.session && data.session.access_token;
+  if(!token) throw new Error('Tu sesión venció, volvé a ingresar');
+  const r = await fetch(FN_PERFIL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', Authorization: 'Bearer ' + token },
+    body: JSON.stringify({ accion, ...(extra || {}) })
+  });
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok) throw new Error(d.error || ('Error ' + r.status));
+  return d;
+}
+async function abrirMiPerfil(){
+  if(!sesion){
+    const { data } = await sb.auth.getSession();
+    sesion = data.session; actualizarBotonCuenta();
+    if(!sesion){ irInicio(); abrirAuth('ingresar'); return; }
+  }
+  history.replaceState(null, '', '#mi-perfil');
+  const box = document.getElementById('vista-perfil');
+  box.innerHTML = '<div class="mp-wrap"><div class="cargando">Cargando tu perfil…</div></div>';
+  mostrarVista('vista-perfil');
+  try{
+    const d = await llamarPerfil('mio');
+    miPerfil = d.perfil; miFotoNueva = null;
+    renderMiPerfil(d);
+  }catch(e){
+    box.innerHTML = `<div class="mp-wrap"><div class="vacio">No pudimos abrir tu perfil: ${esc(e.message)}<br><br>
+      <button class="btn btn-secundario" onclick="abrirMiPerfil()">Reintentar</button> <button class="btn btn-secundario" onclick="salirCuenta()">Salir</button></div></div>`;
+  }
+}
+function linkMiPerfil(){ return location.origin + '/jugador/' + miPerfil.id; }
+function renderMiPerfil(extra){
+  const p = miPerfil, box = document.getElementById('vista-perfil');
+  const publicado = esPublico(p);
+  const pos = posiciones(p);
+  const wspPro = `https://wa.me/${String(WHATSAPP_AGENCIA).replace(/\D/g,'')}?text=${encodeURIComponent('Hola! Quiero el Perfil Pro de VIDEOSJUGADORES para ' + p.nombre)}`;
+  const wspCompartir = `https://wa.me/?text=${encodeURIComponent('Mirá mi perfil en VIDEOSJUGADORES: ' + linkMiPerfil())}`;
+  box.innerHTML = `<div class="mp-wrap">
+    <div class="mp-cab">
+      <div><h2>Mi perfil</h2><small>${esc(sesion && sesion.user ? sesion.user.email : '')}</small></div>
+      <button class="btn btn-secundario" onclick="salirCuenta()">Salir</button>
+    </div>
+    ${publicado
+      ? `<div class="mp-estado ok"><span class="ico">✅</span><div><b>Tu perfil está publicado</b><p>Ya aparece en la lista de jugadores. Compartilo con clubes y representantes.</p>
+          <div class="mp-acciones">
+            <button class="btn btn-primario" onclick="verFicha('${p.id}')">Ver mi perfil</button>
+            <a class="btn btn-secundario" href="${wspCompartir}" target="_blank" rel="noopener">📲 Compartir por WhatsApp</a>
+            <button class="btn btn-secundario" onclick="copiarLinkPerfil()">🔗 Copiar link</button>
+          </div></div></div>`
+      : `<div class="mp-estado pend"><span class="ico">⏳</span><div><b>Perfil en espera de aprobación</b><p>${extra && extra.nuevo ? '¡Gracias por registrarte! ' : ''}Apenas aprobemos tu perfil te va a llegar un mail de confirmación y queda publicado. Mientras tanto completalo: un perfil con foto y video se aprueba más rápido.</p></div></div>`}
+
+    <div class="mp-caja">
+      <h3>Tus datos</h3>
+      <div class="mp-foto">
+        ${p.foto ? `<img id="mp-foto-prev" src="${esc(p.foto)}" alt="">` : '<div class="sin" id="mp-foto-sin">👤</div><img id="mp-foto-prev" alt="" style="display:none">'}
+        <div>
+          <label class="btn btn-secundario" style="cursor:pointer">📷 ${p.foto ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" style="display:none" onchange="miFotoElegida(this)"></label>
+          <div class="ayuda" style="color:var(--gris);font-size:13px;margin-top:6px">Una foto vertical, de cuerpo entero o medio cuerpo, con buena luz.</div>
+        </div>
+      </div>
+      <div class="campo"><label>Nombre y apellido</label><input type="text" id="mp-nombre" value="${esc(p.nombre || '')}" maxlength="80"></div>
+      <div class="mp-dos">
+        <div class="campo"><label>Fecha de nacimiento</label><input type="date" id="mp-nacimiento" value="${esc(p.nacimiento || '')}"></div>
+        <div class="campo"><label>Altura (cm)</label><input type="number" id="mp-altura" value="${esc(p.altura || '')}" min="140" max="215" inputmode="numeric" placeholder="Ej: 178"></div>
+      </div>
+      <div class="campo"><label>Club actual</label><input type="text" id="mp-club" value="${esc(p.club || '')}" maxlength="80" placeholder="Ej: Defensor Sporting"></div>
+      <div class="campo"><label>Posición (hasta 3)</label>
+        <div class="posiciones-grid" id="mp-posiciones">${POSICIONES.map(x => `<button type="button" class="pos-toggle ${pos.includes(x) ? 'activo' : ''}" onclick="miPosToggle(this)">${x}</button>`).join('')}</div>
+      </div>
+    </div>
+
+    <div class="mp-caja">
+      <h3>Tus videos</h3>
+      <div class="campo"><label>Video 1</label><input type="url" id="mp-video" value="${esc(p.video || '')}" placeholder="Link de YouTube o Vimeo"></div>
+      <div class="campo"><label>Video 2 (opcional)</label><input type="url" id="mp-video2" value="${esc(p.video2 || '')}" placeholder="Link de YouTube o Vimeo"></div>
+      <div class="ayuda" style="color:var(--gris);font-size:13px">Subí tu video a YouTube (puede ser "no listado") o a Vimeo y pegá el link acá.</div>
+      <div class="campo" style="margin-top:16px"><label>Sobre mí (opcional)</label><textarea id="mp-bio" maxlength="600" placeholder="Características de juego, logros, categorías…">${esc(p.bio || '')}</textarea></div>
+      <div class="fila-botones"><button class="btn btn-primario" id="mp-guardar" onclick="guardarMiPerfil()">💾 Guardar cambios</button></div>
+    </div>
+
+    <div class="mp-pro">
+      <h3>★ Perfil Pro</h3>
+      <p>Destacate frente a clubes y representantes con un perfil completo.</p>
+      <ul>
+        <li>Estadísticas oficiales de Wyscout en tu perfil y en la tabla de jugadores</li>
+        <li>Hasta 4 videos y galería de fotos</li>
+        <li>PDF profesional para mandar a clubes</li>
+        <li>Valor de mercado de Transfermarkt</li>
+        <li>Carruseles y piezas para tus redes</li>
+      </ul>
+      <a class="btn btn-primario" style="background:#E8C46A" href="${wspPro}" target="_blank" rel="noopener">Quiero el Perfil Pro</a>
+    </div>
+  </div>`;
+}
+function miPosToggle(b){
+  const activos = document.querySelectorAll('#mp-posiciones .pos-toggle.activo').length;
+  if(!b.classList.contains('activo') && activos >= 3){ toast('Elegí hasta 3 posiciones'); return; }
+  b.classList.toggle('activo');
+}
+function miFotoElegida(inp){
+  const file = inp.files && inp.files[0]; if(!file) return;
+  const img = new Image(), reader = new FileReader();
+  reader.onload = e => { img.src = e.target.result; };
+  img.onload = () => {
+    const MAX = 1000; let w = img.width, h = img.height;
+    if(w > MAX || h > MAX){ const r = Math.min(MAX / w, MAX / h); w = Math.round(w * r); h = Math.round(h * r); }
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    miFotoNueva = c.toDataURL('image/jpeg', 0.85);
+    const prev = document.getElementById('mp-foto-prev'), sin = document.getElementById('mp-foto-sin');
+    prev.src = miFotoNueva; prev.style.display = ''; if(sin) sin.style.display = 'none';
+    toast('Foto lista: tocá "Guardar cambios"');
+  };
+  reader.readAsDataURL(file);
+}
+async function guardarMiPerfil(){
+  const v = id => document.getElementById(id).value;
+  const datos = {
+    nombre: v('mp-nombre'), nacimiento: v('mp-nacimiento'), altura: v('mp-altura'), club: v('mp-club'),
+    posicion: [...document.querySelectorAll('#mp-posiciones .pos-toggle.activo')].map(b => b.textContent).join(', '),
+    video: vimeoNormalizar(v('mp-video')) || '', video2: vimeoNormalizar(v('mp-video2')) || '', bio: v('mp-bio')
+  };
+  if(!datos.nombre.trim()){ toast('Falta tu nombre'); return; }
+  for(const k of ['video','video2']){
+    const crudo = v(k === 'video' ? 'mp-video' : 'mp-video2').trim();
+    if(crudo && !vimeoEmbed(crudo)){ toast('El link del ' + (k === 'video' ? 'video 1' : 'video 2') + ' no es de YouTube o Vimeo'); return; }
+  }
+  const btn = document.getElementById('mp-guardar'); btn.disabled = true; btn.textContent = 'Guardando…';
+  try{
+    const d = await llamarPerfil('guardar', { datos, foto: miFotoNueva });
+    miPerfil = d.perfil; miFotoNueva = null;
+    toast('Perfil guardado ✓');
+    renderMiPerfil();
+    if(esPublico(miPerfil)) cargarJugadores();
+  }catch(e){
+    toast('No se pudo guardar: ' + e.message);
+    btn.disabled = false; btn.textContent = '💾 Guardar cambios';
+  }
+}
+function copiarLinkPerfil(){
+  const link = linkMiPerfil();
+  (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(() => toast('Link copiado ✓'), () => prompt('Copiá tu link:', link));
+}
+async function aprobarDesdePanel(id){
+  const j = jugadoresTodos.find(x => String(x.id) === String(id));
+  if(!confirm('¿Aprobar y publicar el perfil de ' + (j ? j.nombre : 'este jugador') + '? Le llega un mail de confirmación.')) return;
+  try{
+    const r = await fetch(FN_PERFIL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ accion: 'aprobar_admin', id, clave: ADMIN_PASS }) });
+    const d = await r.json().catch(() => ({}));
+    if(!r.ok) throw new Error(d.error || ('Error ' + r.status));
+    toast('Perfil aprobado ✓');
+    await cargarJugadores();
+  }catch(e){ toast('No se pudo aprobar: ' + e.message); }
+}
+
 /* ================= ADMIN ================= */
 function abrirAdmin(){
   if(adminActivo){ mostrarVista('vista-admin'); renderAdmin(); return; }
@@ -2197,14 +2556,16 @@ function cerrarAdmin(){
 }
 function renderAdmin(){
   const cont = document.getElementById('admin-lista');
-  if(!jugadores.length){
-    cont.innerHTML = '<div class="vacio">Sin jugadores todavía. Tocá "+ Nuevo jugador" para arrancar.</div>';
+  if(!jugadoresTodos.length){
+    cont.innerHTML = '<div class="vacio">Sin jugadoresTodos todavía. Tocá "+ Nuevo jugador" para arrancar.</div>';
     return;
   }
-  cont.innerHTML = jugadores.map(j => `
+  const orden = jugadoresTodos.slice().sort((a,b) => (b.estado === 'pendiente') - (a.estado === 'pendiente'));
+  cont.innerHTML = orden.map(j => `
     <div class="admin-item">
-      ${j.foto ? `<img src="${j.foto}" alt="">` : '<div class="mini-sin">👤</div>'}
+      ${j.foto ? `<img src="${esc(j.foto)}" alt="">` : '<div class="mini-sin">👤</div>'}
       <span class="nombre">${esc(j.nombre)}</span>
+      ${j.estado === 'pendiente' ? `<span class="badge-pend">Pendiente</span><button class="aprobar" onclick="aprobarDesdePanel('${j.id}')">✓ Aprobar</button>` : (j.owner_id ? '<span class="badge-reg" title="Se registró en el sitio">👤 registrado</span>' : '')}
       <button class="editar" onclick="abrirFormulario('${j.id}')" aria-label="Editar">✎</button>
       <button class="borrar" onclick="borrarJugador('${j.id}')" aria-label="Borrar">🗑</button>
     </div>`).join('');
@@ -2220,7 +2581,7 @@ function armarPosiciones(seleccionadas){
 function abrirFormulario(id){
   editandoId = id ?? null;
   fotoBase64 = null;
-  const j = id ? jugadores.find(x=>x.id===id) : null;
+  const j = id ? jugadoresTodos.find(x=>x.id===id) : null;
   document.getElementById('form-titulo').textContent = j ? 'Editar jugador' : 'Nuevo jugador';
   document.getElementById('f-nombre').value = j?.nombre || '';
   document.getElementById('f-nacimiento').value = j?.nacimiento || '';
@@ -2238,9 +2599,10 @@ function abrirFormulario(id){
   document.getElementById('f-transfermarkt').value = j?.transfermarkt || '';
   document.getElementById('f-club-escudo').value = j?.club_escudo || '';
   document.getElementById('f-club').value = j?.club || '';
+  document.getElementById('f-owner-email').value = j?.owner_email || '';
   document.getElementById('f-altura').value = j?.altura || '';
   const dl = document.getElementById('lista-clubes');
-  if(dl) dl.innerHTML = [...new Set(jugadores.map(clubActual).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).map(c => `<option value="${esc(c)}">`).join('');
+  if(dl) dl.innerHTML = [...new Set(jugadoresTodos.map(clubActual).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).map(c => `<option value="${esc(c)}">`).join('');
   document.getElementById('f-valor-mercado').value = j?.valor_mercado || '';
   galeriaEdit = Array.isArray(j?.fotos) ? j.fotos.filter(Boolean).slice(0,5) : [];
   galeriaRender();
@@ -2655,14 +3017,14 @@ function buscarJugadorPorArchivo(fname){
   const nombre = nombreDesdeArchivo(fname);
   const mapa = importMapaLeer();
   const clave = normTxt(nombre);
-  if(mapa[clave] && jugadores.some(j => String(j.id) === String(mapa[clave]))){
+  if(mapa[clave] && jugadoresTodos.some(j => String(j.id) === String(mapa[clave]))){
     return { nombre, id: String(mapa[clave]), estado: 'ok', nota: 'Asignado como la última vez' };
   }
   const ftoks = tokensArchivo(nombre);
-  const cands = jugadores.map(j => ({ j, p: puntajeJugador(ftoks, j) })).filter(x => x.p > 0);
+  const cands = jugadoresTodos.map(j => ({ j, p: puntajeJugador(ftoks, j) })).filter(x => x.p > 0);
   const fuertes = cands.filter(x => x.p === 2);
   if(fuertes.length === 1) return { nombre, id: String(fuertes[0].j.id), estado: 'ok', nota: 'Encontrado automáticamente' };
-  if(fuertes.length > 1) return { nombre, id: '', estado: 'duda', nota: 'Hay ' + fuertes.length + ' jugadores posibles: elegí cuál' };
+  if(fuertes.length > 1) return { nombre, id: '', estado: 'duda', nota: 'Hay ' + fuertes.length + ' jugadoresTodos posibles: elegí cuál' };
   if(cands.length === 1) return { nombre, id: String(cands[0].j.id), estado: 'duda', nota: 'Coincide el apellido, revisá que sea él' };
   if(cands.length > 1) return { nombre, id: '', estado: 'duda', nota: 'Varios con ese apellido: elegí cuál' };
   return { nombre, id: '', estado: 'sin', nota: 'No lo encontré: elegí el jugador o dejalo sin asignar' };
@@ -2729,7 +3091,7 @@ function renderImport(){
     if(btn) btn.disabled = true;
     return;
   }
-  const opts = jugadores.map(j => `<option value="${esc(j.id)}">${esc(j.nombre)}</option>`).join('');
+  const opts = jugadoresTodos.map(j => `<option value="${esc(j.id)}">${esc(j.nombre)}</option>`).join('');
   const ids = _importFilas.filter(f => f.id && !f.error).map(f => f.id);
   const repetidos = new Set(ids.filter((id,i) => ids.indexOf(id) !== i));
   box.innerHTML = _importFilas.map((f,i) => {
@@ -2780,7 +3142,7 @@ async function importGuardar(){
   let ok = 0, mal = 0;
   const ahora = new Date().toISOString();
   for(const f of filas){
-    const j = jugadores.find(x => String(x.id) === String(f.id));
+    const j = jugadoresTodos.find(x => String(x.id) === String(f.id));
     if(!j){ mal++; continue; }
     const upd = {
       stats: mezclarTemporadas(f.res.temporadas, j.stats),
@@ -2828,13 +3190,14 @@ async function guardarJugador(){
     transfermarkt: tmNormalizar(document.getElementById('f-transfermarkt').value),
     club_escudo: document.getElementById('f-club-escudo').value.trim() || null,
     club: document.getElementById('f-club').value.trim() || null,
+    owner_email: document.getElementById('f-owner-email').value.trim().toLowerCase() || null,
     altura: parseInt(document.getElementById('f-altura').value, 10) || null,
     valor_mercado: valorMercadoNormalizar(document.getElementById('f-valor-mercado').value),
     fotos: galeriaEdit.slice()
   };
   // La fecha del valor de mercado se actualiza sola cuando cambiás el valor
   {
-    const previo = editandoId ? (jugadores.find(x => x.id === editandoId) || {}) : {};
+    const previo = editandoId ? (jugadoresTodos.find(x => x.id === editandoId) || {}) : {};
     if(!fila.valor_mercado) fila.valor_mercado_fecha = null;
     else if(fila.valor_mercado !== (previo.valor_mercado || null) || !previo.valor_mercado_fecha) fila.valor_mercado_fecha = new Date().toISOString().slice(0,10);
   }
@@ -2927,7 +3290,7 @@ function vimeoNormalizar(url){
   return vimeoEmbed(url) || url;
 }
 async function borrarJugador(id){
-  const j = jugadores.find(x=>x.id===id);
+  const j = jugadoresTodos.find(x=>x.id===id);
   if(!confirm('¿Borrar a ' + (j?.nombre || 'este jugador') + '? Esta acción no se puede deshacer.')) return;
   try{
     const {error} = await sb.from('players').delete().eq('id', id).eq('empresa', EMPRESA);

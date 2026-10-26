@@ -5,4 +5,4 @@
 
 # Fotos externas que el Image CDN de Netlify puede achicar (preview de WhatsApp)
 [images]
-  remote_images = ["https://d8j0ntlcm91z4\\.cloudfront\\.net/.*", "https://images\\.higgs\\.ai/.*"]
+  remote_images = ["https://d8j0ntlcm91z4\\.cloudfront\\.net/.*", "https://images\\.higgs\\.ai/.*", "https://epvgqigrcyooavgskmzc\\.supabase\\.co/storage/.*"]
