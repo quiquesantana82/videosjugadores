@@ -176,9 +176,8 @@ async function guardarEscudo(bytes, ctype, nombre){
   if(!r.ok) throw new Error('No se pudo guardar el escudo (' + r.status + ')');
   return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_ESC}/${path}`;
 }
-async function escudoDesdeUrl(url, nombre){
+async function bajarImagen(url){
   if(!/^https?:\/\//i.test(url)) throw new Error('Link no válido');
-  if(url.startsWith(`${SUPABASE_URL}/storage/`)) return url; // ya es nuestro
   const r = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; VideosjugadoresBot/1.0)', accept: 'image/*' }, redirect: 'follow' });
   if(!r.ok) throw new Error('No se pudo bajar la imagen de ese link (' + r.status + ')');
   let ctype = String(r.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
@@ -189,6 +188,13 @@ async function escudoDesdeUrl(url, nombre){
     else if(bytes.slice(0, 200).toString().includes('<svg')) ctype = 'image/svg+xml';
     else if(bytes.slice(8, 12).toString() === 'WEBP') ctype = 'image/webp';
   }
+  if(!TIPOS_ESC[ctype]) throw new Error('Ese link no es una imagen');
+  if(bytes.length > 5 * 1024 * 1024) throw new Error('La imagen pesa más de 5 MB');
+  return { bytes, ctype };
+}
+async function escudoDesdeUrl(url, nombre){
+  if(url.startsWith(`${SUPABASE_URL}/storage/`)) return url; // ya es nuestro
+  const { bytes, ctype } = await bajarImagen(url);
   return guardarEscudo(bytes, ctype, nombre);
 }
 
@@ -337,6 +343,11 @@ export default async (req) => {
           ? await rest(`clubes?id=eq.${encodeURIComponent(c.id)}`, { method: 'PATCH', body: JSON.stringify(fila) })
           : await rest('clubes', { method: 'POST', body: JSON.stringify(fila) });
         return json({ club: rows[0] });
+      }
+      if(accion === 'club_escudo_bajar'){
+        // Devuelve la imagen para que el navegador la achique antes de guardarla
+        const { bytes, ctype } = await bajarImagen(String(body.url || '').trim());
+        return json({ dataUrl: `data:${ctype};base64,${bytes.toString('base64')}` });
       }
       if(accion === 'club_escudo'){
         if(body.dataUrl){

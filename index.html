@@ -2841,22 +2841,24 @@ function previewEscudoClub(){
   document.getElementById('cl-preview').innerHTML = u ? `<img src="${esc(u)}" alt="" onerror="this.outerHTML='<span class=\\'vacio-esc\\'>⚠</span>'">` : '<span class="vacio-esc">🛡️</span>';
 }
 function clEstado(txt){ const el = document.getElementById('cl-estado'); if(el) el.innerHTML = txt || ''; }
-// Achica la imagen a 160px como máximo y la pasa a PNG (mantiene la transparencia)
+// Achica la imagen a 128px como máximo y la pasa a WebP (o PNG si el navegador no puede); mantiene la transparencia
 function imagenAPng(file){
   return new Promise((res, rej) => {
-    const fr = new FileReader();
+    const fr = typeof file === 'string' ? { result: file } : new FileReader();
     fr.onload = () => {
       const img = new Image();
       img.onload = () => {
-        const MAX = 160, r = Math.min(1, MAX / Math.max(img.width || MAX, img.height || MAX));
+        const MAX = 128, r = Math.min(1, MAX / Math.max(img.width || MAX, img.height || MAX));
         const c = document.createElement('canvas');
         c.width = Math.max(1, Math.round((img.width || MAX) * r)); c.height = Math.max(1, Math.round((img.height || MAX) * r));
         c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-        res(c.toDataURL('image/png'));
+        const webp = c.toDataURL('image/webp', 0.9);
+        res(webp.startsWith('data:image/webp') ? webp : c.toDataURL('image/png'));
       };
       img.onerror = () => rej(new Error('No se pudo leer la imagen'));
       img.src = fr.result;
     };
+    if(typeof file === 'string'){ fr.onload(); return; }
     fr.onerror = () => rej(new Error('No se pudo leer el archivo'));
     fr.readAsDataURL(file);
   });
@@ -2931,7 +2933,12 @@ async function guardarClub(){
   try{
     if(club.escudo && !club.escudo.startsWith(SUPABASE_URL + '/storage/')){
       clEstado('Guardando copia del escudo…');
-      try{ club.escudo = (await llamarAdmin('club_escudo', { url: club.escudo, nombre })).url; }
+      try{
+        // Se baja la imagen, se achica acá y se guarda la versión liviana
+        let liviana = null;
+        try{ liviana = await imagenAPng((await llamarAdmin('club_escudo_bajar', { url: club.escudo })).dataUrl); }catch(e){}
+        club.escudo = (await llamarAdmin('club_escudo', liviana ? { dataUrl: liviana, nombre } : { url: club.escudo, nombre })).url;
+      }
       catch(e){
         if(!confirm('No se pudo guardar una copia del escudo (' + e.message + ').\n\n¿Guardar el club usando el link tal cual? Si ese sitio lo cambia, el escudo deja de verse.')){ clEstado('⚠ ' + esc(e.message)); return; }
       }
