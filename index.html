@@ -477,6 +477,17 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 .cta-primario{background:var(--celeste);color:var(--negro);box-shadow:0 10px 30px rgba(87,184,232,.3)}
 .cta-wsp{background:#25D366;color:#062b12;box-shadow:0 10px 30px rgba(37,211,102,.22)}
 .cta-borde{border:1px solid var(--linea);color:var(--blanco)}
+.cta-gratis{position:relative;background:linear-gradient(135deg,#F2D27A,#E8B84A);color:#1a1405;box-shadow:0 10px 34px rgba(232,196,106,.35);animation:latidoGratis 2.6s ease-in-out infinite}
+.cta-gratis .tag-gratis{background:#07090C;color:#F2D27A;font-size:12px;letter-spacing:.12em;padding:3px 8px;border-radius:999px}
+@keyframes latidoGratis{0%,100%{box-shadow:0 10px 34px rgba(232,196,106,.3)}50%{box-shadow:0 10px 44px rgba(232,196,106,.6),0 0 0 5px rgba(232,196,106,.12)}}
+@media(prefers-reduced-motion:reduce){.cta-gratis{animation:none}}
+.campo-pass{position:relative}
+.campo-pass input{padding-right:52px !important}
+.ojo{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:44px;height:44px;display:grid;place-items:center;color:var(--gris);border-radius:10px}
+.ojo:hover{color:var(--celeste)}
+.ojo svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pass-ok{font-size:13px;margin-top:6px;min-height:18px}
+.pass-ok.si{color:#57E8A0}.pass-ok.no{color:#F2A0A0}
 @media(hover:hover){.cta:hover{transform:translateY(-2px)}}
 .hero-fuentes{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin-top:26px;color:var(--gris);font-size:13px;letter-spacing:.04em}
 .fuente-chip{
@@ -846,7 +857,18 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 .mp-foto .sin{display:grid;place-items:center;font-size:40px;color:var(--gris)}
 .mp-dos{display:grid;gap:0 12px;grid-template-columns:1fr}
 @media(min-width:560px){.mp-dos{grid-template-columns:1fr 1fr}}
-.mp-pro{background:linear-gradient(135deg,rgba(232,196,106,.12),rgba(87,184,232,.06));border:1px solid rgba(232,196,106,.4);border-radius:var(--radius);padding:20px 18px}
+.mp-pro{position:relative;overflow:hidden;background:radial-gradient(120% 140% at 100% 0%,rgba(232,196,106,.28),transparent 55%),linear-gradient(135deg,#1c1709,#0E1218 70%);border:1px solid rgba(232,196,106,.55);border-radius:var(--radius);padding:24px 20px;box-shadow:0 18px 50px rgba(232,196,106,.12);scroll-margin-top:90px}
+.mp-pro .pro-kicker{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#07090C;background:#E8C46A;border-radius:999px;padding:3px 10px;margin-bottom:10px}
+.mp-pro .pro-grid{display:grid;gap:10px;margin:14px 0 18px;grid-template-columns:1fr}
+@media(min-width:560px){.mp-pro .pro-grid{grid-template-columns:1fr 1fr}}
+.mp-pro .pro-item{display:flex;gap:10px;align-items:flex-start;background:rgba(7,9,12,.45);border:1px solid rgba(232,196,106,.2);border-radius:10px;padding:11px 12px;font-size:14.5px;line-height:1.4}
+.mp-pro .pro-item span:first-child{font-size:18px;line-height:1.2;flex:none}
+.mp-pro .pro-item b{display:block;color:var(--blanco);font-size:15px}
+.mp-pro .pro-item small{color:var(--gris);font-size:13px}
+.mp-pro .btn-pro{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#F2D27A,#E8B84A);color:#1a1405;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.08em;text-transform:uppercase;padding:14px 26px;border-radius:999px;box-shadow:0 10px 30px rgba(232,196,106,.3)}
+.mp-pro-tira{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:linear-gradient(90deg,rgba(232,196,106,.18),rgba(232,196,106,.05));border:1px solid rgba(232,196,106,.45);border-radius:var(--radius);padding:12px 16px;margin-bottom:18px;font-size:14.5px}
+.mp-pro-tira b{color:#E8C46A;font-family:'Barlow Condensed',sans-serif;font-size:17px;letter-spacing:.05em;text-transform:uppercase}
+.mp-pro-tira button{color:#1a1405;background:#E8C46A;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;padding:9px 16px;border-radius:999px;min-height:40px}
 .mp-pro h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;letter-spacing:.05em;text-transform:uppercase;color:#E8C46A;margin-bottom:6px}
 .mp-pro p{color:var(--gris);font-size:14px;margin-bottom:12px}
 .mp-pro ul{list-style:none;display:grid;gap:7px;margin-bottom:16px;font-size:15px}
@@ -965,15 +987,16 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 <div class="modal" id="modal-auth">
   <div class="modal-caja" style="max-width:420px">
     <div class="auth-tabs">
-      <button type="button" id="tab-registro" onclick="authModo('registro')">Crear perfil</button>
+      <button type="button" id="tab-registro" onclick="authModo('registro')">Crear perfil gratis</button>
       <button type="button" id="tab-ingresar" onclick="authModo('ingresar')">Ingresar</button>
     </div>
     <div class="auth-msg" id="auth-msg"></div>
     <div id="auth-registro">
-      <p style="color:var(--gris);font-size:14px;line-height:1.5;margin-bottom:16px">Creá tu perfil <b style="color:var(--blanco)">gratis</b>: foto, videos, posición y club, listo para compartir con clubes y representantes.</p>
+      <p style="color:var(--gris);font-size:14px;line-height:1.5;margin-bottom:16px">Creá tu perfil <b style="color:var(--blanco)">básico gratis</b>: foto, videos, posición y club, listo para compartir con clubes y representantes. Cuando quieras, lo pasás a <b style="color:#E8C46A">Pro</b>.</p>
       <div class="campo"><label>Nombre y apellido</label><input type="text" id="reg-nombre" autocomplete="name" placeholder="Ej: Joaquín Montecinos"></div>
       <div class="campo"><label>Mail</label><input type="email" id="reg-email" autocomplete="email" placeholder="tu@mail.com"></div>
-      <div class="campo"><label>Contraseña</label><input type="password" id="reg-pass" autocomplete="new-password" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')registrarse()"></div>
+      <div class="campo"><label>Contraseña</label><div class="campo-pass"><input type="password" id="reg-pass" autocomplete="new-password" placeholder="Mínimo 6 caracteres" oninput="chequearPass()"><button type="button" class="ojo" onclick="verPass(this)" aria-label="Mostrar contraseña"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+      <div class="campo"><label>Repetí la contraseña</label><div class="campo-pass"><input type="password" id="reg-pass2" autocomplete="new-password" placeholder="Escribila de nuevo" oninput="chequearPass()" onkeydown="if(event.key==='Enter')registrarse()"><button type="button" class="ojo" onclick="verPass(this)" aria-label="Mostrar contraseña"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div><div class="pass-ok" id="pass-ok"></div></div>
       <div class="fila-botones">
         <button class="btn btn-primario" id="btn-registrarse" onclick="registrarse()">Crear mi perfil</button>
         <button class="btn btn-secundario" onclick="cerrarModal('modal-auth')">Cancelar</button>
@@ -981,7 +1004,7 @@ header .fila-header{display:flex;align-items:center;gap:10px}
     </div>
     <div id="auth-ingresar" style="display:none">
       <div class="campo"><label>Mail</label><input type="email" id="log-email" autocomplete="email" placeholder="tu@mail.com"></div>
-      <div class="campo"><label>Contraseña</label><input type="password" id="log-pass" autocomplete="current-password" onkeydown="if(event.key==='Enter')ingresar()"></div>
+      <div class="campo"><label>Contraseña</label><div class="campo-pass"><input type="password" id="log-pass" autocomplete="current-password" onkeydown="if(event.key==='Enter')ingresar()"><button type="button" class="ojo" onclick="verPass(this)" aria-label="Mostrar contraseña"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
       <div class="fila-botones">
         <button class="btn btn-primario" id="btn-ingresar" onclick="ingresar()">Ingresar</button>
         <button class="btn btn-secundario" onclick="cerrarModal('modal-auth')">Cancelar</button>
@@ -995,7 +1018,7 @@ header .fila-header{display:flex;align-items:center;gap:10px}
 <div class="modal" id="modal-nueva-clave">
   <div class="modal-caja" style="max-width:400px">
     <h3>Nueva contraseña</h3>
-    <div class="campo"><label>Contraseña nueva</label><input type="password" id="nueva-pass" autocomplete="new-password" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')guardarNuevaClave()"></div>
+    <div class="campo"><label>Contraseña nueva</label><div class="campo-pass"><input type="password" id="nueva-pass" autocomplete="new-password" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')guardarNuevaClave()"><button type="button" class="ojo" onclick="verPass(this)" aria-label="Mostrar contraseña"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
     <div class="fila-botones">
       <button class="btn btn-primario" onclick="guardarNuevaClave()">Guardar</button>
     </div>
@@ -1198,7 +1221,7 @@ const T = {
     hero_kicker:'Marketing deportivo · Scouting',
     hero_t1:'Tus videos,', hero_t2:'tus estadísticas', hero_t3:'en un solo perfil',
     hero_sub:'Presentamos a tus jugadores como los ve un club: <b>highlights</b>, <b>estadísticas oficiales de Wyscout</b> actualizadas cada semana y <b>valor de mercado de Transfermarkt</b>, en un perfil listo para compartir por WhatsApp.',
-    cta_plataforma:'Ver jugadores', cta_perfil:'Quiero mi perfil', cta_gratis:'Creá tu perfil gratis', datos_de:'Datos de',
+    cta_plataforma:'Ver jugadores', cta_perfil:'Quiero mi perfil', cta_gratis:'Creá tu perfil básico', datos_de:'Datos de',
     n_jugadores:'Jugadores', n_ligas:'Ligas', n_minutos:'Minutos analizados', n_videos:'Videos',
     dest_t1:'Destacados', dest_t2:'de la temporada', dest_sub:'Los jugadores con más {x} según la última actualización de Wyscout.', rk_min:'Minutos', rk_gol:'Goles', rk_asi:'Asistencias', rkx_min:'minutos', rkx_gol:'goles', rkx_asi:'asistencias',
     pj:'PJ', min:'Min', gol:'Goles', asi:'Asist.',
@@ -1239,7 +1262,7 @@ const T = {
     hero_kicker:'Sports marketing · Scouting',
     hero_t1:'Your videos,', hero_t2:'your stats', hero_t3:'in one profile',
     hero_sub:'We present your players the way clubs see them: <b>highlights</b>, <b>official Wyscout statistics</b> updated every week and <b>Transfermarkt market value</b>, in a profile ready to share on WhatsApp.',
-    cta_plataforma:'See players', cta_perfil:'Get a profile', cta_gratis:'Create your free profile', datos_de:'Data from',
+    cta_plataforma:'See players', cta_perfil:'Get a profile', cta_gratis:'Create your basic profile', datos_de:'Data from',
     n_jugadores:'Players', n_ligas:'Leagues', n_minutos:'Minutes analysed', n_videos:'Videos',
     dest_t1:'Top', dest_t2:'of the season', dest_sub:'Players with the most {x} in the latest Wyscout update.', rk_min:'Minutes', rk_gol:'Goals', rk_asi:'Assists', rkx_min:'minutes', rkx_gol:'goals', rkx_asi:'assists',
     pj:'Apps', min:'Min', gol:'Goals', asi:'Assists',
@@ -1705,8 +1728,8 @@ function renderPortada(){
         <h1 aria-label="${esc(t('hero_t1') + ' ' + t('hero_t2') + ' ' + t('hero_t3'))}.">${h1}</h1>
         <p class="hero-sub">${t('hero_sub')}</p>
         <div class="hero-ctas">
+          <a class="cta cta-gratis" href="#" onclick="abrirRegistro(event)">${t('cta_gratis')} <span class="tag-gratis">${idioma === 'en' ? 'FREE' : 'GRATIS'}</span></a>
           <a class="cta cta-primario" href="#plataforma" onclick="irPlataforma(event)">${t('cta_plataforma')}</a>
-          <a class="cta cta-borde" href="#" onclick="abrirRegistro(event)">👤 ${t('cta_gratis')}</a>
           <a class="cta cta-wsp" href="${wsp}" target="_blank" rel="noopener">${t('cta_perfil')}</a>
         </div>
         <div class="hero-fuentes">
@@ -1777,7 +1800,7 @@ function renderPortada(){
       <h2>${t('cierre_t')}</h2>
       <p>${t('cierre_sub')}</p>
       <div class="hero-ctas">
-        <a class="cta cta-primario" href="#" onclick="abrirRegistro(event)">👤 ${t('cta_gratis')}</a>
+        <a class="cta cta-gratis" href="#" onclick="abrirRegistro(event)">${t('cta_gratis')} <span class="tag-gratis">${idioma === 'en' ? 'FREE' : 'GRATIS'}</span></a>
         <a class="cta cta-wsp" href="${wsp}" target="_blank" rel="noopener">${t('cta_perfil')}</a>
         <a class="cta cta-borde" href="#plataforma" onclick="irPlataforma(event)">${t('cta_plataforma')}</a>
       </div>
@@ -2288,6 +2311,24 @@ sb.auth.onAuthStateChange((ev, s) => {
 });
 sb.auth.getSession().then(({ data }) => { sesion = data.session; actualizarBotonCuenta(); });
 
+const SVG_OJO = '<svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const SVG_OJO_NO = '<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>';
+function verPass(btn){
+  const inp = btn.parentNode.querySelector('input');
+  const ver = inp.type === 'password';
+  inp.type = ver ? 'text' : 'password';
+  btn.innerHTML = ver ? SVG_OJO_NO : SVG_OJO;
+  btn.setAttribute('aria-label', ver ? 'Ocultar contraseña' : 'Mostrar contraseña');
+  inp.focus();
+}
+function chequearPass(){
+  const a = document.getElementById('reg-pass').value, b = document.getElementById('reg-pass2').value, el = document.getElementById('pass-ok');
+  if(!b){ el.textContent = ''; el.className = 'pass-ok'; return; }
+  const ok = a === b;
+  el.textContent = ok ? (a.length >= 6 ? '✓ Las contraseñas coinciden' : '✓ Coinciden (pero tiene que tener al menos 6 caracteres)') : '✗ Todavía no coinciden';
+  el.className = 'pass-ok ' + (ok && a.length >= 6 ? 'si' : 'no');
+}
+function irAPro(){ const el = document.getElementById('mp-pro'); if(el) el.scrollIntoView({ behavior:'smooth', block:'start' }); }
 function abrirCuenta(){ sesion ? abrirMiPerfil() : abrirAuth('ingresar'); }
 function abrirRegistro(e){ if(e) e.preventDefault(); sesion ? abrirMiPerfil() : abrirAuth('registro'); }
 function authMsg(txt, tipo){
@@ -2324,6 +2365,7 @@ async function registrarse(){
   if(nombre.length < 3) return authMsg('Poné tu nombre y apellido.');
   if(!/^\S+@\S+\.\S+$/.test(email)) return authMsg('Poné un mail válido.');
   if(pass.length < 6) return authMsg('La contraseña tiene que tener al menos 6 caracteres.');
+  if(pass !== document.getElementById('reg-pass2').value) return authMsg('Las dos contraseñas no coinciden. Revisalas con el ojito 👁.');
   const btn = document.getElementById('btn-registrarse'); btn.disabled = true;
   try{
     const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { nombre, empresa: EMPRESA }, emailRedirectTo: location.origin + '/#mi-perfil' } });
@@ -2429,6 +2471,8 @@ function renderMiPerfil(extra){
           </div></div></div>`
       : `<div class="mp-estado pend"><span class="ico">⏳</span><div><b>Perfil en espera de aprobación</b><p>${extra && extra.nuevo ? '¡Gracias por registrarte! ' : ''}Apenas aprobemos tu perfil te va a llegar un mail de confirmación y queda publicado. Mientras tanto completalo: un perfil con foto y video se aprueba más rápido.</p></div></div>`}
 
+    <div class="mp-pro-tira"><span><b>★ Pasate a Pro</b> &nbsp;Sumá estadísticas, más videos y PDF para clubes.</span><button type="button" onclick="irAPro()">Ver ventajas</button></div>
+
     <div class="mp-caja">
       <h3>Tus datos</h3>
       <div class="mp-foto">
@@ -2458,17 +2502,21 @@ function renderMiPerfil(extra){
       <div class="fila-botones"><button class="btn btn-primario" id="mp-guardar" onclick="guardarMiPerfil()">💾 Guardar cambios</button></div>
     </div>
 
-    <div class="mp-pro">
-      <h3>★ Perfil Pro</h3>
-      <p>Destacate frente a clubes y representantes con un perfil completo.</p>
-      <ul>
-        <li>Estadísticas oficiales de Wyscout en tu perfil y en la tabla de jugadores</li>
-        <li>Hasta 4 videos y galería de fotos</li>
-        <li>PDF profesional para mandar a clubes</li>
-        <li>Valor de mercado de Transfermarkt</li>
-        <li>Carruseles y piezas para tus redes</li>
-      </ul>
-      <a class="btn btn-primario" style="background:#E8C46A" href="${wspPro}" target="_blank" rel="noopener">Quiero el Perfil Pro</a>
+    <div class="mp-pro" id="mp-pro">
+      <span class="pro-kicker">★ Actualizá tu perfil</span>
+      <h3>Pasate a usuario Pro</h3>
+      <p>${publicado ? 'Tu perfil básico ya está online.' : 'Tu perfil básico está casi listo.'} Con Pro aparecés completo en la tabla de jugadores y te presentás como un profesional ante clubes y representantes.</p>
+      <div class="pro-grid">
+        <div class="pro-item"><span>📊</span><span><b>Estadísticas oficiales</b><small>Datos de Wyscout en tu perfil: partidos, minutos, goles, asistencias, pases y más.</small></span></div>
+        <div class="pro-item"><span>📋</span><span><b>Aparecés en la tabla</b><small>Con tus números visibles y ordenables, donde miran los scouts.</small></span></div>
+        <div class="pro-item"><span>🎬</span><span><b>Hasta 4 videos</b><small>Highlights, partidos completos y jugadas por tipo.</small></span></div>
+        <div class="pro-item"><span>🖼️</span><span><b>Galería de fotos</b><small>Hasta 5 fotos en tu ficha.</small></span></div>
+        <div class="pro-item"><span>📄</span><span><b>PDF para clubes</b><small>Un dossier profesional listo para mandar.</small></span></div>
+        <div class="pro-item"><span>💶</span><span><b>Valor de mercado</b><small>Tu valor de Transfermarkt destacado en la ficha.</small></span></div>
+        <div class="pro-item"><span>📱</span><span><b>Contenido para redes</b><small>Carruseles y piezas para tu Instagram.</small></span></div>
+        <div class="pro-item"><span>⭐</span><span><b>Más visibilidad</b><small>Prioridad en la portada y en los destacados.</small></span></div>
+      </div>
+      <a class="btn-pro" href="${wspPro}" target="_blank" rel="noopener">★ Quiero ser Pro</a>
     </div>
   </div>`;
 }
