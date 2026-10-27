@@ -2841,14 +2841,14 @@ function previewEscudoClub(){
   document.getElementById('cl-preview').innerHTML = u ? `<img src="${esc(u)}" alt="" onerror="this.outerHTML='<span class=\\'vacio-esc\\'>⚠</span>'">` : '<span class="vacio-esc">🛡️</span>';
 }
 function clEstado(txt){ const el = document.getElementById('cl-estado'); if(el) el.innerHTML = txt || ''; }
-// Achica la imagen a 256px como máximo y la pasa a PNG (mantiene la transparencia)
+// Achica la imagen a 160px como máximo y la pasa a PNG (mantiene la transparencia)
 function imagenAPng(file){
   return new Promise((res, rej) => {
     const fr = new FileReader();
     fr.onload = () => {
       const img = new Image();
       img.onload = () => {
-        const MAX = 256, r = Math.min(1, MAX / Math.max(img.width || MAX, img.height || MAX));
+        const MAX = 160, r = Math.min(1, MAX / Math.max(img.width || MAX, img.height || MAX));
         const c = document.createElement('canvas');
         c.width = Math.max(1, Math.round((img.width || MAX) * r)); c.height = Math.max(1, Math.round((img.height || MAX) * r));
         c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
