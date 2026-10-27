@@ -161,6 +161,51 @@ main{max-width:1240px;margin:0 auto;padding:26px 22px 90px}
   letter-spacing:.03em;text-transform:uppercase;line-height:1.05;
 }
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+/* ---- Libre de club / agente ---- */
+.libre{display:inline-flex;align-items:center;gap:6px;color:#3DDC84;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.libre::before{content:'';width:8px;height:8px;border-radius:50%;background:#3DDC84;box-shadow:0 0 0 0 rgba(61,220,132,.7);animation:latidoLibre 1.8s ease-out infinite;flex:none}
+@keyframes latidoLibre{0%{box-shadow:0 0 0 0 rgba(61,220,132,.65)}70%{box-shadow:0 0 0 7px rgba(61,220,132,0)}100%{box-shadow:0 0 0 0 rgba(61,220,132,0)}}
+@media(prefers-reduced-motion:reduce){.libre::before{animation:none}}
+.chip.chip-libre{display:inline-flex;align-items:center;gap:7px;background:rgba(61,220,132,.1);border:1px solid rgba(61,220,132,.45);color:#3DDC84;border-radius:999px;padding:4px 11px}
+.chip.chip-libre small{color:#9fdcbc;font-family:'Barlow',sans-serif;font-weight:500;font-size:12px;letter-spacing:0;text-transform:none}
+.card-libre{position:absolute;top:10px;left:10px;z-index:2;background:rgba(7,9,12,.82);border:1px solid rgba(61,220,132,.5);border-radius:999px;padding:4px 9px;font-size:12px}
+.fj-libre-club{display:flex;flex-direction:column;gap:2px}
+.fj-libre-club small{font-family:'Barlow',sans-serif;font-weight:400;font-size:12px;color:var(--gris)}
+/* ---- Autocompletar clubes ---- */
+.ac-wrap{position:relative}
+.ac-lista{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:60;background:var(--panel);border:1px solid var(--linea);border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.55);overflow:hidden;display:none;max-height:320px;overflow-y:auto}
+.ac-lista.abierta{display:block}
+.ac-op{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 12px;min-height:48px;border-bottom:1px solid var(--linea);color:var(--blanco);font-size:15px}
+.ac-op:last-child{border-bottom:0}
+.ac-op.sel,.ac-op:hover{background:rgba(87,184,232,.1)}
+.ac-op small{color:var(--gris);font-size:12px;display:block}
+.ac-op .escudo{width:26px;height:26px}
+.ac-nuevo{color:var(--gris);font-size:13px;padding:10px 12px}
+.esc-preview{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px;color:var(--gris)}
+.esc-preview .escudo{width:30px;height:30px}
+/* ---- Switches ---- */
+.switch-fila{display:flex;align-items:flex-start;gap:12px;padding:10px 0;cursor:pointer}
+.switch-fila input{position:absolute;opacity:0;width:1px;height:1px}
+.switch-fila .sw{flex:none;width:46px;height:26px;border-radius:999px;background:var(--linea);position:relative;transition:background .2s;margin-top:2px}
+.switch-fila .sw::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--blanco);transition:transform .2s}
+.switch-fila input:checked + .sw{background:#2fbf71}
+.switch-fila input:checked + .sw::after{transform:translateX(20px)}
+.switch-fila input:focus-visible + .sw{outline:2px solid var(--celeste);outline-offset:2px}
+.switch-fila b{display:block;font-size:15px}
+.switch-fila small{display:block;color:var(--gris);font-size:13px;line-height:1.4}
+.libre-admin{display:grid;gap:8px;grid-template-columns:1fr}
+@media(min-width:560px){.libre-admin{grid-template-columns:1fr 1fr}}
+.campo .libre-admin label{display:flex;align-items:center;gap:8px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--blanco);margin:0}
+.libre-admin input[type=date]{margin-top:6px}
+/* ---- Catálogo de clubes (admin) ---- */
+.club-fila{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--linea)}
+.club-fila .escudo{width:32px;height:32px}
+.club-fila .cf-txt{flex:1;min-width:0}
+.club-fila .cf-txt b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.club-fila .cf-txt small{display:block;color:var(--gris);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.club-fila button{padding:8px 10px;border-radius:8px;font-size:16px;min-width:40px;min-height:40px}
+.club-lista{max-height:340px;overflow-y:auto;border:1px solid var(--linea);border-radius:12px;padding:0 10px;margin-bottom:16px}
+.club-form{background:var(--panel);border:1px solid var(--linea);border-radius:12px;padding:14px;margin-bottom:14px}
 .chip{
   font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;
   letter-spacing:.08em;text-transform:uppercase;
@@ -934,6 +979,7 @@ header .fila-header{display:flex;align-items:center;gap:10px}
         <select class="filtro-sel" id="f-filtro-pos" onchange="renderLista()"></select>
         <select class="filtro-sel" id="f-filtro-edad" onchange="renderLista()"></select>
         <select class="filtro-sel" id="f-filtro-liga" onchange="renderLista()"></select>
+        <select class="filtro-sel" id="f-filtro-libre" onchange="renderLista()"></select>
         <select class="filtro-sel" id="f-filtro-orden" onchange="renderLista()"></select>
         <div class="vista-toggle" role="group" aria-label="Vista">
           <button type="button" id="btn-vista-lista" onclick="cambiarVistaLista('lista')" aria-label="Lista"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2.4" rx="1"/><rect x="1" y="6.8" width="14" height="2.4" rx="1"/><rect x="1" y="11.6" width="14" height="2.4" rx="1"/></svg><span>Lista</span></button>
@@ -961,6 +1007,7 @@ header .fila-header{display:flex;align-items:center;gap:10px}
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn btn-primario" onclick="abrirFormulario()">+ Nuevo jugador</button>
         <button class="btn btn-secundario" onclick="abrirImportador()">📊 Importar estadísticas</button>
+        <button class="btn btn-secundario" onclick="abrirClubes()">🛡️ Clubes</button>
         <button class="btn btn-secundario" onclick="cerrarAdmin()">Salir</button>
       </div>
     </div>
@@ -1025,6 +1072,32 @@ header .fila-header{display:flex;align-items:center;gap:10px}
   </div>
 </div>
 
+<!-- MODAL CATÁLOGO DE CLUBES -->
+<div class="modal" id="modal-clubes">
+  <div class="modal-caja" style="max-width:640px">
+    <h3>🛡️ Catálogo de clubes</h3>
+    <p style="color:var(--gris);font-size:14px;line-height:1.5;margin-bottom:14px">Cada club se carga <b style="color:var(--blanco)">una sola vez</b> con su escudo. Los nombres alternativos hacen que "Nacional", "Club Nacional" o "Bolso" muestren el mismo escudo.</p>
+    <div class="club-form">
+      <div class="campo"><label id="club-form-tit">Nuevo club</label><input type="text" id="cl-nombre" placeholder="Nombre oficial, ej: Club Nacional de Football"></div>
+      <div class="mp-dos">
+        <div class="campo"><label>País</label><input type="text" id="cl-pais" placeholder="Ej: Uruguay"></div>
+        <div class="campo"><label>Nombres alternativos</label><input type="text" id="cl-alias" placeholder="Nacional, Club Nacional, Bolso"></div>
+      </div>
+      <div class="campo"><label>Link del escudo (PNG/SVG)</label><input type="url" id="cl-escudo" placeholder="https://…" oninput="previewEscudoClub()"><div class="esc-preview" id="cl-preview"></div></div>
+      <div class="fila-botones" style="margin-top:4px">
+        <button class="btn btn-primario" id="cl-guardar" onclick="guardarClub()">Guardar club</button>
+        <button class="btn btn-secundario" onclick="editarClub(null)">Limpiar</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <input type="text" class="buscador" id="cl-buscar" placeholder="Buscar club…" oninput="renderClubes()" style="flex:1 1 200px;margin:0">
+      <button class="btn btn-secundario" onclick="importarClubesDeJugadores()">⬇ Traer clubes de los jugadores</button>
+    </div>
+    <div class="club-lista" id="club-lista"></div>
+    <div class="fila-botones"><button class="btn btn-secundario" onclick="cerrarModal('modal-clubes')">Cerrar</button></div>
+  </div>
+</div>
+
 <!-- MODAL FORMULARIO -->
 <div class="modal" id="modal-form">
   <div class="modal-caja">
@@ -1049,12 +1122,21 @@ header .fila-header{display:flex;align-items:center;gap:10px}
     <div class="campo">
       <label>🏟️ Club actual y altura</label>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <input type="text" id="f-club" list="lista-clubes" placeholder="Club actual, ej: Defensor Sporting" style="flex:2 1 200px" oninput="autoEscudoClub()">
+        <div class="ac-wrap" style="flex:2 1 200px"><input type="text" id="f-club" placeholder="Club actual: escribí y elegí de la lista" autocomplete="off" oninput="acClub(this);previewEscudoAdmin()" onkeydown="acTecla(event,this)" onblur="acCerrarLuego(this)" onfocus="acClub(this)" style="width:100%"><div class="ac-lista"></div></div>
         <input type="number" id="f-altura" placeholder="Altura (cm), ej: 178" min="140" max="215" inputmode="numeric" style="flex:1 1 120px">
       </div>
-      <datalist id="lista-clubes"></datalist>
-      <input type="url" id="f-club-escudo" placeholder="Link del escudo del club (PNG/SVG)" style="margin-top:8px">
-      <div class="ayuda">Al escribir el club te sugiere los que ya cargaste. El escudo se carga <b>una sola vez por club</b>: si otro jugador del mismo club ya lo tiene, se completa solo y se usa en todos. Si dejás el club vacío, se toma el de la primera línea de la trayectoria. Necesita las columnas <b>club</b> (text), <b>altura</b> (int4) y <b>club_escudo</b> (text) en Supabase.</div>
+      <div class="esc-preview" id="esc-preview"></div>
+      <input type="url" id="f-club-escudo" placeholder="Escudo solo para este jugador (opcional, normalmente vacío)" style="margin-top:8px" oninput="previewEscudoAdmin()">
+      <div class="ayuda">Elegí el club de la lista: así queda escrito siempre igual y toma el escudo del <b>catálogo de clubes</b> (botón 🛡️ Clubes del panel). Si el club no está, escribilo igual y después agregalo al catálogo con su escudo. Si dejás el club vacío, se toma el de la primera línea de la trayectoria.</div>
+    </div>
+
+    <div class="campo">
+      <label>🟢 Situación</label>
+      <div class="libre-admin">
+        <div><label><input type="checkbox" id="f-libre-club" onchange="libreAdminToggle('club')"> Libre de club</label><input type="date" id="f-libre-club-desde"></div>
+        <div><label><input type="checkbox" id="f-libre-agente" onchange="libreAdminToggle('agente')"> Libre de agente</label><input type="date" id="f-libre-agente-desde"></div>
+      </div>
+      <div class="ayuda">Aparece con luz verde en la lista, las tarjetas y la ficha, y se puede filtrar. La fecha es "libre desde". Necesita las columnas <b>libre_club_desde</b> y <b>libre_agente_desde</b> (date) en Supabase.</div>
     </div>
 
     <div class="campo">
@@ -1357,6 +1439,7 @@ async function cargarJugadores(){
     if(error) throw error;
     jugadoresTodos = data || [];
     jugadores = jugadoresTodos.filter(esPublico);
+    await cargarClubes();
   }catch(err){
     console.error(err);
     document.getElementById('contenedor-lista').innerHTML =
@@ -1415,7 +1498,7 @@ function renderLista(){
   const cont = document.getElementById('contenedor-lista');
   armarFiltros();
   const q = normTxt(document.getElementById('buscador').value || '');
-  const fPos = valorFiltro('f-filtro-pos'), fEdad = valorFiltro('f-filtro-edad'), fLiga = valorFiltro('f-filtro-liga');
+  const fPos = valorFiltro('f-filtro-pos'), fEdad = valorFiltro('f-filtro-edad'), fLiga = valorFiltro('f-filtro-liga'), fLibre = valorFiltro('f-filtro-libre');
   const orden = valorFiltro('f-filtro-orden') || 'nombre';
   let lista = jugadores.filter(j => {
     if(q && !normTxt(j.nombre).includes(q)) return false;
@@ -1428,6 +1511,9 @@ function renderLista(){
       if(fEdad === '26' && !(e >= 26)) return false;
     }
     if(fLiga && !ligasJugador(j).includes(fLiga)) return false;
+    if(fLibre === 'club' && !esLibreClub(j)) return false;
+    if(fLibre === 'agente' && !esLibreAgente(j)) return false;
+    if(fLibre === 'cualq' && !esLibreClub(j) && !esLibreAgente(j)) return false;
     return true;
   });
   if(orden === 'min') lista.sort((a,b) => ((ultimaTemp(b)||{}).minutos||0) - ((ultimaTemp(a)||{}).minutos||0));
@@ -1465,6 +1551,7 @@ function renderLista(){
       <div class="card-foto">
         ${j.foto ? `<img src="${j.foto}" alt="${esc(j.nombre)}" loading="lazy">` : '<div class="sin-foto">👤</div>'}
         ${tieneVideo ? `<span class="card-badge-video"><svg viewBox="0 0 10 10"><path d="M1 0l9 5-9 5z"/></svg>Video</span>` : ''}
+        ${(esLibreClub(j) || esLibreAgente(j)) ? `<span class="card-libre libre">${esLibreClub(j) ? (idioma === 'en' ? 'Free' : 'Libre') : txtLibre('agente')}</span>` : ''}
       </div>
       <div class="card-info">
         <h3>${esc(j.nombre)}</h3>
@@ -1506,27 +1593,130 @@ function inicialesClub(c){
   const pal = String(c).replace(/[^\p{L}\s]/gu,' ').split(/\s+/).filter(w => w.length > 2 || /^[A-Z]{2,}$/.test(w));
   return (pal.length > 1 ? pal.slice(0,2).map(w => w[0]).join('') : (pal[0] || c).slice(0,2)).toUpperCase();
 }
-// --- Escudos: link manual (columna club_escudo), compartido entre los jugadores del mismo club
+// --- Clubes: catálogo (tabla clubes) + escudos compartidos ---
+let clubesCat = [];
+const STOP_CLUB = new Set(['club','de','del','la','el','los','las','fc','f','c','cf','sc','ac','cd','ca','sd','ud','csd','cs','futbol','football','fútbol','foot','ball','the']);
+function clubKey(n){
+  return normTxt(n).replace(/[^a-z0-9ñ\s]/g,' ').split(/\s+/).filter(w => w && !STOP_CLUB.has(w)).join(' ') || normTxt(n).trim();
+}
+let _mapaCat = null;
+function mapaCatalogo(){
+  if(_mapaCat) return _mapaCat;
+  const m = {};
+  clubesCat.forEach(c => [c.nombre, ...(Array.isArray(c.alias) ? c.alias : [])].forEach(n => { const k = clubKey(n); if(k && !m[k]) m[k] = c; }));
+  return (_mapaCat = m);
+}
+function clubDelCatalogo(nombre){ return nombre ? mapaCatalogo()[clubKey(nombre)] || null : null; }
+async function cargarClubes(){
+  try{
+    const { data, error } = await sb.from('clubes').select('*').order('nombre', { ascending: true });
+    if(!error && Array.isArray(data)) clubesCat = data;
+  }catch(e){}
+  _mapaCat = null;
+}
+// Nombre a mostrar: el oficial del catálogo si existe
+function clubNombre(j){ const c = clubActual(j); if(!c) return ''; const cat = clubDelCatalogo(c); return cat ? cat.nombre : c; }
 function escudosPorClub(){
   const m = {};
-  jugadoresTodos.forEach(j => { const c = clubActual(j); if(c && j.club_escudo && !m[normTxt(c)]) m[normTxt(c)] = j.club_escudo; });
+  jugadoresTodos.forEach(j => { const c = clubActual(j); if(c && j.club_escudo && !m[clubKey(c)]) m[clubKey(c)] = j.club_escudo; });
   return m;
+}
+function escudoDeNombre(nombre, mapa){
+  if(!nombre) return '';
+  const cat = clubDelCatalogo(nombre);
+  return (cat && cat.escudo) || (mapa || escudosPorClub())[clubKey(nombre)] || '';
 }
 function escudoUrl(j, mapa){
   const c = clubActual(j); if(!c) return '';
-  return j.club_escudo || (mapa || escudosPorClub())[normTxt(c)] || '';
+  return j.club_escudo || escudoDeNombre(c, mapa);
+}
+function escudoImgHTML(u, nombre){
+  const ini = `<span class=\\'esc-ini\\'>${esc(inicialesClub(nombre))}</span>`;
+  return `<span class="escudo">${u ? `<img src="${esc(u)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='${ini}'">` : `<span class="esc-ini">${esc(inicialesClub(nombre))}</span>`}</span>`;
 }
 function escudoHTML(j, mapa){
   const c = clubActual(j); if(!c) return '';
-  const u = escudoUrl(j, mapa);
-  const ini = `<span class=\\'esc-ini\\'>${esc(inicialesClub(c))}</span>`;
-  return `<span class="escudo">${u ? `<img src="${esc(u)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='${ini}'">` : `<span class="esc-ini">${esc(inicialesClub(c))}</span>`}</span>`;
+  return escudoImgHTML(escudoUrl(j, mapa), c);
 }
-function autoEscudoClub(){
-  const c = document.getElementById('f-club').value.trim(), inp = document.getElementById('f-club-escudo');
-  if(!c || !inp || inp.value.trim()) return;
-  const u = escudosPorClub()[normTxt(c)];
-  if(u) inp.value = u;
+// --- Autocompletar club (admin y Mi perfil) ---
+function opcionesClub(q){
+  const nq = normTxt(q).trim(); if(nq.length < 2) return [];
+  const kq = clubKey(q);
+  const cands = clubesCat.map(c => ({ nombre: c.nombre, pais: c.pais || '', escudo: c.escudo || '', alias: Array.isArray(c.alias) ? c.alias : [], cat: true }));
+  const vistos = new Set(cands.flatMap(c => [c.nombre, ...c.alias].map(clubKey)));
+  const mapa = escudosPorClub();
+  [...new Set(jugadoresTodos.map(clubActual).filter(Boolean))].forEach(n => {
+    if(vistos.has(clubKey(n))) return; vistos.add(clubKey(n));
+    cands.push({ nombre: n, pais: '', escudo: mapa[clubKey(n)] || '', alias: [], cat: false });
+  });
+  const puntaje = c => {
+    let best = 9;
+    for(const n of [c.nombre, ...c.alias]){
+      const nn = normTxt(n), kn = clubKey(n);
+      if(kn === kq || nn === nq) best = Math.min(best, 0);
+      else if(nn.startsWith(nq) || kn.startsWith(kq)) best = Math.min(best, 1);
+      else if((' ' + nn).includes(' ' + nq)) best = Math.min(best, 2);
+      else if(nn.includes(nq)) best = Math.min(best, 3);
+    }
+    return best;
+  };
+  return cands.map(c => ({ c, p: puntaje(c) })).filter(x => x.p < 9)
+    .sort((a,b) => a.p - b.p || (b.c.cat - a.c.cat) || a.c.nombre.localeCompare(b.c.nombre)).slice(0, 8).map(x => x.c);
+}
+function acClub(inp){
+  const lista = inp.parentNode.querySelector('.ac-lista'); if(!lista) return;
+  const ops = opcionesClub(inp.value);
+  inp._acOps = ops; inp._acSel = -1;
+  if(!ops.length){ lista.classList.remove('abierta'); lista.innerHTML = ''; return; }
+  lista.innerHTML = ops.map((c, i) => `<button type="button" class="ac-op" data-i="${i}" onmousedown="event.preventDefault();acElegir(this.closest('.ac-wrap').querySelector('input'),${i})">
+      ${escudoImgHTML(c.escudo, c.nombre)}<span><b>${esc(c.nombre)}</b>${(c.pais || c.alias.length) ? `<small>${esc([c.pais, c.alias.slice(0,3).join(', ')].filter(Boolean).join(' · '))}</small>` : ''}</span>
+    </button>`).join('');
+  lista.classList.add('abierta');
+}
+function acElegir(inp, i){
+  const c = (inp._acOps || [])[i]; if(!c) return;
+  inp.value = c.nombre;
+  const lista = inp.parentNode.querySelector('.ac-lista'); lista.classList.remove('abierta');
+  inp.dispatchEvent(new Event('change'));
+  if(inp.id === 'f-club') previewEscudoAdmin();
+}
+function acTecla(e, inp){
+  const ops = inp._acOps || []; const lista = inp.parentNode.querySelector('.ac-lista');
+  if(!ops.length || !lista.classList.contains('abierta')) return;
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+    e.preventDefault();
+    inp._acSel = (inp._acSel + (e.key === 'ArrowDown' ? 1 : -1) + ops.length) % ops.length;
+    lista.querySelectorAll('.ac-op').forEach((b, i) => b.classList.toggle('sel', i === inp._acSel));
+  } else if(e.key === 'Enter' && inp._acSel >= 0){ e.preventDefault(); acElegir(inp, inp._acSel); }
+  else if(e.key === 'Escape'){ lista.classList.remove('abierta'); }
+}
+function acCerrarLuego(inp){ setTimeout(() => { const l = inp.parentNode.querySelector('.ac-lista'); if(l) l.classList.remove('abierta'); }, 150); }
+function previewEscudoAdmin(){
+  const box = document.getElementById('esc-preview'); if(!box) return;
+  const n = document.getElementById('f-club').value.trim(), propio = document.getElementById('f-club-escudo').value.trim();
+  if(!n){ box.innerHTML = ''; return; }
+  const cat = clubDelCatalogo(n), u = propio || escudoDeNombre(n);
+  box.innerHTML = escudoImgHTML(u, n) + `<span>${propio ? 'Escudo propio de este jugador' : cat ? (cat.escudo ? 'Escudo del catálogo ✓ <b style="color:var(--blanco)">' + esc(cat.nombre) + '</b>' : 'Está en el catálogo pero sin escudo: cargalo en 🛡️ Clubes') : (u ? 'Escudo tomado de otro jugador del mismo club' : 'Sin escudo: agregá el club al catálogo (🛡️ Clubes)')}</span>`;
+}
+function hoyISO(){ const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function libreAdminToggle(k){
+  const on = document.getElementById('f-libre-' + k).checked, fd = document.getElementById('f-libre-' + k + '-desde');
+  fd.style.display = on ? '' : 'none';
+  if(on && !fd.value) fd.value = hoyISO();
+}
+// --- Libre de club / agente ---
+const esLibreClub = j => !!j.libre_club_desde, esLibreAgente = j => !!j.libre_agente_desde;
+function mesAnio(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T00:00:00'); if(isNaN(d)) return '';
+  return d.toLocaleDateString(idioma === 'en' ? 'en-GB' : 'es-UY', { month: 'long', year: 'numeric' });
+}
+function txtLibre(k){ return idioma === 'en' ? (k === 'club' ? 'Free agent (club)' : 'No agent') : (k === 'club' ? 'Libre de club' : 'Libre de agente'); }
+function chipsLibreHTML(j){
+  const out = [];
+  if(esLibreClub(j)) out.push(`<span class="chip chip-libre libre">${txtLibre('club')}${mesAnio(j.libre_club_desde) ? ` <small>${idioma === 'en' ? 'since' : 'desde'} ${esc(mesAnio(j.libre_club_desde))}</small>` : ''}</span>`);
+  if(esLibreAgente(j)) out.push(`<span class="chip chip-libre libre">${txtLibre('agente')}${mesAnio(j.libre_agente_desde) ? ` <small>${idioma === 'en' ? 'since' : 'desde'} ${esc(mesAnio(j.libre_agente_desde))}</small>` : ''}</span>`);
+  return out.join('');
 }
 let _tjOrden = { k:'', dir:-1 };
 function ordenarTabla(k){
@@ -1542,7 +1732,7 @@ function COLS_TABLA(){
     { k:'pos',  lbl:'Pos', tip: en ? 'Positions' : 'Posiciones', val: j => grupoPosicion(j) ? ['arq','def','med','del'].indexOf(grupoPosicion(j)) : 9, txt: true },
     { k:'anio', lbl: en ? 'Year' : 'Año', tip: en ? 'Year of birth' : 'Año de nacimiento', val: anioNac },
     { k:'alt',  lbl: en ? 'Hgt' : 'Alt.', tip: en ? 'Height (cm)' : 'Altura (cm)', val: j => j.altura ? +j.altura : null },
-    { k:'club', lbl:'Club', tip:'Club', val: j => clubActual(j) || null, txt: true },
+    { k:'club', lbl:'Club', tip:'Club', val: j => esLibreClub(j) ? ' ' : (clubNombre(j) || null), txt: true },
     { k:'pj',   lbl: en ? 'MP' : 'PJ', tip: en ? 'Matches played (last season)' : 'Partidos jugados (última temporada)', val: st('partidos') },
     { k:'min',  lbl:'Min', tip: en ? 'Minutes played' : 'Minutos jugados', val: st('minutos') },
     { k:'gol',  lbl: en ? 'G' : 'G', tip: en ? 'Goals' : 'Goles', val: st('goles') },
@@ -1582,7 +1772,8 @@ function renderTablaJugadores(lista){
   const celda = (c, j) => {
     if(c.k === 'pos') return `<td><span class="fj-pos">${posiciones(j).slice(0,2).map(p => `<span class="sigla" title="${esc(traducirPos(p))}">${esc(siglaPos(p))}</span>`).join('') || nd}</span></td>`;
     if(c.k === 'club'){
-      const club = clubActual(j), liga = ligasJugador(j)[0] || '';
+      const club = clubNombre(j), liga = ligasJugador(j)[0] || '';
+      if(esLibreClub(j)) return `<td class="c-izq"><span class="fj-libre-club"><span class="libre">${idioma === 'en' ? 'Free' : 'Libre'}</span>${club ? `<small>${idioma === 'en' ? 'last' : 'último'}: ${esc(club)}</small>` : ''}</span></td>`;
       return `<td class="c-izq">${club ? `<span class="fj-club">${escudoHTML(j, mapa)}<span class="fj-club-txt"><b>${esc(club)}</b>${liga ? `<small>${esc(liga)}</small>` : ''}</span></span>` : nd}</td>`;
     }
     if(c.k === 'vm') return `<td class="fj-vm">${j.valor_mercado ? esc(j.valor_mercado) : nd}</td>`;
@@ -1594,7 +1785,7 @@ function renderTablaJugadores(lista){
   };
   const filas = lista.map(j => {
     const tieneVideo = [j.video, j.video2, j.video3, j.video4].some(v => vimeoEmbed(v));
-    const sub = [j.agencia ? `<span>${esc(j.agencia)}</span>` : '', tieneVideo ? `<span class="fj-video"><svg viewBox="0 0 10 10"><path d="M1 0l9 5-9 5z"/></svg>Video</span>` : ''].join('');
+    const sub = [esLibreAgente(j) ? `<span class="libre">${txtLibre('agente')}</span>` : (j.agencia ? `<span>${esc(j.agencia)}</span>` : ''), tieneVideo ? `<span class="fj-video"><svg viewBox="0 0 10 10"><path d="M1 0l9 5-9 5z"/></svg>Video</span>` : ''].join('');
     return `<tr tabindex="0" onclick="verFicha('${j.id}')" onkeydown="if(event.key==='Enter')verFicha('${j.id}')" aria-label="${esc(j.nombre)}">
       <td class="c-jug"><span class="fj-jug">
         ${j.foto ? `<img class="fj-foto" src="${esc(j.foto)}" alt="" loading="lazy">` : '<span class="fj-foto sin">👤</span>'}
@@ -1645,7 +1836,7 @@ function grupoPosicion(j){
 }
 function valorFiltro(id){ const el = document.getElementById(id); return el ? el.value : ''; }
 function limpiarFiltros(){
-  ['f-filtro-pos','f-filtro-edad','f-filtro-liga'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['f-filtro-pos','f-filtro-edad','f-filtro-liga','f-filtro-libre'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   const b = document.getElementById('buscador'); if(b) b.value = '';
   renderLista();
 }
@@ -1662,6 +1853,10 @@ function armarFiltros(){
   const ligas = [...new Set(jugadores.flatMap(ligasJugador))].sort((a,b) => a.localeCompare(b));
   set('f-filtro-liga', opt('', t('f_liga')) + ligas.map(l => opt(l, l)).join(''));
   const fl = document.getElementById('f-filtro-liga'); if(fl) fl.style.display = ligas.length ? '' : 'none';
+  const nLC = jugadores.filter(esLibreClub).length, nLA = jugadores.filter(esLibreAgente).length, nL = jugadores.filter(j => esLibreClub(j) || esLibreAgente(j)).length;
+  const en = idioma === 'en';
+  set('f-filtro-libre', opt('', en ? 'Any status' : 'Todas las situaciones') + opt('cualq', (en ? '🟢 Any free' : '🟢 Libres') + ' (' + nL + ')') + (nLC ? opt('club', (en ? 'Free of club' : 'Libres de club') + ' (' + nLC + ')') : '') + (nLA ? opt('agente', (en ? 'No agent' : 'Libres de agente') + ' (' + nLA + ')') : ''));
+  const flb = document.getElementById('f-filtro-libre'); if(flb) flb.style.display = nL ? '' : 'none';
   set('f-filtro-orden', opt('nombre', t('orden_nombre')) + opt('min', t('orden_min')) + (jugadores.some(j => j.valor_mercado) ? opt('valor', t('orden_valor')) : '') + opt('joven', t('orden_joven')));
 }
 function irPlataforma(e){
@@ -1943,11 +2138,12 @@ function renderFicha(j){
       <div class="ficha-datos">
         <h1>${esc(j.nombre)}</h1>
         ${pos.length ? `<div class="chips">${pos.map(p=>`<span class="chip">${esc(traducirPos(p))}</span>`).join('')}</div>` : ''}
+        ${(esLibreClub(j) || esLibreAgente(j)) ? `<div class="chips">${chipsLibreHTML(j)}</div>` : ''}
         <div class="dato-fila">
           ${j.nacimiento ? `<div class="dato"><label>${t('nacimiento')}</label><span>${fechaLinda(j.nacimiento)}</span></div>` : ''}
           ${ed !== null ? `<div class="dato"><label>${t('edad')}</label><span>${ed} ${t('anios')}</span></div>` : ''}
           ${j.altura ? `<div class="dato"><label>${t('altura')}</label><span>${esc(j.altura)} cm</span></div>` : ''}
-          ${clubActual(j) ? `<div class="dato"><label>${t('club_actual')}</label><span style="display:flex;align-items:center;gap:8px">${escudoHTML(j)}${esc(clubActual(j))}</span></div>` : ''}
+          ${clubActual(j) ? `<div class="dato"><label>${esLibreClub(j) ? (idioma === 'en' ? 'Last club' : 'Último club') : t('club_actual')}</label><span style="display:flex;align-items:center;gap:8px">${escudoHTML(j)}${esc(clubNombre(j))}</span></div>` : ''}
         </div>
         ${valorMercadoHTML(j)}
         ${bioTexto ? `<p class="ficha-desc">${esc(bioTexto)}</p>` : ''}
@@ -2198,8 +2394,14 @@ async function descargarPDF(id){
     if(clubActual(j) || j.altura){
       doc.setFont('helvetica','normal'); doc.setFontSize(10.5);
       doc.setTextColor(...GRIS); doc.text([clubActual(j) ? 'CLUB' : '', j.altura ? 'ALTURA' : ''].filter(Boolean).join('  ·  '), xInfo, yi);
-      doc.setTextColor(...BLANCO); doc.text([clubActual(j), j.altura ? j.altura + ' cm' : ''].filter(Boolean).join('  ·  '), xInfo, yi + 5.5);
+      doc.setTextColor(...BLANCO); doc.text([clubNombre(j), j.altura ? j.altura + ' cm' : ''].filter(Boolean).join('  ·  '), xInfo, yi + 5.5);
       yi += 14;
+    }
+    if(esLibreClub(j) || esLibreAgente(j)){
+      doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.setTextColor(61,220,132);
+      doc.text([esLibreClub(j) ? 'LIBRE DE CLUB' : '', esLibreAgente(j) ? 'LIBRE DE AGENTE' : ''].filter(Boolean).join('  ·  '), xInfo, yi);
+      doc.setFont('helvetica','normal');
+      yi += 10;
     }
     if(j.valor_mercado){
       const ORO = [222,184,84];
@@ -2487,7 +2689,11 @@ function renderMiPerfil(extra){
         <div class="campo"><label>Fecha de nacimiento</label><input type="date" id="mp-nacimiento" value="${esc(p.nacimiento || '')}"></div>
         <div class="campo"><label>Altura (cm)</label><input type="number" id="mp-altura" value="${esc(p.altura || '')}" min="140" max="215" inputmode="numeric" placeholder="Ej: 178"></div>
       </div>
-      <div class="campo"><label>Club actual</label><input type="text" id="mp-club" value="${esc(p.club || '')}" maxlength="80" placeholder="Ej: Defensor Sporting"></div>
+      <div class="campo"><label>Club actual (o último club)</label><div class="ac-wrap"><input type="text" id="mp-club" value="${esc(p.club || '')}" maxlength="80" autocomplete="off" placeholder="Escribí y elegí de la lista" oninput="acClub(this)" onkeydown="acTecla(event,this)" onblur="acCerrarLuego(this)"><div class="ac-lista"></div></div></div>
+      <div class="campo"><label>Situación</label>
+        <label class="switch-fila"><input type="checkbox" id="mp-libre-club" ${p.libre_club_desde ? 'checked' : ''}><span class="sw"></span><span><b>Estoy libre de club</b><small>Aparecés con luz verde 🟢 en la lista de jugadores y en el filtro de libres.</small></span></label>
+        <label class="switch-fila"><input type="checkbox" id="mp-libre-agente" ${p.libre_agente_desde ? 'checked' : ''}><span class="sw"></span><span><b>No tengo agente</b><small>Las agencias ven que estás libre de representación.</small></span></label>
+      </div>
       <div class="campo"><label>Posición (hasta 3)</label>
         <div class="posiciones-grid" id="mp-posiciones">${POSICIONES.map(x => `<button type="button" class="pos-toggle ${pos.includes(x) ? 'activo' : ''}" onclick="miPosToggle(this)">${x}</button>`).join('')}</div>
       </div>
@@ -2546,7 +2752,9 @@ async function guardarMiPerfil(){
   const datos = {
     nombre: v('mp-nombre'), nacimiento: v('mp-nacimiento'), altura: v('mp-altura'), club: v('mp-club'),
     posicion: [...document.querySelectorAll('#mp-posiciones .pos-toggle.activo')].map(b => b.textContent).join(', '),
-    video: vimeoNormalizar(v('mp-video')) || '', video2: vimeoNormalizar(v('mp-video2')) || '', bio: v('mp-bio')
+    video: vimeoNormalizar(v('mp-video')) || '', video2: vimeoNormalizar(v('mp-video2')) || '', bio: v('mp-bio'),
+    libre_club_desde: document.getElementById('mp-libre-club').checked ? (miPerfil.libre_club_desde || hoyISO()) : '',
+    libre_agente_desde: document.getElementById('mp-libre-agente').checked ? (miPerfil.libre_agente_desde || hoyISO()) : ''
   };
   if(!datos.nombre.trim()){ toast('Falta tu nombre'); return; }
   for(const k of ['video','video2']){
@@ -2568,6 +2776,88 @@ async function guardarMiPerfil(){
 function copiarLinkPerfil(){
   const link = linkMiPerfil();
   (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(() => toast('Link copiado ✓'), () => prompt('Copiá tu link:', link));
+}
+/* ---- Catálogo de clubes (admin) ---- */
+let _clubEdit = null;
+async function llamarAdmin(accion, extra){
+  const r = await fetch(FN_PERFIL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ accion, clave: ADMIN_PASS, ...(extra || {}) }) });
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok) throw new Error(d.error || ('Error ' + r.status));
+  return d;
+}
+async function abrirClubes(){
+  abrirModal('modal-clubes');
+  editarClub(null);
+  document.getElementById('club-lista').innerHTML = '<div class="cargando" style="padding:16px">Cargando…</div>';
+  await cargarClubes();
+  renderClubes();
+}
+function renderClubes(){
+  const q = normTxt(document.getElementById('cl-buscar').value || '');
+  const lista = clubesCat.filter(c => !q || normTxt([c.nombre, c.pais, ...(c.alias || [])].join(' ')).includes(q));
+  const box = document.getElementById('club-lista');
+  if(!clubesCat.length){ box.innerHTML = '<div class="vacio" style="padding:18px">Todavía no hay clubes. Tocá "Traer clubes de los jugadores" para arrancar con los que ya cargaste.</div>'; return; }
+  box.innerHTML = lista.map(c => {
+    const usos = jugadoresTodos.filter(j => clubDelCatalogo(clubActual(j)) === c).length;
+    return `<div class="club-fila">${escudoImgHTML(c.escudo, c.nombre)}
+      <span class="cf-txt"><b>${esc(c.nombre)}</b><small>${esc([c.pais, (c.alias || []).join(', ')].filter(Boolean).join(' · ') || 'sin país ni alias')}${usos ? ' · ' + usos + ' jugador' + (usos > 1 ? 'es' : '') : ''}${c.escudo ? '' : ' · ⚠ sin escudo'}</small></span>
+      <button onclick="editarClub('${c.id}')" aria-label="Editar" style="color:var(--celeste)">✎</button>
+      <button onclick="borrarClub('${c.id}')" aria-label="Borrar" style="color:var(--rojo)">🗑</button></div>`;
+  }).join('') || '<div class="vacio" style="padding:18px">Sin resultados.</div>';
+}
+function editarClub(id){
+  _clubEdit = id ? clubesCat.find(c => String(c.id) === String(id)) : null;
+  const c = _clubEdit || {};
+  document.getElementById('club-form-tit').textContent = _clubEdit ? 'Editando: ' + c.nombre : 'Nuevo club';
+  document.getElementById('cl-nombre').value = c.nombre || '';
+  document.getElementById('cl-pais').value = c.pais || '';
+  document.getElementById('cl-alias').value = (c.alias || []).join(', ');
+  document.getElementById('cl-escudo').value = c.escudo || '';
+  previewEscudoClub();
+  if(_clubEdit) document.getElementById('cl-nombre').focus();
+}
+function previewEscudoClub(){
+  const u = document.getElementById('cl-escudo').value.trim(), n = document.getElementById('cl-nombre').value.trim() || '?';
+  document.getElementById('cl-preview').innerHTML = u ? escudoImgHTML(u, n) + '<span>Vista previa</span>' : '';
+}
+async function guardarClub(){
+  const nombre = document.getElementById('cl-nombre').value.trim();
+  if(!nombre){ toast('Falta el nombre del club'); return; }
+  const club = {
+    id: _clubEdit ? _clubEdit.id : undefined, nombre,
+    pais: document.getElementById('cl-pais').value.trim(),
+    alias: document.getElementById('cl-alias').value.split(',').map(x => x.trim()).filter(Boolean),
+    escudo: document.getElementById('cl-escudo').value.trim()
+  };
+  const choque = clubesCat.find(c => c !== _clubEdit && [c.nombre, ...(c.alias || [])].some(n => [club.nombre, ...club.alias].some(m => clubKey(m) === clubKey(n))));
+  if(choque && !confirm('Ese nombre o alias ya lo usa "' + choque.nombre + '". ¿Guardar igual?')) return;
+  const btn = document.getElementById('cl-guardar'); btn.disabled = true;
+  try{
+    await llamarAdmin('club_guardar', { club });
+    toast('Club guardado ✓');
+    await cargarClubes(); editarClub(null); renderClubes(); renderLista();
+  }catch(e){ toast('No se pudo guardar: ' + e.message); }
+  finally{ btn.disabled = false; }
+}
+async function borrarClub(id){
+  const c = clubesCat.find(x => String(x.id) === String(id));
+  if(!c || !confirm('¿Borrar "' + c.nombre + '" del catálogo? Los jugadores no se modifican.')) return;
+  try{ await llamarAdmin('club_borrar', { id }); await cargarClubes(); renderClubes(); renderLista(); toast('Club borrado'); }
+  catch(e){ toast('No se pudo borrar: ' + e.message); }
+}
+async function importarClubesDeJugadores(){
+  const mapa = escudosPorClub(), nuevos = [], vistos = new Set();
+  jugadoresTodos.forEach(j => {
+    const n = clubActual(j); if(!n) return;
+    const k = clubKey(n);
+    if(vistos.has(k) || clubDelCatalogo(n)) return;
+    vistos.add(k);
+    nuevos.push({ nombre: n, escudo: mapa[k] || '', pais: '', alias: [] });
+  });
+  if(!nuevos.length){ toast('Todos los clubes de los jugadores ya están en el catálogo'); return; }
+  if(!confirm('Se van a agregar ' + nuevos.length + ' clubes al catálogo:\n\n' + nuevos.slice(0, 15).map(c => '• ' + c.nombre).join('\n') + (nuevos.length > 15 ? '\n…' : '') + '\n\nDespués revisá los nombres y uní los repetidos con "nombres alternativos".')) return;
+  try{ await llamarAdmin('club_importar', { clubes: nuevos }); await cargarClubes(); renderClubes(); renderLista(); toast(nuevos.length + ' clubes agregados ✓'); }
+  catch(e){ toast('No se pudo importar: ' + e.message); }
 }
 async function aprobarDesdePanel(id){
   const j = jugadoresTodos.find(x => String(x.id) === String(id));
@@ -2649,8 +2939,12 @@ function abrirFormulario(id){
   document.getElementById('f-club').value = j?.club || '';
   document.getElementById('f-owner-email').value = j?.owner_email || '';
   document.getElementById('f-altura').value = j?.altura || '';
-  const dl = document.getElementById('lista-clubes');
-  if(dl) dl.innerHTML = [...new Set(jugadoresTodos.map(clubActual).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).map(c => `<option value="${esc(c)}">`).join('');
+  for(const k of ['club','agente']){
+    const d = j ? j['libre_' + k + '_desde'] : null;
+    document.getElementById('f-libre-' + k).checked = !!d;
+    const fd = document.getElementById('f-libre-' + k + '-desde'); fd.value = d || ''; fd.style.display = d ? '' : 'none';
+  }
+  previewEscudoAdmin();
   document.getElementById('f-valor-mercado').value = j?.valor_mercado || '';
   galeriaEdit = Array.isArray(j?.fotos) ? j.fotos.filter(Boolean).slice(0,5) : [];
   galeriaRender();
@@ -3238,6 +3532,8 @@ async function guardarJugador(){
     transfermarkt: tmNormalizar(document.getElementById('f-transfermarkt').value),
     club_escudo: document.getElementById('f-club-escudo').value.trim() || null,
     club: document.getElementById('f-club').value.trim() || null,
+    libre_club_desde: document.getElementById('f-libre-club').checked ? (document.getElementById('f-libre-club-desde').value || hoyISO()) : null,
+    libre_agente_desde: document.getElementById('f-libre-agente').checked ? (document.getElementById('f-libre-agente-desde').value || hoyISO()) : null,
     owner_email: document.getElementById('f-owner-email').value.trim().toLowerCase() || null,
     altura: parseInt(document.getElementById('f-altura').value, 10) || null,
     valor_mercado: valorMercadoNormalizar(document.getElementById('f-valor-mercado').value),

@@ -16,8 +16,8 @@ const EMPRESA = 'videosjugadores';
 const BUCKET = 'fotos-jugadores';
 const POSICIONES = ['Arquero','Defensa central','Lateral derecho','Lateral izquierdo','Volante defensivo','Volante mixto','Volante ofensivo','Extremo derecho','Extremo izquierdo','Delantero centro'];
 // Campos que el jugador puede editar él mismo (nada de estadísticas, valor, agencia, etc.)
-const CAMPOS_BASICOS = ['nombre','nacimiento','posicion','club','altura','video','video2','bio'];
-const COLS_PERFIL = 'id,nombre,nacimiento,posicion,club,altura,video,video2,bio,foto,estado,plan,owner_email';
+const CAMPOS_BASICOS = ['nombre','nacimiento','posicion','club','altura','video','video2','bio','libre_club_desde','libre_agente_desde'];
+const COLS_PERFIL = 'id,nombre,nacimiento,posicion,club,altura,video,video2,bio,foto,estado,plan,owner_email,libre_club_desde,libre_agente_desde';
 
 const env = k => (typeof Netlify !== 'undefined' && Netlify.env && Netlify.env.get(k)) || process.env[k] || '';
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -163,7 +163,7 @@ function limpiarBasicos(d){
     let v = d[k];
     v = (v === null || v === undefined) ? '' : String(v).trim();
     if(k === 'nombre'){ v = v.slice(0, 80); if(!v) throw new Error('Falta el nombre'); }
-    else if(k === 'nacimiento'){ v = /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null; }
+    else if(k === 'nacimiento' || k === 'libre_club_desde' || k === 'libre_agente_desde'){ v = /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null; }
     else if(k === 'altura'){ const n = parseInt(v, 10); v = (n >= 140 && n <= 215) ? n : null; }
     else if(k === 'posicion'){ v = v.split(',').map(x => x.trim()).filter(x => POSICIONES.includes(x)).slice(0, 3).join(', ') || null; }
     else if(k === 'video' || k === 'video2'){ v = /^https?:\/\/\S+$/i.test(v) ? v.slice(0, 300) : null; }
@@ -200,8 +200,14 @@ async function diagnostico(req, url){
   if(env('SUPABASE_SECRET_KEY')){
     try{ await rest(`players?empresa=eq.${EMPRESA}&select=id&limit=1`); fila(true, 'Conexión a Supabase con la clave secreta', 'funciona'); }
     catch(e){ fila(false, 'Conexión a Supabase con la clave secreta', esc(e.message)); }
-    try{ await rest(`players?empresa=eq.${EMPRESA}&select=owner_id,owner_email,estado,plan,club,altura,club_escudo&limit=1`); fila(true, 'Columnas nuevas en la tabla players', 'están todas'); }
+    try{ await rest(`players?empresa=eq.${EMPRESA}&select=owner_id,owner_email,estado,plan,club,altura,club_escudo,libre_club_desde,libre_agente_desde&limit=1`); fila(true, 'Columnas nuevas en la tabla players', 'están todas'); }
     catch(e){ fila(false, 'Columnas nuevas en la tabla players', 'falta correr el SQL de las columnas — ' + esc(e.message)); }
+    try{ const r = await rest('clubes?select=id,nombre,pais,escudo,alias&limit=1'); fila(true, 'Tabla de clubes (catálogo)', 'existe'); }
+    catch(e){ fila(false, 'Tabla de clubes (catálogo)', 'falta crearla con el SQL — ' + esc(e.message)); }
+    try{
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/clubes?select=id&limit=1`, { headers: { apikey: SUPABASE_PUBLIC, Authorization: 'Bearer ' + SUPABASE_PUBLIC } });
+      fila(r.ok, 'Lectura pública del catálogo', r.ok ? 'el sitio puede leer los clubes' : 'el sitio no puede leer los clubes: falta la política de lectura del SQL');
+    }catch(e){ fila(null, 'Lectura pública del catálogo', 'no se pudo revisar'); }
   }
   // Supabase Auth: confirmación de mail
   try{
@@ -272,6 +278,41 @@ export default async (req) => {
       if(!clave || body.clave !== clave) return json({ error: 'No autorizado' }, 401);
       const p = await aprobar(req, String(body.id || ''));
       return p ? json({ ok: true }) : json({ error: 'No encontrado' }, 404);
+    }
+
+    // ----- Catálogo de clubes (solo admin) -----
+    if(String(accion || '').startsWith('club_')){
+      const clave = env('ADMIN_PASSWORD');
+      if(!clave || body.clave !== clave) return json({ error: 'No autorizado' }, 401);
+      const limpiarClub = c => {
+        const nombre = String(c.nombre || '').trim().slice(0, 90);
+        if(!nombre) throw new Error('Falta el nombre del club');
+        const escudo = String(c.escudo || '').trim();
+        return {
+          nombre,
+          pais: String(c.pais || '').trim().slice(0, 60) || null,
+          escudo: /^https?:\/\/\S+$/i.test(escudo) ? escudo.slice(0, 500) : null,
+          alias: (Array.isArray(c.alias) ? c.alias : []).map(a => String(a).trim().slice(0, 60)).filter(Boolean).slice(0, 15)
+        };
+      };
+      if(accion === 'club_guardar'){
+        const c = body.club || {}, fila = limpiarClub(c);
+        const rows = c.id
+          ? await rest(`clubes?id=eq.${encodeURIComponent(c.id)}`, { method: 'PATCH', body: JSON.stringify(fila) })
+          : await rest('clubes', { method: 'POST', body: JSON.stringify(fila) });
+        return json({ club: rows[0] });
+      }
+      if(accion === 'club_borrar'){
+        await rest(`clubes?id=eq.${encodeURIComponent(String(body.id || ''))}`, { method: 'DELETE' });
+        return json({ ok: true });
+      }
+      if(accion === 'club_importar'){
+        const filas = (Array.isArray(body.clubes) ? body.clubes : []).slice(0, 300).map(limpiarClub);
+        if(!filas.length) return json({ ok: true, n: 0 });
+        const rows = await rest('clubes', { method: 'POST', body: JSON.stringify(filas) });
+        return json({ ok: true, n: rows.length });
+      }
+      return json({ error: 'Acción desconocida' }, 400);
     }
 
     // ----- Acciones del jugador logueado -----
