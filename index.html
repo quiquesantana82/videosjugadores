@@ -205,6 +205,12 @@ main{max-width:1240px;margin:0 auto;padding:26px 22px 90px}
 .club-fila .cf-txt small{display:block;color:var(--gris);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .club-fila button{padding:8px 10px;border-radius:8px;font-size:16px;min-width:40px;min-height:40px}
 .club-lista{max-height:340px;overflow-y:auto;border:1px solid var(--linea);border-radius:12px;padding:0 10px;margin-bottom:16px}
+.esc-drop{display:flex;align-items:center;gap:14px;border:1.5px dashed var(--linea);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:14px;line-height:1.45;transition:border-color .15s,background .15s}
+.esc-drop:hover,.esc-drop:focus,.esc-drop.sobre{border-color:var(--celeste);background:rgba(87,184,232,.06);outline:none}
+.esc-drop small{display:block;color:var(--gris);font-size:12.5px;margin-top:3px}
+.esc-drop-prev{flex:none;width:56px;height:56px;border-radius:10px;background:var(--carbon);border:1px solid var(--linea);display:grid;place-items:center;overflow:hidden}
+.esc-drop-prev img{width:46px;height:46px;object-fit:contain}
+.esc-drop-prev .vacio-esc{font-size:22px;opacity:.5}
 .club-form{background:var(--panel);border:1px solid var(--linea);border-radius:12px;padding:14px;margin-bottom:14px}
 .chip{
   font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;
@@ -1083,7 +1089,19 @@ header .fila-header{display:flex;align-items:center;gap:10px}
         <div class="campo"><label>País</label><input type="text" id="cl-pais" placeholder="Ej: Uruguay"></div>
         <div class="campo"><label>Nombres alternativos</label><input type="text" id="cl-alias" placeholder="Nacional, Club Nacional, Bolso"></div>
       </div>
-      <div class="campo"><label>Link del escudo (PNG/SVG)</label><input type="url" id="cl-escudo" placeholder="https://…" oninput="previewEscudoClub()"><div class="esc-preview" id="cl-preview"></div></div>
+      <div class="campo"><label>Escudo</label>
+        <div class="esc-drop" id="cl-drop" tabindex="0" onclick="document.getElementById('cl-archivo').click()" ondragover="event.preventDefault();this.classList.add('sobre')" ondragleave="this.classList.remove('sobre')" ondrop="escudoSoltado(event)">
+          <div class="esc-drop-prev" id="cl-preview"></div>
+          <div><b>Pegá la imagen con Ctrl+V</b>, arrastrala acá o tocá para elegir un archivo<small>Truco: en Google Imágenes, clic derecho sobre el escudo → "Copiar imagen", y pegalo acá.</small></div>
+        </div>
+        <input type="file" id="cl-archivo" accept="image/*" style="display:none" onchange="escudoArchivo(this.files[0]);this.value=''">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button type="button" class="btn btn-secundario" onclick="buscarEscudoGoogle()">🔎 Buscar en Google</button>
+          <button type="button" class="btn btn-secundario" onclick="buscarEscudoTM()">🔎 Buscar en Transfermarkt</button>
+        </div>
+        <input type="url" id="cl-escudo" placeholder="…o pegá un link: de la imagen o de la página del club en Transfermarkt" style="margin-top:8px" oninput="escudoLinkCambio()">
+        <div class="ayuda" id="cl-estado"></div>
+      </div>
       <div class="fila-botones" style="margin-top:4px">
         <button class="btn btn-primario" id="cl-guardar" onclick="guardarClub()">Guardar club</button>
         <button class="btn btn-secundario" onclick="editarClub(null)">Limpiar</button>
@@ -2794,10 +2812,12 @@ async function abrirClubes(){
 }
 function renderClubes(){
   const q = normTxt(document.getElementById('cl-buscar').value || '');
-  const lista = clubesCat.filter(c => !q || normTxt([c.nombre, c.pais, ...(c.alias || [])].join(' ')).includes(q));
+  const lista = clubesCat.filter(c => !q || normTxt([c.nombre, c.pais, ...(c.alias || [])].join(' ')).includes(q))
+    .sort((a,b) => (!!a.escudo - !!b.escudo) || a.nombre.localeCompare(b.nombre));
+  const faltan = clubesCat.filter(c => !c.escudo).length;
   const box = document.getElementById('club-lista');
   if(!clubesCat.length){ box.innerHTML = '<div class="vacio" style="padding:18px">Todavía no hay clubes. Tocá "Traer clubes de los jugadores" para arrancar con los que ya cargaste.</div>'; return; }
-  box.innerHTML = lista.map(c => {
+  box.innerHTML = (faltan ? `<div class="ayuda" style="padding:10px 4px;color:#E8C46A">⚠ ${faltan > 1 ? 'Faltan ' + faltan + ' escudos: están' : 'Falta 1 escudo: está'} arriba de todo. Tocá ✎, pegá la imagen con Ctrl+V y guardá.</div>` : '') + lista.map(c => {
     const usos = jugadoresTodos.filter(j => clubDelCatalogo(clubActual(j)) === c).length;
     return `<div class="club-fila">${escudoImgHTML(c.escudo, c.nombre)}
       <span class="cf-txt"><b>${esc(c.nombre)}</b><small>${esc([c.pais, (c.alias || []).join(', ')].filter(Boolean).join(' · ') || 'sin país ni alias')}${usos ? ' · ' + usos + ' jugador' + (usos > 1 ? 'es' : '') : ''}${c.escudo ? '' : ' · ⚠ sin escudo'}</small></span>
@@ -2817,8 +2837,84 @@ function editarClub(id){
   if(_clubEdit) document.getElementById('cl-nombre').focus();
 }
 function previewEscudoClub(){
-  const u = document.getElementById('cl-escudo').value.trim(), n = document.getElementById('cl-nombre').value.trim() || '?';
-  document.getElementById('cl-preview').innerHTML = u ? escudoImgHTML(u, n) + '<span>Vista previa</span>' : '';
+  const u = document.getElementById('cl-escudo').value.trim();
+  document.getElementById('cl-preview').innerHTML = u ? `<img src="${esc(u)}" alt="" onerror="this.outerHTML='<span class=\\'vacio-esc\\'>⚠</span>'">` : '<span class="vacio-esc">🛡️</span>';
+}
+function clEstado(txt){ const el = document.getElementById('cl-estado'); if(el) el.innerHTML = txt || ''; }
+// Achica la imagen a 256px como máximo y la pasa a PNG (mantiene la transparencia)
+function imagenAPng(file){
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 256, r = Math.min(1, MAX / Math.max(img.width || MAX, img.height || MAX));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round((img.width || MAX) * r)); c.height = Math.max(1, Math.round((img.height || MAX) * r));
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        res(c.toDataURL('image/png'));
+      };
+      img.onerror = () => rej(new Error('No se pudo leer la imagen'));
+      img.src = fr.result;
+    };
+    fr.onerror = () => rej(new Error('No se pudo leer el archivo'));
+    fr.readAsDataURL(file);
+  });
+}
+async function escudoArchivo(file){
+  if(!file) return;
+  if(!/^image\//.test(file.type)){ toast('Eso no es una imagen'); return; }
+  clEstado('Subiendo escudo…');
+  try{
+    const dataUrl = await imagenAPng(file);
+    document.getElementById('cl-preview').innerHTML = `<img src="${dataUrl}" alt="">`;
+    const d = await llamarAdmin('club_escudo', { dataUrl, nombre: document.getElementById('cl-nombre').value.trim() });
+    document.getElementById('cl-escudo').value = d.url;
+    previewEscudoClub();
+    clEstado('✓ Escudo guardado. Tocá <b>Guardar club</b>.');
+  }catch(e){ clEstado('⚠ ' + esc(e.message)); }
+}
+function escudoSoltado(e){
+  e.preventDefault(); document.getElementById('cl-drop').classList.remove('sobre');
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if(f) return escudoArchivo(f);
+  const url = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+  if(url){ document.getElementById('cl-escudo').value = url.trim(); escudoLinkCambio(); }
+}
+// Ctrl+V con una imagen copiada, mientras está abierto el catálogo
+document.addEventListener('paste', e => {
+  const modal = document.getElementById('modal-clubes');
+  if(!modal || !modal.classList.contains('abierto')) return;
+  const items = [...((e.clipboardData && e.clipboardData.items) || [])];
+  const img = items.find(it => it.kind === 'file' && /^image\//.test(it.type));
+  if(img){ e.preventDefault(); escudoArchivo(img.getAsFile()); }
+});
+// Link de Transfermarkt del club -> escudo
+function tmEscudo(url){
+  const m = String(url).match(/transfermarkt\.[a-z.]+\/([^/]+)\/[a-z]+\/verein\/(\d+)/i);
+  return m ? { id: m[2], slug: m[1], url: `https://tmssl.akamaized.net/images/wappen/head/${m[2]}.png` } : null;
+}
+let _linkTimer = null;
+function escudoLinkCambio(){
+  const inp = document.getElementById('cl-escudo'), v = inp.value.trim();
+  const tm = tmEscudo(v);
+  if(tm){
+    inp.value = tm.url;
+    const nom = document.getElementById('cl-nombre');
+    if(!nom.value.trim()) nom.value = tm.slug.split('-').map(w => w.length > 2 || w === 'fc' ? w.charAt(0).toUpperCase() + w.slice(1) : w).join(' ').replace(/\bFc\b/g, 'FC');
+    clEstado('Link de Transfermarkt detectado: se usa el escudo de ese club.');
+  } else clEstado(v ? 'Al guardar, se guarda una copia del escudo para que no se rompa si cambia el link.' : '');
+  clearTimeout(_linkTimer); _linkTimer = setTimeout(previewEscudoClub, 300);
+}
+function buscarEscudoGoogle(){
+  const n = document.getElementById('cl-nombre').value.trim();
+  if(!n){ toast('Escribí primero el nombre del club'); return; }
+  window.open('https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(n + ' escudo png transparente'), '_blank', 'noopener');
+}
+function buscarEscudoTM(){
+  const n = document.getElementById('cl-nombre').value.trim();
+  if(!n){ toast('Escribí primero el nombre del club'); return; }
+  window.open('https://www.transfermarkt.com/schnellsuche/ergebnis/schnellsuche?query=' + encodeURIComponent(n), '_blank', 'noopener');
 }
 async function guardarClub(){
   const nombre = document.getElementById('cl-nombre').value.trim();
@@ -2833,10 +2929,17 @@ async function guardarClub(){
   if(choque && !confirm('Ese nombre o alias ya lo usa "' + choque.nombre + '". ¿Guardar igual?')) return;
   const btn = document.getElementById('cl-guardar'); btn.disabled = true;
   try{
+    if(club.escudo && !club.escudo.startsWith(SUPABASE_URL + '/storage/')){
+      clEstado('Guardando copia del escudo…');
+      try{ club.escudo = (await llamarAdmin('club_escudo', { url: club.escudo, nombre })).url; }
+      catch(e){
+        if(!confirm('No se pudo guardar una copia del escudo (' + e.message + ').\n\n¿Guardar el club usando el link tal cual? Si ese sitio lo cambia, el escudo deja de verse.')){ clEstado('⚠ ' + esc(e.message)); return; }
+      }
+    }
     await llamarAdmin('club_guardar', { club });
     toast('Club guardado ✓');
-    await cargarClubes(); editarClub(null); renderClubes(); renderLista();
-  }catch(e){ toast('No se pudo guardar: ' + e.message); }
+    await cargarClubes(); editarClub(null); clEstado(''); renderClubes(); renderLista();
+  }catch(e){ toast('No se pudo guardar: ' + e.message); clEstado(''); }
   finally{ btn.disabled = false; }
 }
 async function borrarClub(id){

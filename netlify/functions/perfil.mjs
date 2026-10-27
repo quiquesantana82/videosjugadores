@@ -156,6 +156,42 @@ async function subirFoto(uid, dataUrl){
   return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
 }
 
+// ---------- Escudos: se guardan en Supabase Storage (bucket público "escudos") ----------
+const BUCKET_ESC = 'escudos';
+const TIPOS_ESC = { 'image/png':'png', 'image/jpeg':'jpg', 'image/webp':'webp', 'image/svg+xml':'svg', 'image/gif':'gif' };
+async function guardarEscudo(bytes, ctype, nombre){
+  const ext = TIPOS_ESC[ctype];
+  if(!ext) throw new Error('El archivo no es una imagen válida (' + (ctype || 'sin tipo') + ')');
+  if(bytes.length > 1.5 * 1024 * 1024) throw new Error('La imagen pesa más de 1,5 MB');
+  if(bytes.length < 80) throw new Error('La imagen está vacía');
+  await fetch(`${SUPABASE_URL}/storage/v1/bucket`, {
+    method: 'POST', headers: hdrSecreto({ 'content-type': 'application/json' }),
+    body: JSON.stringify({ id: BUCKET_ESC, name: BUCKET_ESC, public: true })
+  }).catch(() => {});
+  const slug = String(nombre || 'club').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0, 50) || 'club';
+  const path = `${slug}-${Date.now().toString(36)}.${ext}`;
+  const r = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET_ESC}/${path}`, {
+    method: 'POST', headers: hdrSecreto({ 'content-type': ctype, 'x-upsert': 'true', 'cache-control': '31536000' }), body: bytes
+  });
+  if(!r.ok) throw new Error('No se pudo guardar el escudo (' + r.status + ')');
+  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_ESC}/${path}`;
+}
+async function escudoDesdeUrl(url, nombre){
+  if(!/^https?:\/\//i.test(url)) throw new Error('Link no válido');
+  if(url.startsWith(`${SUPABASE_URL}/storage/`)) return url; // ya es nuestro
+  const r = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; VideosjugadoresBot/1.0)', accept: 'image/*' }, redirect: 'follow' });
+  if(!r.ok) throw new Error('No se pudo bajar la imagen de ese link (' + r.status + ')');
+  let ctype = String(r.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+  const bytes = Buffer.from(await r.arrayBuffer());
+  if(!TIPOS_ESC[ctype]){ // algunos servidores no mandan bien el tipo
+    if(bytes[0] === 0x89 && bytes[1] === 0x50) ctype = 'image/png';
+    else if(bytes[0] === 0xff && bytes[1] === 0xd8) ctype = 'image/jpeg';
+    else if(bytes.slice(0, 200).toString().includes('<svg')) ctype = 'image/svg+xml';
+    else if(bytes.slice(8, 12).toString() === 'WEBP') ctype = 'image/webp';
+  }
+  return guardarEscudo(bytes, ctype, nombre);
+}
+
 function limpiarBasicos(d){
   const out = {};
   for(const k of CAMPOS_BASICOS){
@@ -301,6 +337,14 @@ export default async (req) => {
           ? await rest(`clubes?id=eq.${encodeURIComponent(c.id)}`, { method: 'PATCH', body: JSON.stringify(fila) })
           : await rest('clubes', { method: 'POST', body: JSON.stringify(fila) });
         return json({ club: rows[0] });
+      }
+      if(accion === 'club_escudo'){
+        if(body.dataUrl){
+          const m = String(body.dataUrl).match(/^data:(image\/[a-z+]+);base64,(.+)$/);
+          if(!m) throw new Error('Formato de imagen no válido');
+          return json({ url: await guardarEscudo(Buffer.from(m[2], 'base64'), m[1], body.nombre) });
+        }
+        return json({ url: await escudoDesdeUrl(String(body.url || '').trim(), body.nombre) });
       }
       if(accion === 'club_borrar'){
         await rest(`clubes?id=eq.${encodeURIComponent(String(body.id || ''))}`, { method: 'DELETE' });
